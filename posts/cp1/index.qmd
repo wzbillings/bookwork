@@ -1,0 +1,88 @@
+---
+title: "Chapter 1"
+author: "Zane Billings"
+date: "2022-12-06"
+categories: [news, code, analysis]
+---
+
+# Notes
+
+I already have a math degree where I focused on stats, so I kind of rushed through this chapter `r emoji::emoji("grin")`.
+
+# Solutions
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+Rewrite the following statements as equations using the mathematical notation
+you learned in the chapter:
+
+* The probability of rain is low
+
+* The probabiliy of rain given that it is cloudy is high
+
+* The probability of you having an umbrella given it is raining is much greater
+than the probability of you having an umbrella in general.
+
+:::
+
+Nothing too out of the ordinary here!
+
+* $\displaystyle P\left( \text{rain} \right) = \text{low}.$
+
+* $P \left( \text{rain} \mid \text{cloudy} \right) = \text{high}.$
+
+* $P \left( \text{umbrella} \mid \text{raining} \right) \gg P \left(\text{umbrella}\right).$
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+Organize the data you observe in the following scenario into a mathematical
+notation, using the techniques we've covered in this chapter. Then come up
+with a hypothesis to explain this data:
+
+> You come home from work and notice that your front door is open and the side
+window is broken. As you walk inside, you immediately notice that your laptop
+is missing.
+
+:::
+
+Let $D$ represent the data we've observed. In order words,
+$$D = \{\text{door open, window broken, laptop missing}\}.$$
+
+Our hypothesis might be
+$$H_1: \text{My house was robbed and they took my laptop!}$$
+
+So we might conjecture that
+$$P(D \mid H_1) = \mathrm{high}.$$
+
+## Q3
+
+::: {.callout-note appearance="simple"}
+
+The following scenario adds data to the previous one. Demonstrate how this new
+information changes your beliefs and come up with a second hypothesis to explain
+the data, using the notation you've learned in this chapter.
+
+> A neighborhood child runs up to you and apologizes profusely for accidentally
+throwing a rock through your window. They claim that they saw the laptop and
+didn't want it stolen so they opened the front door to grab it, and your
+laptop is safe at their house.
+
+:::
+
+Now we'll let $D_U$ represent our updated data (augmented with the new
+information that we learned from this child). Then,
+$$D_U = \{D, \text{ child's explanation}\}$$
+
+and our new hypothesis could be
+$$H_2: \text{the child has my laptop.}$$
+
+If the child appears to be telling the truth, we could then conjecture that
+$$P(D_U \mid H_2) \gg P(D_U \mid H_1),$$
+although we shouldn't rule out the possibility that the child is being coerced
+or is a part of the robbery.
+
+<!-- end of file -->

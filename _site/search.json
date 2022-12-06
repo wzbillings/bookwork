@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Doing Bayesian Statistics the Fun Way – Solutions",
+    "section": "",
+    "text": "Chapter 1\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nDec 6, 2022\n\n\nZane Billings\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "posts/cp1/index.html",
+    "href": "posts/cp1/index.html",
+    "title": "Chapter 1",
+    "section": "",
+    "text": "I already have a math degree where I focused on stats, so I kind of rushed through this chapter 😁."
+  },
+  {
+    "objectID": "posts/cp1/index.html#q1",
+    "href": "posts/cp1/index.html#q1",
+    "title": "Chapter 1",
+    "section": "Q1",
+    "text": "Q1\n\n\n\n\n\n\nRewrite the following statements as equations using the mathematical notation you learned in the chapter:\n\nThe probability of rain is low\nThe probabiliy of rain given that it is cloudy is high\nThe probability of you having an umbrella given it is raining is much greater than the probability of you having an umbrella in general.\n\n\n\n\nNothing too out of the ordinary here!\n\n\\(\\displaystyle P\\left( \\text{rain} \\right) = \\text{low}.\\)\n\\(P \\left( \\text{rain} \\mid \\text{cloudy} \\right) = \\text{high}.\\)\n\\(P \\left( \\text{umbrella} \\mid \\text{raining} \\right) \\gg P \\left(\\text{umbrella}\\right).\\)"
+  },
+  {
+    "objectID": "posts/cp1/index.html#q2",
+    "href": "posts/cp1/index.html#q2",
+    "title": "Chapter 1",
+    "section": "Q2",
+    "text": "Q2\n\n\n\n\n\n\nOrganize the data you observe in the following scenario into a mathematical notation, using the techniques we’ve covered in this chapter. Then come up with a hypothesis to explain this data:\n\nYou come home from work and notice that your front door is open and the side window is broken. As you walk inside, you immediately notice that your laptop is missing.\n\n\n\n\nLet \\(D\\) represent the data we’ve observed. In order words, \\[D = \\{\\text{door open, window broken, laptop missing}\\}.\\]\nOur hypothesis might be \\[H_1: \\text{My house was robbed and they took my laptop!}\\]\nSo we might conjecture that \\[P(D \\mid H_1) = \\mathrm{high}.\\]"
+  },
+  {
+    "objectID": "posts/cp1/index.html#q3",
+    "href": "posts/cp1/index.html#q3",
+    "title": "Chapter 1",
+    "section": "Q3",
+    "text": "Q3\n\n\n\n\n\n\nThe following scenario adds data to the previous one. Demonstrate how this new information changes your beliefs and come up with a second hypothesis to explain the data, using the notation you’ve learned in this chapter.\n\nA neighborhood child runs up to you and apologizes profusely for accidentally throwing a rock through your window. They claim that they saw the laptop and didn’t want it stolen so they opened the front door to grab it, and your laptop is safe at their house.\n\n\n\n\nNow we’ll let \\(D_U\\) represent our updated data (augmented with the new information that we learned from this child). Then, \\[D_U = \\{D, \\text{ child's explanation}\\}\\]\nand our new hypothesis could be \\[H_2: \\text{the child has my laptop.}\\]\nIf the child appears to be telling the truth, we could then conjecture that \\[P(D_U \\mid H_2) \\gg P(D_U \\mid H_1),\\] although we shouldn’t rule out the possibility that the child is being coerced or is a part of the robbery."
+  }
+]

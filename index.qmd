@@ -1,0 +1,14 @@
+---
+title: "Doing Bayesian Statistics the Fun Way -- Solutions"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+
+I've been working through this book, and I decided to type my solutions so it will not be a problem when I inevitably lose the papers.

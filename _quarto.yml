@@ -1,0 +1,22 @@
+project:
+  type: website
+
+website:
+  title: "Zane's DBSFW Solutions"
+  navbar:
+    right:
+      - icon: house-door-fill
+        href: https://wzbillings.com
+      - icon: github
+        href: https://github.com/wzbillings
+      - icon: mastodon
+        href: https://fediscience.org/@wzbillings
+format:
+  html:
+    theme:
+      dark: vapor
+      light: pulse
+    css: styles.css
+
+
+

@@ -2,7 +2,6 @@
 title: "Chapter 1"
 author: "Zane Billings"
 date: "2022-12-06"
-categories: [news, code, analysis]
 ---
 
 # Notes

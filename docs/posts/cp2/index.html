@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Zane Billings">
-<meta name="dcterms.date" content="2022-12-06">
+<meta name="dcterms.date" content="2022-12-07">
 
-<title>Zane’s DBSFW Solutions - Chapter 1</title>
+<title>Zane’s DBSFW Solutions - Chapter 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,6 +22,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -112,13 +175,8 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Chapter 1</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
-              </div>
-                  </div>
+      <h1 class="title">Chapter 2</h1>
+                      </div>
   </div>
     
   
@@ -134,7 +192,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">December 6, 2022</p>
+        <p class="date">December 7, 2022</p>
       </div>
     </div>
       
@@ -151,10 +209,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="notes" class="level1">
-<h1>Notes</h1>
-<p>I already have a math degree where I focused on stats, so I kind of rushed through this chapter 😁.</p>
-</section>
 <section id="solutions" class="level1">
 <h1>Solutions</h1>
 <section id="q1" class="level2">
@@ -165,21 +219,52 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Rewrite the following statements as equations using the mathematical notation you learned in the chapter:</p>
-<ul>
-<li><p>The probability of rain is low</p></li>
-<li><p>The probabiliy of rain given that it is cloudy is high</p></li>
-<li><p>The probability of you having an umbrella given it is raining is much greater than the probability of you having an umbrella in general.</p></li>
-</ul>
+<p>What is the probability of rolling two six-sided dice and getting a value greater than 7?</p>
 </div>
 </div>
 </div>
-<p>Nothing too out of the ordinary here!</p>
-<ul>
-<li><p><span class="math inline">\(\displaystyle P\left( \text{rain} \right) = \text{low}.\)</span></p></li>
-<li><p><span class="math inline">\(P \left( \text{rain} \mid \text{cloudy} \right) = \text{high}.\)</span></p></li>
-<li><p><span class="math inline">\(P \left( \text{umbrella} \mid \text{raining} \right) \gg P \left(\text{umbrella}\right).\)</span></p></li>
-</ul>
+<p>In general, I think it’s worth solving this problem via simulation, because solving via enumeration scales much worse. (We could also solve this problem analytically, but that scales even worse than the enumerative solution.) So first I’ll show how to solve via simulation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The number of simulations we will do. As this number gets larger, our</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated probability will approach the theoretical probability.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>N_rolls <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate the two die rolls. You could do this with one call of sample but</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for expository purposes this is easier.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>die_1 <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, N_rolls, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>die_2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, N_rolls, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the proportion of sums that are greater than 7</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sum <span class="ot">&lt;-</span> die_1 <span class="sc">+</span> die_2</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(sum <span class="sc">&gt;</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4238</code></pre>
+</div>
+</div>
+<p>We can also use R to solve this problem by enumeration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>possible_rolls <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">die_1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">die_2 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>possible_rolls<span class="sc">$</span>sum <span class="ot">&lt;-</span> possible_rolls<span class="sc">$</span>die_1 <span class="sc">+</span> possible_rolls<span class="sc">$</span>die_2</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(possible_rolls<span class="sc">$</span>sum <span class="sc">&gt;</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4166667</code></pre>
+</div>
+</div>
+<p>As you can see, our simulated solution is extremely close to the “true” answer that we get by enumerating the sample space. If you prefer the answer as a fraction, we can also just count.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of possible combinations that sum to &gt; 7</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(possible_rolls<span class="sc">$</span>sum  <span class="sc">&gt;</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 15</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of possible combinations</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(possible_rolls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 36</code></pre>
+</div>
+</div>
+<p>So 15 out of the 36 possible combinations have a sum greater than 7, giving us the observed probability <span class="math inline">\(0.41\bar{6}.\)</span></p>
 </section>
 <section id="q2" class="level2">
 <h2 class="anchored" data-anchor-id="q2">Q2</h2>
@@ -189,16 +274,30 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Organize the data you observe in the following scenario into a mathematical notation, using the techniques we’ve covered in this chapter. Then come up with a hypothesis to explain this data:</p>
-<blockquote class="blockquote">
-<p>You come home from work and notice that your front door is open and the side window is broken. As you walk inside, you immediately notice that your laptop is missing.</p>
-</blockquote>
+<p>What is the probability of rolling three six-sided dice and getting a value greater than seven?</p>
 </div>
 </div>
 </div>
-<p>Let <span class="math inline">\(D\)</span> represent the data we’ve observed. In order words, <span class="math display">\[D = \{\text{door open, window broken, laptop missing}\}.\]</span></p>
-<p>Our hypothesis might be <span class="math display">\[H_1: \text{My house was robbed and they took my laptop!}\]</span></p>
-<p>So we might conjecture that <span class="math display">\[P(D \mid H_1) = \mathrm{high}.\]</span></p>
+<p>We can solve this in the same way. We’ll do it just via enumeration this time, since this book is about probability, not about simulations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>possible_rolls <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">die_1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">die_2 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">die_3 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>possible_rolls<span class="sc">$</span>sum <span class="ot">&lt;-</span> possible_rolls<span class="sc">$</span>die_1 <span class="sc">+</span> possible_rolls<span class="sc">$</span>die_2 <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    possible_rolls<span class="sc">$</span>die_3</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(possible_rolls<span class="sc">$</span>sum <span class="sc">&gt;</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 181</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(possible_rolls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 216</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(possible_rolls<span class="sc">$</span>sum <span class="sc">&gt;</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.837963</code></pre>
+</div>
+</div>
+<p>So our answer is <span class="math inline">\(181 / 216 \approx 0.84.\)</span></p>
 </section>
 <section id="q3" class="level2">
 <h2 class="anchored" data-anchor-id="q3">Q3</h2>
@@ -208,16 +307,21 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>The following scenario adds data to the previous one. Demonstrate how this new information changes your beliefs and come up with a second hypothesis to explain the data, using the notation you’ve learned in this chapter.</p>
-<blockquote class="blockquote">
-<p>A neighborhood child runs up to you and apologizes profusely for accidentally throwing a rock through your window. They claim that they saw the laptop and didn’t want it stolen so they opened the front door to grab it, and your laptop is safe at their house.</p>
-</blockquote>
+<p>The Yankees are playing the Red Sox. You’re a diehard Sox fan and bet your friend they’ll win the game. You’ll pay your friend $30 if the Sox lose and your friend will have to pay you only $5 if the Sox win. What is the probability you have intuitively assigned to the belief that the Red Sox will win?</p>
 </div>
 </div>
 </div>
-<p>Now we’ll let <span class="math inline">\(D_U\)</span> represent our updated data (augmented with the new information that we learned from this child). Then, <span class="math display">\[D_U = \{D, \text{ child's explanation}\}\]</span></p>
-<p>and our new hypothesis could be <span class="math display">\[H_2: \text{the child has my laptop.}\]</span></p>
-<p>If the child appears to be telling the truth, we could then conjecture that <span class="math display">\[P(D_U \mid H_2) \gg P(D_U \mid H_1),\]</span> although we shouldn’t rule out the possibility that the child is being coerced or is a part of the robbery.</p>
+<p>To solve this problem, we just use the formula that relates the odds to the probability of an event.</p>
+<p><span class="math display">\[\begin{align*}
+\frac{P(x)}{P(\lnot x)} &amp;= \frac{30}{5} \\
+\frac{P(x)}{1 - P(x)} &amp;= \frac{30}{5} \\
+P(x) &amp;= \frac{30}{5} \left( 1 - P(x) \right) \\
+P(x) &amp;= \frac{30}{5} - \frac{30}{5} P(x) \\
+P(x) + \frac{30}{5} P(x) &amp;= \frac{30}{5} \\
+\frac{35}{5} P(x) &amp;= \frac{30}{5} \\
+7 \cdot P(x) &amp;= 6 \\
+P(x) &amp;= \frac{6}{7}.
+\end{align*}\]</span></p>
 <!-- end of file -->
 
 

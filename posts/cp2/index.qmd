@@ -1,0 +1,113 @@
+---
+title: "Chapter 2"
+author: "Zane Billings"
+date: "2022-12-07"
+---
+
+# Solutions
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+What is the probability of rolling two six-sided dice and getting a value
+greater than 7?
+
+:::
+
+In general, I think it's worth solving this problem via simulation, because
+solving via enumeration scales much worse. (We could also solve this problem
+analytically, but that scales even worse than the enumerative solution.) So
+first I'll show how to solve via simulation.
+
+```{r}
+# The number of simulations we will do. As this number gets larger, our
+# simulated probability will approach the theoretical probability.
+N_rolls <- 10000
+
+# Simulate the two die rolls. You could do this with one call of sample but
+# for expository purposes this is easier.
+die_1 <- sample(1:6, N_rolls, replace = TRUE)
+die_2 <- sample(1:6, N_rolls, replace = TRUE)
+
+# Calculate the proportion of sums that are greater than 7
+sum <- die_1 + die_2
+mean(sum > 7)
+```
+
+We can also use R to solve this problem by enumeration.
+
+```{r}
+possible_rolls <- expand.grid(die_1 = 1:6, die_2 = 1:6)
+possible_rolls$sum <- possible_rolls$die_1 + possible_rolls$die_2
+
+mean(possible_rolls$sum > 7)
+```
+
+As you can see, our simulated solution is extremely close to the "true" answer
+that we get by enumerating the sample space. If you prefer the answer as a
+fraction, we can also just count.
+
+```{r}
+# Number of possible combinations that sum to > 7
+sum(possible_rolls$sum  > 7)
+
+# Number of possible combinations
+nrow(possible_rolls)
+```
+
+So 15 out of the 36 possible combinations have a sum greater than 7, giving us
+the observed probability $0.41\bar{6}.$
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+What is the probability of rolling three six-sided dice and getting a value
+greater than seven?
+
+:::
+
+We can solve this in the same way. We'll do it just via enumeration this time,
+since this book is about probability, not about simulations.
+
+```{r}
+possible_rolls <- expand.grid(die_1 = 1:6, die_2 = 1:6, die_3 = 1:6)
+possible_rolls$sum <- possible_rolls$die_1 + possible_rolls$die_2 +
+	possible_rolls$die_3
+
+sum(possible_rolls$sum > 7)
+nrow(possible_rolls)
+mean(possible_rolls$sum > 7)
+```
+
+So our answer is $181 / 216 \approx 0.84.$
+
+
+## Q3
+
+::: {.callout-note appearance="simple"}
+
+The Yankees are playing the Red Sox. You're a diehard Sox fan and bet your
+friend they'll win the game. You'll pay your friend $30 if the Sox lose and
+your friend will have to pay you only $5 if the Sox win. What is the probability
+you have intuitively assigned to the belief that the Red Sox will win?
+
+:::
+
+To solve this problem, we just use the formula that relates the odds to the
+probability of an event.
+
+\begin{align*}
+\frac{P(x)}{P(\lnot x)} &= \frac{30}{5} \\
+\frac{P(x)}{1 - P(x)} &= \frac{30}{5} \\
+P(x) &= \frac{30}{5} \left( 1 - P(x) \right) \\
+P(x) &= \frac{30}{5} - \frac{30}{5} P(x) \\
+P(x) + \frac{30}{5} P(x) &= \frac{30}{5} \\
+\frac{35}{5} P(x) &= \frac{30}{5} \\
+7 \cdot P(x) &= 6 \\
+P(x) &= \frac{6}{7}.
+\end{align*}
+
+
+<!-- end of file -->

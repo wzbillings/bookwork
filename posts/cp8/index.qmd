@@ -1,0 +1,40 @@
+---
+title: "Chapter 8"
+author: "Zane Billings"
+date: "2022-12-09"
+draft: true
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 16)
+```
+
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+As mentioned, you mighty disagree with the original probability assigned
+to the likelihood:
+
+$$P(\text{broken window, open front door, missing laptop} \mid \text{robbed}) = \frac{3}{10}.$$
+
+**If we change this probability to $3/100$**, how does this change our strength in
+believing $H_1$ over $H_2$?
+
+:::
+
+(I bolded the part that was supposed to be in the question but then wasn't.)
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+How unlikely would you have to believe being robbed is --- our prior for $H_1$
+--- in order for the ratio of $H_1$ to $H_2$ to be one?
+
+:::
+
+
+
+<!-- end of file -->

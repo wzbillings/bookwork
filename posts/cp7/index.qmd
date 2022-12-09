@@ -1,0 +1,42 @@
+---
+title: "Chapter 7"
+author: "Zane Billings"
+date: "2022-12-09"
+draft: true
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 16)
+```
+
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+Kansas City, despite its name, sits on the border of two US states:
+Missouri and Kansas. The Kansas City metropolitan area consists of 15 counties,
+9 in Missouri, and 6 in Kansas. The entire state of Kansas has 105 counties
+and Missouri has 114. Use Bayes' theorem to calculate the probability that
+a relative who just moved to a country in the KC metropolitan area also lives
+in a county in Kansas. Make sure to show $P(\text{Kansas})$ (assuming your
+relative lives in either Kansas or Missouri), $P(\text{Kansas City Metropolitan Area}),$ and $P(\text{Kansas City Metropolitan Area} \mid \text{Kansas})$.
+
+:::
+
+
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+A deck of cards has 52 cards with suits that are either red or black. There
+are four aces in a deck of cards: two red and two black. You remove a red ace
+from the deck and shuffle the cards. Your friend pulls a black card. What is
+the probability that it is an ace?
+
+:::
+
+
+
+<!-- end of file -->

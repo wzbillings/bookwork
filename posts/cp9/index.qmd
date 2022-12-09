@@ -1,0 +1,85 @@
+---
+title: "Chapter 9"
+author: "Zane Billings"
+date: "2022-12-09"
+draft: true
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 16)
+```
+
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+A friend finds a coin on the ground, flips it, and gets six heads in a row and
+then one tails. Give the beta distribution that describes this. Use integration
+to determine the probability that the true rate of flipping heads is between
+0.4 and 0.6, reflecting the belief that the coin is reasonably fair.
+
+:::
+
+
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+Come up with a prior probability that the coin *is* fair. Use a beta
+distribution such that there is at least a 95\% chance that the true rate of
+flipping heads is between 0.4 and 0.6.
+
+:::
+
+
+## Q3
+
+::: {.callout-note appearance="simple"}
+
+Now see how many more heads (with no more tails) it would take to convince you
+that there is a reasonable chance that this coin is *not* fair. In this case,
+let's say that this means that our belief in the rate of the coin being between
+0.4 and 0.6 drops below 0.5.
+
+:::
+
+We have to use the inclusion-exclusion rule here to avoid double-counting, since
+the two eggs having salmonella are not mutually exclusive (they could both
+have salmonella). So we get
+\begin{align*}
+P(\text{ate a salmonella egg}) &= P(\text{egg one had salmonella}) + P(\text{egg two had salmonella})
+\\ &\quad\quad -P(\text{both eggs had salmonella}) \\
+&= \frac{1}{20000} + \frac{1}{20000} - \left(\frac{1}{20000}\right) ^2 \\
+&= \frac{39,999}{400,000,000} \approx 0.009\%.
+\end{align*}
+
+## Q4
+
+::: {.callout-note appearance="simple}
+
+What is the probability of either flipping two heads in two coin tosses or
+rolling three 6s in three six-sided dice rolls?
+
+:::
+
+I hate how vaguely worded this question is, so I'll list the assumptions that
+I think we are making.
+
+We are doing one experiment that involves us flipping a coin twice (or flipping
+two coins) and also rolling a d6 three times (or rolling 3d6 one time). These
+two things are all mutually independent from each other, both coin flips are 
+independent, and all three die rolls are independent. The die rolls and coin
+flips do not affect each other. Once we have done all of these things during
+the experiment, we want to know the probability that we flipped two heads OR
+(inclusize) we rolled three sixes.
+
+So, we use inclusion-exclusion again. We get that
+
+$$P(\text{two heads}) = \frac{1}{2}\cdot \frac{1}{2} = \frac{1}{4},$$
+$$P(\text{three sixes}) = \left(\frac{1}{6}\right)^3 = \frac{1}{216},$$
+and thus
+$$P(\text{two heads} \cup \text{three sixes}) = \frac{1}{4} + \frac{1}{216} - \frac{1}{4 \cdot 216} = \frac{219}{864} \approx 25.35\%.$$
+
+<!-- end of file -->

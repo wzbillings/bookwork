@@ -9,7 +9,7 @@
 <meta name="author" content="Zane Billings">
 <meta name="dcterms.date" content="2022-12-09">
 
-<title>Zane’s DBSFW Solutions - Chapter 3</title>
+<title>Zane’s DBSFW Solutions - Chapter 9</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -175,7 +175,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Chapter 3</h1>
+      <h1 class="title">Chapter 9</h1>
                       </div>
   </div>
     
@@ -220,27 +220,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>What is the probability of rolling a 20 three times in a row on a 20-sided die?</p>
+<p>A friend finds a coin on the ground, flips it, and gets six heads in a row and then one tails. Give the beta distribution that describes this. Use integration to determine the probability that the true rate of flipping heads is between 0.4 and 0.6, reflecting the belief that the coin is reasonably fair.</p>
 </div>
 </div>
 </div>
-<p>Of course, we could again solve by simulation 😁.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">375</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000000</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>rolls <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">roll1 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, n_sims, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">roll2 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, n_sims, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">roll3 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, n_sims, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(rolls, <span class="fu">mean</span>(roll1 <span class="sc">==</span> <span class="dv">20</span> <span class="sc">&amp;</span> roll2 <span class="sc">==</span> <span class="dv">20</span> <span class="sc">&amp;</span> roll3 <span class="sc">==</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.000124</code></pre>
-</div>
-</div>
-<p>But I don’t want anyone to take away my math degree, so we can show the analytical solution as well. (Besides, this event is quite rare, so the simulation will need a lot of samples, as you can see, to converge.)</p>
-<p>Since the probability of rolling a 20 on one die is <span class="math inline">\(\frac{1}{20}\)</span>, and the rolls are (assumed) independent, we can calculate <span class="math display">\[P(\text{three 20's}) = \left( \frac{1}{20} \right)^3 = \frac{1}{8000} = 0.000125.\]</span></p>
 </section>
 <section id="q2" class="level2">
 <h2 class="anchored" data-anchor-id="q2">Q2</h2>
@@ -250,12 +233,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>The weather report says there’s a 10 percent chance of rain tomorrow, and you forget your umbrella half the time you go out. What is the probability that you’ll be caught in the rain without an umbrella tomorrow?</p>
+<p>Come up with a prior probability that the coin <em>is</em> fair. Use a beta distribution such that there is at least a 95% chance that the true rate of flipping heads is between 0.4 and 0.6.</p>
 </div>
 </div>
 </div>
-<p>If these two events are independent (which is kind of weird but seems to be what the question wants), we just multiply the two probabilities to get</p>
-<p><span class="math display">\[P(\text{no umbrella} \cap \text{rain}) = (10\%) (50\%) = 5\%.\]</span></p>
 </section>
 <section id="q3" class="level2">
 <h2 class="anchored" data-anchor-id="q3">Q3</h2>
@@ -265,7 +246,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Raw eggs have a <span class="math inline">\(1/20000\)</span> probability of having salmonella. If you eat two raw eggs, what is the probability you ate a raw egg with salmonella?</p>
+<p>Now see how many more heads (with no more tails) it would take to convince you that there is a reasonable chance that this coin is <em>not</em> fair. In this case, let’s say that this means that our belief in the rate of the coin being between 0.4 and 0.6 drops below 0.5.</p>
 </div>
 </div>
 </div>

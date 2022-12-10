@@ -1,0 +1,14 @@
+{
+  "hash": "deffc9e69f229007202596f58fe9f4f1",
+  "result": {
+    "markdown": "---\ntitle: \"Chapter 8\"\nauthor: \"Zane Billings\"\ndate: \"2022-12-09\"\ndraft: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 16)\n```\n:::\n\n\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nAs mentioned, you mighty disagree with the original probability assigned\nto the likelihood:\n\n$$P(\\text{broken window, open front door, missing laptop} \\mid \\text{robbed}) = \\frac{3}{10}.$$\n\n**If we change this probability to $3/100$**, how does this change our strength in\nbelieving $H_1$ over $H_2$?\n\n:::\n\n(I bolded the part that was supposed to be in the question but then wasn't.)\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nHow unlikely would you have to believe being robbed is --- our prior for $H_1$\n--- in order for the ratio of $H_1$ to $H_2$ to be one?\n\n:::\n\n\n\n<!-- end of file -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

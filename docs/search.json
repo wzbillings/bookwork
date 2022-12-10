@@ -11,14 +11,14 @@
     "href": "index.html",
     "title": "Doing Bayesian Statistics the Fun Way – Solutions",
     "section": "",
-    "text": "Chapter 3\n\n\n\n\n\n\n\n\n\n\n\n\nDec 9, 2022\n\n\nZane Billings\n\n\n\n\n\n\n\n\nChapter 2\n\n\n\n\n\n\n\n\n\n\n\n\nDec 7, 2022\n\n\nZane Billings\n\n\n\n\n\n\n\n\nChapter 1\n\n\n\n\n\n\n\n\n\n\n\n\nDec 6, 2022\n\n\nZane Billings\n\n\n\n\n\n\nNo matching items"
+    "text": "Chapter 4\n\n\n\n\n\n\n\n\n\n\n\n\nDec 10, 2022\n\n\nZane Billings\n\n\n\n\n\n\n\n\nChapter 3\n\n\n\n\n\n\n\n\n\n\n\n\nDec 9, 2022\n\n\nZane Billings\n\n\n\n\n\n\n\n\nChapter 2\n\n\n\n\n\n\n\n\n\n\n\n\nDec 7, 2022\n\n\nZane Billings\n\n\n\n\n\n\n\n\nChapter 1\n\n\n\n\n\n\n\n\n\n\n\n\nDec 6, 2022\n\n\nZane Billings\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/cp1/index.html",
     "href": "posts/cp1/index.html",
     "title": "Chapter 1",
     "section": "",
-    "text": "I already have a math degree where I focused on stats, so I kind of rushed through this chapter 😁."
+    "text": "“Bayesian Thinking and Everyday Reasoning.”"
   },
   {
     "objectID": "posts/cp1/index.html#q1",
@@ -82,5 +82,47 @@
     "title": "Chapter 3",
     "section": "Q4",
     "text": "Q4\n\n\n\n\n\n\nNote\n\n\n\nWhat is the probability of either flipping two heads in two coin tosses or rolling three 6s in three six-sided dice rolls?\n\n\nI hate how vaguely worded this question is, so I’ll list the assumptions that I think we are making.\nWe are doing one experiment that involves us flipping a coin twice (or flipping two coins) and also rolling a d6 three times (or rolling 3d6 one time). These two things are all mutually independent from each other, both coin flips are independent, and all three die rolls are independent. The die rolls and coin flips do not affect each other. Once we have done all of these things during the experiment, we want to know the probability that we flipped two heads OR (inclusize) we rolled three sixes.\nSo, we use inclusion-exclusion again. We get that\n\\[P(\\text{two heads}) = \\frac{1}{2}\\cdot \\frac{1}{2} = \\frac{1}{4},\\] \\[P(\\text{three sixes}) = \\left(\\frac{1}{6}\\right)^3 = \\frac{1}{216},\\] and thus \\[P(\\text{two heads} \\cup \\text{three sixes}) = \\frac{1}{4} + \\frac{1}{216} - \\frac{1}{4 \\cdot 216} = \\frac{219}{864} \\approx 25.35\\%.\\]"
+  },
+  {
+    "objectID": "posts/cp4/index.html",
+    "href": "posts/cp4/index.html",
+    "title": "Chapter 4",
+    "section": "",
+    "text": "options(\"scipen\" = 9999, \"digits\" = 4)"
+  },
+  {
+    "objectID": "posts/cp4/index.html#q1",
+    "href": "posts/cp4/index.html#q1",
+    "title": "Chapter 4",
+    "section": "Q1",
+    "text": "Q1\n\n\n\n\n\n\nWhat are the parameters of the binomial distribution for the probability of rolling either a 1 or a 20 on a 20-sided die, if we roll the die 12 times?\n\n\n\nThe parameters are \\(n = 12\\) and \\(p = 2/20 = 1/10 = 0.1\\)."
+  },
+  {
+    "objectID": "posts/cp4/index.html#q2",
+    "href": "posts/cp4/index.html#q2",
+    "title": "Chapter 4",
+    "section": "Q2",
+    "text": "Q2\n\n\n\n\n\n\nThere are four aces in a deck of 52 cards. If you pull a card, return the card, then reshuffle, and pull a card again, how many ways can you pull just one ace in five pulls?\n\n\n\nSince we’re drawing with replacement, we are doing \\(5\\) Bernoulli trials, each with a probability of \\(4 / 52 = 1 / 13\\). So we can use the Binomial distribution to get this probability. We can get that\n\\[P(1 \\text{ ace in } 5 \\text{ pulls}) = B\\left( x = 1 \\mid n = 5, \\ p = \\frac{1}{13} \\right),\\]\nwhich we would then calculate as\n\\[P(1 \\text{ ace in } 5 \\text{ pulls}) = \\left( 5\\atop{1} \\right) \\left(\\frac{1}{13}\\right)^1\\left(\\frac{12}{13}\\right)^4.\\]\nTo get the answer, we can certainly write out the entire formula in R.\n\nchoose(5, 1) * (1 / 13) ^ 1 * (12 / 13) ^ 4\n\n[1] 0.2792\n\n\nBut here’s a sneaky trick. Since R was designed for statistical computing, a fast version of the binomial distribution is already built in.\n\ndbinom(x = 1, size = 5, prob = 1 / 13)\n\n[1] 0.2792"
+  },
+  {
+    "objectID": "posts/cp4/index.html#q3",
+    "href": "posts/cp4/index.html#q3",
+    "title": "Chapter 4",
+    "section": "Q3",
+    "text": "Q3\n\n\n\n\n\n\nFor the example in question 2, what is the probability of pulling 5 aces in 10 pulls (remember the card is shuffled back in the deck when it is pulled)?\n\n\n\nThis time I’ll just use the R calculation, since this problem is worked out exactly the same way. The probability we want to estimate is \\[P(5 \\text{ aces in } 10 \\text{ pulls}) = B\\left( x = 5 \\mid n = 10, \\ p = \\frac{1}{13} \\right),\\] which we can approximate in R.\n\ndbinom(x = 5, size = 10, prob = 1 / 13)\n\n[1] 0.0004549\n\n\nNote that this probability is quite small – that is because both drawing this many aces is difficult, and because this is the probability of drawing EXACTLY five aces."
+  },
+  {
+    "objectID": "posts/cp4/index.html#q4",
+    "href": "posts/cp4/index.html#q4",
+    "title": "Chapter 4",
+    "section": "Q4",
+    "text": "Q4\n\n\n\n\n\n\nWhen you’re searching for a new job, it’s always helpful to have more than one offer on the table so you can use it in negotiations. If you have a 1/5 probability of receiving a job offer when you interview, and you interview with seven companies in a month, what is the probability you’ll have at least two competing offers by the end of that month.\n\n\n\nThis time we have to consider more than just one of these probabilities, because we want the probability of at least two offers. Let \\(O\\) be the number of competing offers we receive. Then we can write \\[P(O \\geq 2) = B\\left(O = 2 \\mid n = 7, p = \\frac{1}{5}\\right) + \\ldots + B\\left(O = 7 \\mid n = 7, p = \\frac{1}{5}\\right),\\] which we could also write more compactly as \\[P(O \\geq 2) = \\sum_{o = 2}^7 B\\left(O = o \\mid n = 7, p = \\frac{1}{5}\\right).\\] Since dbinom() is vectorized, we can calculate this pretty easily in R.\n\nsum( dbinom(x = 2:7, size = 7, prob = 1 / 5) )\n\n[1] 0.4233\n\n\nOf course, as you might have guessed, R has a shortcut for this: the pbinom function. This way is a little bit tricky though, because the way we have to specify the probability we want is a little more complicated than we would hope.\nThe lower.tail parameter specifies whether we want the cumulative probability above (FALSE) or below (TRUE) the argument(s) for the q parameter. For above, the probability is \\(P(X > x)\\), but for below, it is \\(P(X \\leq x)\\). Since we have a positive probability at \\(P(X = x)\\), we can’t just throw in 2 as the boundary, it will not give the correct answer. Instead we can use this function to calculate \\[P(X \\geq 2) = 1 - P(X < 2) = 1 - P(X \\leq 1) = P(X > 1).\\] This last two forms are the two that we can get with pbinom, as I’ll calculate below.\n\n# P(O > 1)\npbinom(q = 1, size = 7, prob =  1 / 5, lower.tail = FALSE)\n\n[1] 0.4233\n\n# 1 - P(O <= 1)\n1 - pbinom(q = 1, size = 7, prob = 1 / 5)\n\n[1] 0.4233\n\n\nOf course all three of these solutions are equivalent, so no matter which way we do it, we get a probability of about \\(42\\%\\)."
+  },
+  {
+    "objectID": "posts/cp4/index.html#q5",
+    "href": "posts/cp4/index.html#q5",
+    "title": "Chapter 4",
+    "section": "Q5",
+    "text": "Q5\n\n\n\n\n\n\nYou get a bunch of recruiter emails and find out you have 25 interviews lined up in the next month. Unfortunately, you know that this will leave you exhausted, and the probability of getting an offer will drop to 1/10 if you’re tired. You really don’t want to go on this many interviews unless you are at least twice as likely to get at least two competing offers. Are you more likely to get at least two offers if you go for 25 interviews, or stick to just 7?\n\n\n\nSo, what we actually want to calculate is the ratio \\[\\frac{P\\left( O \\geq 2 \\mid n =  7, \\ p = \\frac{1}{ 5} \\right)}\n       {P\\left( O \\geq 2 \\mid n = 25, \\ p = \\frac{1}{10} \\right)}.\\] In the previous problem, we calculated the numerator, so now we need to calculate the denominator. Fortunately, we can do this the same way, using the same practical considerations we did less time. Just to make this issue about the boundary more clear, I’ll write out the R code for doing it all three ways.\n\nsum(dbinom(2:25, size = 25, prob = 1 / 10))\n\n[1] 0.7288\n\npbinom(q = 1, size = 25, prob = 1 / 10, lower.tail = FALSE)\n\n[1] 0.7288\n\n1 - pbinom(q = 1, size = 25, prob = 1 / 10)\n\n[1] 0.7288\n\n\nWe can then approximate the ratio we are interested in as \\[\\frac{42\\%}{73\\%} \\approx 0.58 > 0.50,\\] and I just realized that it probably makes more sense to invert this ratio. So let’s do that: \\[\\frac{73\\%}{42\\%} \\approx 1.74 < 2,\\] so we will improve our chances of getting at least two competing offers, but we will not be at least twice as likely, so we want to stick with just \\(7\\) interviews instead of \\(25\\). :::"
   }
 ]

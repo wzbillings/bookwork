@@ -8,7 +8,6 @@ date: "2022-12-09"
 options("scipen" = 9999, "digits" = 16)
 ```
 
-
 ## Q1
 
 ::: {.callout-note appearance="simple"}

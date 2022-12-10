@@ -4,8 +4,6 @@ author: "Zane Billings"
 date: "2022-12-07"
 ---
 
-# Solutions
-
 ## Q1
 
 ::: {.callout-note appearance="simple"}

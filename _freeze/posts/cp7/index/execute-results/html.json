@@ -1,0 +1,14 @@
+{
+  "hash": "1de480a8fe6468ba711a0ff57b6756f2",
+  "result": {
+    "markdown": "---\ntitle: \"Chapter 7\"\nauthor: \"Zane Billings\"\ndate: \"2022-12-09\"\ndraft: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 16)\n```\n:::\n\n\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nKansas City, despite its name, sits on the border of two US states:\nMissouri and Kansas. The Kansas City metropolitan area consists of 15 counties,\n9 in Missouri, and 6 in Kansas. The entire state of Kansas has 105 counties\nand Missouri has 114. Use Bayes' theorem to calculate the probability that\na relative who just moved to a country in the KC metropolitan area also lives\nin a county in Kansas. Make sure to show $P(\\text{Kansas})$ (assuming your\nrelative lives in either Kansas or Missouri), $P(\\text{Kansas City Metropolitan Area}),$ and $P(\\text{Kansas City Metropolitan Area} \\mid \\text{Kansas})$.\n\n:::\n\n\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nA deck of cards has 52 cards with suits that are either red or black. There\nare four aces in a deck of cards: two red and two black. You remove a red ace\nfrom the deck and shuffle the cards. Your friend pulls a black card. What is\nthe probability that it is an ace?\n\n:::\n\n\n\n<!-- end of file -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

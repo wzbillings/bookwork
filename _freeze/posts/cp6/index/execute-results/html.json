@@ -1,0 +1,14 @@
+{
+  "hash": "6fae6f5238501c35423d58dba6f61b02",
+  "result": {
+    "markdown": "---\ntitle: \"Chapter 6\"\nauthor: \"Zane Billings\"\ndate: \"2022-12-09\"\ndraft: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 16)\n```\n:::\n\n\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nWhat piece of information would we need in order to use Bayes' theorem to\ndetermine the probability that someone in 2010 who had GBS *also* had the\nflu vaccine that year?\n\n:::\n\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nWhat is the probability that a random person picked from the population\nis female and is *not* color blind?\n\n:::\n\n## Q3\n\n::: {.callout-note appearance=\"simple\"}\n\nWhat is the probability that a male who received the flu vaccine in 2010 is\neither color blind or has GBS?\n\n:::\n\n<!-- end of file -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

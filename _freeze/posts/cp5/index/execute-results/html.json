@@ -1,0 +1,14 @@
+{
+  "hash": "500de408d22b5701f05d84fc7b16382c",
+  "result": {
+    "markdown": "---\ntitle: \"Chapter 5\"\nauthor: \"Zane Billings\"\ndate: \"2022-12-09\"\ndraft: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 16)\n```\n:::\n\n\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nYou want to use the beta distribution to determine whether or not a coin you\nhave is a fair coin — meaning that the coing gives you heads and tails equally.\nYou flip the coin 10 times and get 4 heads and 6 tails. Using the beta\ndistribution, what is the probability that the coin will land on heads more than\n60 percent of the time?\n\n:::\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nYou flip the coin 10 more times and now have 9 heads and 11 tails total. What is\nthe probability that the coin is fair, using our definition of fair, give or\ntake 5\\%?\n\n:::\n\n## Q3\n\n::: {.callout-note appearance=\"simple\"}\n\nData is the best way to become more confident in your assertions. You flip\nthe coin 200 more times and end up with 109 heads and 111 tails. Now what is\nthe probability that the coin is fair, give or take 5\\%?\n\n:::\n\n\n\n<!-- end of file -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

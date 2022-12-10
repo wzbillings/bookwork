@@ -1,14 +1,21 @@
 ---
 title: "Chapter 4"
 author: "Zane Billings"
-date: "2022-12-09"
-draft: true
+date: "2022-12-10"
 ---
 
 ```{r setup}
-options("scipen" = 9999, "digits" = 16)
+options("scipen" = 9999, "digits" = 4)
 ```
 
+# Quick update on notes
+
+My original intention was also to post all of the notes I took while reading
+through this book. But we're still in stuff that I felt pretty comfortable with
+(because I've had multiple classes that covered it), so no notes yet.
+Once I get to sections that had new material for me I'll start posting them!
+
+# Solutions
 
 ## Q1
 
@@ -30,8 +37,28 @@ five pulls?
 
 :::
 
+Since we're drawing with replacement, we are doing
+$5$ Bernoulli trials, each with a probability of $4 / 52 = 1 / 13$. So we can
+use the Binomial distribution to get this probability. We can get that
 
+$$P(1 \text{ ace in } 5 \text{ pulls}) = B\left( x = 1 \mid n = 5, \ p = \frac{1}{13} \right),$$
 
+which we would then calculate as
+
+$$P(1 \text{ ace in } 5 \text{ pulls}) = \left( 5\atop{1} \right) \left(\frac{1}{13}\right)^1\left(\frac{12}{13}\right)^4.$$
+
+To get the answer, we can certainly write out the entire formula in `R`.
+
+```{r}
+choose(5, 1) * (1 / 13) ^ 1 * (12 / 13) ^ 4
+```
+
+But here's a sneaky trick. Since `R` was designed for statistical computing,
+a fast version of the binomial distribution is already built in.
+
+```{r}
+dbinom(x = 1, size = 5, prob = 1 / 13)
+```
 
 ## Q3
 
@@ -42,20 +69,70 @@ For the example in question 2, what is the probability of pulling 5 aces in
 
 :::
 
+This time I'll just use the R calculation, since this problem is worked
+out exactly the same way. The probability we want to estimate is
+$$P(5 \text{ aces in } 10 \text{ pulls}) = B\left( x = 5 \mid n = 10, \ p = \frac{1}{13} \right),$$
+which we can approximate in `R`.
+
+```{r}
+dbinom(x = 5, size = 10, prob = 1 / 13)
+```
+
+Note that this probability is quite small -- that is because both drawing this
+many aces is difficult, and because this is the probability of drawing
+EXACTLY five aces.
+
 ## Q4
 
 ::: {.callout-note appearance="simple"}
 
 When you're searching for a new job, it's always helpful to have more than one offer on the table so you can use it in negotiations. If you have a 1/5 probability
-of recieving a job offer when you interview, and you interview with seven
+of receiving a job offer when you interview, and you interview with seven
 companies in a month, what is the probability you'll have at least two
 competing offers by the end of that month.
 
 :::
 
+This time we have to consider more than just one of these probabilities,
+because we want the probability of *at least two* offers. Let $O$ be the number
+of competing offers we receive. Then we can write
+$$P(O \geq 2) = B\left(O = 2 \mid n = 7, p = \frac{1}{5}\right) + \ldots + B\left(O = 7 \mid n = 7, p = \frac{1}{5}\right),$$
+which we could also write more compactly as
+$$P(O \geq 2) = \sum_{o = 2}^7 B\left(O = o \mid n = 7, p = \frac{1}{5}\right).$$
+Since `dbinom()` is vectorized, we can calculate this pretty easily in `R`.
+
+```{r}
+sum( dbinom(x = 2:7, size = 7, prob = 1 / 5) )
+```
+
+Of course, as you might have guessed, `R` has a shortcut for this: the `pbinom`
+function. This way is a little bit tricky though, because the way we have to
+specify the probability we want is a little more complicated than we would hope.
+
+The `lower.tail` parameter specifies whether we want the cumulative probability
+above (`FALSE`) or below (`TRUE`) the argument(s) for the `q` parameter.
+For above, the probability is $P(X > x)$, but for below, it is $P(X \leq x)$.
+Since we have a positive probability at $P(X = x)$, we can't just throw in `2`
+as the boundary, it will not give the correct answer. Instead we can use this
+function to calculate
+$$P(X \geq 2) = 1 - P(X < 2) = 1 - P(X \leq 1) = P(X > 1).$$
+This last two forms are the two that we can get with `pbinom`, as I'll calculate
+below.
+
+```{r}
+# P(O > 1)
+pbinom(q = 1, size = 7, prob =  1 / 5, lower.tail = FALSE)
+
+# 1 - P(O <= 1)
+1 - pbinom(q = 1, size = 7, prob = 1 / 5)
+```
+
+Of course all three of these solutions are equivalent, so no matter which way
+we do it, we get a probability of about $42\%$.
+
 ## Q5
 
-::: {.callout-note appearance = "simple"}
+::: {.callout-note appearance="simple"}
 
 You get a bunch of recruiter emails and find out you have 25 interviews lined up
 in the next month. Unfortunately, you know that this will leave you exhausted,
@@ -64,6 +141,31 @@ You really don't want to go on this many interviews unless you are at least
 twice as likely to get at least two competing offers. Are you more likely to
 get at least two offers if you go for 25 interviews, or stick to just 7?
 
+:::
+
+So, what we actually want to calculate is the ratio
+$$\frac{P\left( O \geq 2 \mid n =  7, \ p = \frac{1}{ 5} \right)}
+       {P\left( O \geq 2 \mid n = 25, \ p = \frac{1}{10} \right)}.$$
+In the previous problem, we calculated the numerator, so now we need to
+calculate the denominator. Fortunately, we can do this the same way, using the
+same practical considerations we did less time. Just to make this issue about
+the boundary more clear, I'll write out the `R` code for doing it all three
+ways.
+
+```{r}
+sum(dbinom(2:25, size = 25, prob = 1 / 10))
+pbinom(q = 1, size = 25, prob = 1 / 10, lower.tail = FALSE)
+1 - pbinom(q = 1, size = 25, prob = 1 / 10)
+```
+
+We can then approximate the ratio we are interested in as
+$$\frac{42\%}{73\%} \approx 0.58 > 0.50,$$
+and I just realized that it probably makes more sense to invert this ratio. So
+let's do that:
+$$\frac{73\%}{42\%} \approx 1.74 < 2,$$
+so we will improve our chances of getting at least two competing offers,
+but we will not be at least twice as likely, so we want to stick with just
+$7$ interviews instead of $25$.
 :::
 
 <!-- end of file -->

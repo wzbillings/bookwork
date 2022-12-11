@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Zane Billings">
-<meta name="dcterms.date" content="2022-12-09">
+<meta name="dcterms.date" content="2022-12-11">
 
-<title>Zane’s DBSFW Solutions - Chapter 6</title>
+<title>Zane’s DBSFW Solutions - Chapter 6: Conditional Probability</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -126,6 +126,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -174,7 +175,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Chapter 6</h1>
+      <h1 class="title">Chapter 6: Conditional Probability</h1>
                       </div>
   </div>
     
@@ -191,7 +192,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">December 9, 2022</p>
+        <p class="date">December 11, 2022</p>
       </div>
     </div>
       
@@ -209,8 +210,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>This chapter introduces the concept of <strong>conditional probability</strong>, which, in my opinion, is one of the least intuitive parts of probability. I didn’t take a lot of notes here, but I did at least write down what is covered in this section. For a more detailed explanation of conditional probability, I recommend either <a href="https://www.bookfinder.com/search/?author=&amp;title=&amp;lang=en&amp;isbn=+978-1523318674+&amp;new_used=*&amp;destination=us&amp;currency=USD&amp;mode=basic&amp;st=sr&amp;ac=qr">Probability for the Enthusiastic Beginner by Morin</a> or <a href="https://www.bookfinder.com/search/?keywords=+978-0495110811+&amp;currency=USD&amp;destination=us&amp;mode=basic&amp;classic=off&amp;lang=en&amp;st=sh&amp;ac=qr&amp;submit=">Mathematical Statistics with Applications by Wackerly et al.</a>. (I make no money from these links, sales, or promotions.)</p>
+<section id="notes" class="level1">
+<h1>Notes</h1>
+<ul>
+<li><strong>Conditional probabilities</strong> are used when the occurence of event <span class="math inline">\(A\)</span> is not independent from the occurence of event <span class="math inline">\(B\)</span> – if we know the outcome of event <span class="math inline">\(B\)</span>, our belief in the chance that <span class="math inline">\(A\)</span> will occur changes.</li>
+<li>We denote this as <span class="math inline">\(P(A \mid B)\)</span>, which is read “the probability of event <span class="math inline">\(A\)</span>, given event <span class="math inline">\(B\)</span>”. This is defined as</li>
+</ul>
+<p><span class="math display">\[P(A \mid B) = \frac{P(A \cap B)}{P(B)}.\]</span></p>
+<ul>
+<li>The product rule we learned before only works for independent events, so for dependent events, we have to use this definition to get a slightly different rule.</li>
+</ul>
+<p><span class="math display">\[P(A \cap B) = P(A) \cdot P(B \mid A) = P(B) \cdot P(A \mid B).\]</span> * Note the equivalency we see above. We can use this to derive <strong>Bayes’ theorem</strong> as well. This is a rule (not really a “theorem”) that allows us to “flip” a conditional probability.</p>
+<p><span class="math display">\[P(A \mid B) = \frac{P(A) \ P(B \mid A)}{P(B)} =
+\frac{P(A) \ P(B \mid A)}{P(A) \ P(B \mid A) + P(\lnot A)P(B \mid \lnot A)}.\]</span></p>
+<p>The book doesn’t include the last equivalency in this section but I’m not sure why because this is where it has been in every other conditional probability lecture I’ve had and it’s often quite useful.</p>
+<ul>
+<li>The book says that the interesting thing to notice about this relationship is that we have the power to relate <span class="math inline">\(P(\text{observed} \mid \text{belief})\)</span> to <span class="math inline">\(P(\text{belief} \mid \text{observed}).\)</span></li>
+</ul>
+</section>
+<section id="solutions" class="level1">
+<h1>Solutions</h1>
 <section id="q1" class="level2">
 <h2 class="anchored" data-anchor-id="q1">Q1</h2>
 <div class="callout-note callout callout-style-simple">
@@ -223,6 +245,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
+<p>This is another question that I have beef with. I think it is reasonable would interpret “the probability that someone in 2010 who had GBS also had the flu vaccine that year” as <span class="math inline">\(P(\text{GBS} \cap \text{flu vaccine}).\)</span> But the book wants us to read this as <span class="math inline">\(P(\text{flu vaccine} \mid \text{GBS}),\)</span> which I would tend to word as (unambiguously) “the probability that someone in 2010 received the flu vaccine, given that they had GBS.” Since conditional/joint probabilities are often vague like this, I think it is best to be specific instead of just making the word <em>also</em> italicized.</p>
+<p>But anyways. The formula for this calculation is <span class="math display">\[P(\text{flu vaccine} \mid \text{GBS}) = \frac{P(\text{flu vaccine}) \
+P(\text{GBS} \mid \text{flu vaccine})}{P(\text{GBS})},\]</span> so the main thing we are missing is <span class="math inline">\(P(\text{GBS})\)</span>, which would allow us to calculate <span class="math inline">\(P(\text{GBS} \cap \text{flu vaccine})\)</span>, the only other part we were not given in the chapter.</p>
 </section>
 <section id="q2" class="level2">
 <h2 class="anchored" data-anchor-id="q2">Q2</h2>
@@ -236,6 +261,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
+<p>Most of the details for this problem are given in the chapter. Note that for this example, the book is talking about the <em>joint</em> probability, despite what I think is very similar wording to the previous question, but maybe I need to work on my reading comprehension. Anyways, the relevant formula would be</p>
+<p><span class="math display">\[P(\text{female} \cap \lnot \text{color blind}) = P(\text{female}) \ P(\lnot
+\text{color blind} \mid \text{female}).\]</span></p>
+<p>Assuming male individuals and female individuals are equally likely in the population and are the only two options (<strong>neither of which is true</strong>, but they are both assumed to be true by the book for this question), we have all of the information that we need to solve this. We get</p>
+<p><span class="math display">\[P(\text{female} \cap \lnot \text{color blind}) = (0.5)(1 - 0.005) = 0.4975.\]</span> So the probability is <span class="math inline">\(49.75\%,\)</span> since the incidence of color blindness among female members of the population is extremely low.</p>
 </section>
 <section id="q3" class="level2">
 <h2 class="anchored" data-anchor-id="q3">Q3</h2>
@@ -249,9 +279,92 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
+<p>I’ll steal from the notation that the book uses here, and let <span class="math inline">\(A\)</span> be the event that this individual is colorblind, given that they are male, and let <span class="math inline">\(B\)</span> be the event that this individual has GBS, given that they got the flu vaccine. Note that this makes several independence assumptions (being male or color blind are both independent of the flu vaccine and GBS, and vice versa), because if we don’t make this independence assumptions we would lack the necessary information to solve this problem.</p>
+<p>Now, the probability we want to find is <span class="math display">\[P(A \cup B) = P(A) + P(B) - P(A \cap B) = P(A) + P(B) - P(A) P(B \mid A).\]</span></p>
+<p>In the chapter, we previously learned the values for <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span>, but I think this is where the problem starts to break down. The chapter hasn’t dealt with any really complicated events like this at all, and it doesn’t really make sense to say that <span class="math display">\[P(B \mid A) = P( (\text{GBS} \mid \text{flu vaccine}) \mid (\text{color
+blind} \mid \text{male}) ).\]</span></p>
+<p>So of course the book does not discuss how to address this problem, as it really isn’t very well-formed, it just says to assume <span class="math inline">\(P(B \mid A) = P(B).\)</span> This is true <strong>if</strong> we make all of the independence assumptions above, but again, stating the problem in this way doesn’t really make sense.</p>
+<p>So, I’ll detour and work through the problem in a way that I think is a bit more logical and arrives at the same answer.</p>
+<p>When I read the question, the probability that I think we want to get is <span class="math display">\[P(\text{color blind} \cup \text{GBS} \mid \text{male} \cap \text{flu vaccine}).\]</span> This is much more complex than any of the examples in the book, but fortunately for us, we can work it out using the laws of set theory that the book has not discussed at all. Note that, by definition of conditional probability,</p>
+<p><span class="math display">\[
+P(\text{color blind} \cup \text{GBS} \mid \text{male} \cap \text{flu vaccine})
+= \frac{P\left[(\text{color blind} \cup \text{GBS}) \cap (\text{male} \cap \text{flu vaccine}) \right]}{P(\text{male} \cap \text{flu vaccine})}.
+\]</span> Now, the denominator is pretty easy to sort out. Since we don’t have any information on how being male affects flu vaccine coverage, we’ll assume they are independent (although in real life, this is not true – CDC flu vaccine coverage data for the USA suggests that males under 65 are less likely to get flu vaccines than females of the same age, but this different goes away for the elderly). Under this assumption, we get <span class="math display">\[P(\text{male} \cap \text{flu vaccine}) = P(\text{male}) \ P(\text{flu
+vaccine}),\]</span> which is easy enough to calculate with the data we have.</p>
+<p>So it remains to deal with the beast of a numerator. For ease-of-use here, let’s define the event <span class="math inline">\(C \equiv \text{color blind} \cup \text{GBS}\)</span> and the event <span class="math inline">\(D \equiv \text{male} \cap \text{flu vaccine}.\)</span> Then, we get that</p>
+<p><span class="math display">\[
+P(C \cap D) = \left(\text{color blind} \cup \text{GBS}\right) \cap D =
+(\text{color blind} \cap D) \cup (\text{GBS} \cap D)
+\]</span> by using the distributive rules of the <span class="math inline">\(cap\)</span> and <span class="math inline">\(cup\)</span> operators. These are not covered in the book, but one potential resource (in terms of set theory) is <a href="https://math.libretexts.org/Courses/Monroe_Community_College/MTH_220_Discrete_Math/4%3A_Sets/4.3%3A_Unions_and_Intersections">here</a>. Many books on probability will also briefly cover this material.</p>
+<p>Now, we have a union, and we can use the addition (or inclusion-exclusion) principle to evaluate the probability. We get that</p>
+<p><span class="math display">\[\begin{align*}
+P((\text{color blind} \cap D) \cup (\text{GBS} \cap D)) &amp;=
+P(\text{color blind} \cap D) + P(\text{GBS} \cap D) - P(\text{color blind}
+\cap \text{GBS} \cap D) \\
+&amp;=  P(\text{color blind} \cap \text{male} \cap \text{flu vaccine}) + P(\text{GBS} \cap \text{male} \cap \text{flu vaccine}) \\ &amp;\quad \quad - P(\text{color blind}
+\cap \text{GBS} \cap (\text{male} \cap \text{flu vaccine})).
+\end{align*}\]</span></p>
+<p>Under the same set of independence assumptions before, we can make the following set of simplifications: <span class="math display">\[\begin{align*}
+P(\text{color blind} \cap \text{male} \cap \text{flu vaccine}) &amp;=
+    P(\text{color blind} \cap \text{male}) \ P(\text{flu vaccine}) \\
+P(\text{GBS} \cap \text{male} \cap \text{flu vaccine}) &amp;=
+    P(\text{GBS} \cap \text{flu vaccine}) \ P(\text{male}) \\
+P(\text{color blind} \cap \text{GBS} \cap
+    (\text{male} \cap \text{flu vaccine})) &amp;=
+    P(\text{GBS} \cap \text{flu vaccine} \cap \text{male} \cap
+    \text{color blind}) \\
+    &amp;= P(\text{male} \cap \text{color blind}) \ P(\text{GBS} \cap
+    \text{flu vaccine}).
+\end{align*}\]</span></p>
+<p>Now, it would be just about impossible to write all that out in text format and still have it fit into the margins of this page. But nonethless we will try. We get that, overall,</p>
+<div class="smaller">
+<p><span class="math display">\[\begin{equation*}P(\text{color blind} \cup \text{GBS} \mid \text{male} \cap \text{flu vaccine}) =
+\frac{
+\left(\begin{split}
+    &amp;P(\text{color blind} \cap \text{male}) \ P(\text{flu vaccine}) \\
+    &amp;\quad + P(\text{GBS} \cap \text{flu vaccine}) \ P(\text{male}) \\
+    &amp;\quad - P(\text{male} \cap \text{color blind}) \ P(\text{GBS} \cap
+    \text{flu vaccine})
+\end{split}\right)
+}{
+P(\text{male}) \ P(\text{flu
+vaccine})
+}.
+\end{equation*}\]</span></p>
+</div>
+<p>I can’t figure out how to make the text of that smaller in this quarto HTML document and it’s too much work to figure out how to size the LaTeX code in a way that’s supported by MathJax so that’s the best that you’re getting from me.</p>
+<p>Anyways, if we want to solve this with the information given in the book, we have to get rid of all of the <span class="math inline">\(P(\text{flu vaccine})\)</span>, since we don’t know that. Fortunately for us, they cancel out. First, let’s plug in the numbers that we do know so this is a bit less cumbersome to type. Let</p>
+<p><span class="math display">\[\mathrm{P} = P(\text{color blind} \cup \text{GBS} \mid \text{male} \cap \text{flu vaccine})\]</span></p>
+<p>for convenience (should’ve said this earlier but it’s too late now). We get <span class="math display">\[\begin{align*}
+\mathrm{P} &amp; =
+\frac{
+\left(\begin{split}
+    &amp;P(\text{color blind} \cap \text{male}) \ P(\text{flu vaccine}) \\
+    &amp;\quad + P(\text{GBS} \cap \text{flu vaccine}) \ P(\text{male}) \\
+    &amp;\quad - P(\text{male} \cap \text{color blind}) \ P(\text{GBS} \cap
+    \text{flu vaccine})
+\end{split}\right)
+}{
+P(\text{male}) \ P(\text{flu
+vaccine})
+} \\ \\ &amp;= \frac{
+0.04 \ P(\text{FV}) + 0.5 \ P(\text{GBS} \mid \text{FV}) \ P(\text{FV}) -
+    0.04 \ P(\text{GBS} \mid \text{FV}) \ P(\text{FV})
+}{
+0.5 \ P(\text{FV})
+} \\ &amp;=
+\frac{P(\text{FV})\left( 0.04 + 0.46 \ P(\text{GBS} \mid \text{FV}) \right)}{
+0.5 \ P(\text{FV})
+} \\
+&amp;= \frac{0.04 + 0.46 (3 / 100,000)}{0.5} \\
+&amp;= 0.0800276 = 8.00276\%.
+\end{align*}\]</span></p>
+<p>This is the same answer that the book has, so their shortcut that I don’t like apparently works (and saves a lot of time). But I had a good time proving that it was true without shortcuts, so I guess it was worth it.</p>
+<p>Well, that’s all for this chapter!</p>
 <!-- end of file -->
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -9,6 +9,10 @@ draft: true
 options("scipen" = 9999, "digits" = 16)
 ```
 
+Again, no notes. Mostly because this chapter is super short. Just for good
+measure, I'll do the mathematician thing and say. Recall Bayes' Theorem:
+
+$$P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)}.$$
 
 ## Q1
 
@@ -24,7 +28,23 @@ relative lives in either Kansas or Missouri), $P(\text{Kansas City Metropolitan 
 
 :::
 
-
+Assuming that our relative is equally likely to have moved to any of the
+counties in the KC metropolitan area is an interesting choice, but is necessary
+for doing this problem. So we'll assume that. Now, assuming that our relative
+has moved to either Kansas or Missouri, the overall probability that they
+are in Kansas is
+$$P(\text{Kansas}) = \frac{105}{105 + 114} = \frac{105}{219}.$$
+The probability that our relative lives in Kansas City, assuming they live in
+either Kansas or Missouri (and again, that all counties are equally likely) is
+$$P(\text{KC}) = \frac{15}{219}.$$
+The probability that our relative lives in Kansas City, if we already knew that
+they lived in Kansas, is
+$$P(\text{KC} \mid \text{Kansas}) = \frac{6/219}{105/219}=\frac{6}{105}.$$
+Then, by Bayes' Theorem, we get that the probability that our relative lives
+in Kansas, given that they live in Kansas City, is
+$$P(\text{Kansas} \mid \text{KC}) = \frac{P(\text{KC} \mid \text{Kansas})
+\ P(\text{Kansas})}{P(\text{KC})} = \frac{\frac{6}{105} \frac{105}{219}}{
+\frac{15}{219}} = \frac{6/219}{15/219} = \frac{6}{15} = 40\%.$$
 
 ## Q2
 
@@ -37,6 +57,26 @@ the probability that it is an ace?
 
 :::
 
+I like this problem more because it's like orbs in an urn. We don't have to
+make any other assumptions, this is just good normal probabilities. Anyways.
 
+The probability that our friend draws an ace from the remaining 51 cards is
+$$P(\text{ace}) = \frac{3}{51}.$$
+(I am deliberately chosing not to reduce this fraction, because I don't have to
+and because the solution is easier to understand if the fractions aren't
+reduced.) The probability that our friend draws a black card from the
+remaining 51 cards (26 of which are black and 25 of which are red) is
+$$P(\text{black}) = \frac{26}{51}.$$
+Now, if our friend draws an ace, the probability that it is black (given
+that we know it is an ace already) is
+$$P(\text{black} \mid \text{ace}) = \frac{P(\text{black and ace})}{
+P(\text{ace})} = \frac{2 / 51}{3 / 51} = \frac{2}{3}.$$
+Now we can use Bayes' theorem to get that
+$$P(\text{ace} \mid \text{black}) = \frac{P(\text{black} \mid \text{ace})
+P(\text{black})}{P(\text{ace})} = \frac{\frac{2}{3} \ \frac{3}{51}}{
+\frac{26}{51}} = \frac{2 / 51}{26 / 51} = \frac{2}{26} = \frac{1}{13}.$$
+Since all the black cards are still in the deck, once we know that our friend
+has drawn a black card, the probability that is an ace is the same as if they
+had drawn from the full deck (if we hadn't removed a card). How neat!
 
 <!-- end of file -->

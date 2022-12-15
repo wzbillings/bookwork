@@ -9,7 +9,7 @@
 <meta name="author" content="Zane Billings">
 <meta name="dcterms.date" content="2022-12-09">
 
-<title>Zane’s DBSFW Solutions - Chapter 8</title>
+<title>Zane’s DBSFW Solutions - Chapter 8: Priors, posteriors, and likelihoods of Bayes’ Theorem</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -175,7 +175,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Chapter 8</h1>
+      <h1 class="title">Chapter 8: Priors, posteriors, and likelihoods of Bayes’ Theorem</h1>
                       </div>
   </div>
     
@@ -210,8 +210,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>This chapter is mostly about Bayes’ factors without saying that it’s about Bayes factors, but it also discusses what happens when prior beliefs change (in a particularly simple case). I personally don’t think this chapter generalizes very well to more complex analyses, but I guess the point of this book is to be beginner-friendly. So maybe I’m at the point on my Bayes journey where I am confident beyond what I actually know ¯\<em>(ツ)</em>/¯.</p>
+<section id="notes" class="level1">
+<h1>Notes</h1>
+<p>We’ll return to the missing laptop example. Our goal for this example is to calculate the relative posterior probability of our two hypotheses (<span class="math inline">\(H_1:\)</span> that we were robbed, and <span class="math inline">\(H_2:\)</span> that the kid has our laptop), that is: <span class="math display">\[B = \frac{P(H_1 \mid D)}{P(H_2 \mid D)}.\]</span></p>
+<p>Now recall that Bayes’ theorem is <span class="math display">\[P(H_i \mid D) = \frac{P(H_i)P(D \mid H_i)}{P(D)}.\]</span> Here, the LHS of the equation is the <strong>posterior probability</strong>. The <span class="math inline">\(P(H_i)\)</span> is our <strong>prior probability</strong>, how likely we think the hypothesis is before we observed any data. And we have the <span class="math inline">\(P(D \mid H_i)\)</span> part, which the book calls the <strong>likelihood</strong>. I grew up frequentist and pedantic so I typically always call this the <strong><em>sample</em></strong> <strong>likelihood</strong> or <em>the likelihood of the sample</em>. Not sure why but I almost always use the latter, I think it just sounds nice.</p>
+<p>Now, here are the probabilities the chapter gives us for the things we will need to calculate the relative posterior probability (which the book calls the relative likelihood, but I am strongly of the belief that likelihood is a technical term and the posterior probabilities are not likelihoods).</p>
+<p><span class="math display">\[\begin{align*}
+P(H_1) &amp;= \frac{1}{1000} \\
+P(D \mid H_1) &amp;= \frac{3}{10}  \\
+P(H_2) &amp;= \frac{1}{21,900,000}   \\
+P(D \mid H_2) &amp;= 1
+\end{align*}\]</span></p>
+<p>So with this information we can calculate the relative posterior probability ( note that we can calculate the relative posterior probabilities but not the individual posterior probabilities because the normalizing factors are unknown to us) to get <span class="math display">\[B = \frac{3 / 10000}{1 / 21,900,000} = 6750. \]</span> So, given our data, it is 6750 times more likely that we were robbed.</p>
 <section id="q1" class="level2">
 <h2 class="anchored" data-anchor-id="q1">Q1</h2>
 <div class="callout-note callout callout-style-simple">
@@ -222,11 +235,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="callout-body-container">
 <p>As mentioned, you mighty disagree with the original probability assigned to the likelihood:</p>
 <p><span class="math display">\[P(\text{broken window, open front door, missing laptop} \mid \text{robbed}) = \frac{3}{10}.\]</span></p>
-<p><strong>If we change this probability to <span class="math inline">\(3/100\)</span></strong>, how does this change our strength in believing <span class="math inline">\(H_1\)</span> over <span class="math inline">\(H_2\)</span>?</p>
+<p><strong>If we change this probability to <span class="math inline">\(1/100\)</span></strong>, how does this change our strength in believing <span class="math inline">\(H_1\)</span> over <span class="math inline">\(H_2\)</span>?</p>
 </div>
 </div>
 </div>
-<p>(I bolded the part that was supposed to be in the question but then wasn’t.)</p>
+<p>(I bolded the part that was supposed to be in the question but then wasn’t.) If we do this, it only changes the numerator of our ratio and we get that <span class="math display">\[B = \frac{3 / 100000}{1 / 21,900,000} = 675. \]</span> So this decreases our ratio by a factor of 10, the same amount that our beliefs changed.</p>
 </section>
 <section id="q2" class="level2">
 <h2 class="anchored" data-anchor-id="q2">Q2</h2>
@@ -240,9 +253,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
+<p>Call our unknown prior probability <span class="math inline">\(p\)</span>. Then we solve: <span class="math display">\[\frac{p \ \frac{3}{100}}{1 / 21,900,000} \implies p = \frac{1}{65,700}.\]</span> Our prior probability would need to decrease by a factor of 657.</p>
 <!-- end of file -->
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

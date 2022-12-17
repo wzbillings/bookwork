@@ -2,7 +2,6 @@
 title: "Chapter 8: Priors, posteriors, and likelihoods of Bayes' Theorem"
 author: "Zane Billings"
 date: "2022-12-09"
-draft: true
 ---
 
 ```{r setup}

@@ -6,7 +6,7 @@ date: "2022-12-06"
 
 # Notes
 
-I already have a math degree where I focused on stats, so I kind of rushed through this chapter `r emoji::emoji("grin")`.
+I already have a math degree where I focused on stats, so I kind of rushed through this chapter.
 
 # Solutions
 

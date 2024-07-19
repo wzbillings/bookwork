@@ -1,14 +1,15 @@
 ---
-title: "Chapter 9"
-author: "Zane Billings"
-date: "2022-12-09"
-draft: true
+title: "Chapter 9: Bayesian Priors and Working with Probability Distributions"
+draft: false
 ---
 
 ```{r setup}
-options("scipen" = 9999, "digits" = 16)
+options("scipen" = 9999, "digits" = 4)
 ```
 
+This chapter introduces the concept of a prior probability distribution,
+rather than a single point prior (which is also, technically, a prior
+distribution, but it is the degenerate distribution which is very boring).
 
 ## Q1
 
@@ -21,7 +22,19 @@ to determine the probability that the true rate of flipping heads is between
 
 :::
 
+The beta distribution associated with the data we observed is
+$$\text{Beta}(\alpha = 6, \beta = 1),$$
+since flipping heads is the outcome of interest (the "success"). Integrating
+over the specified range, we get that
+$$P(0.4 \leq p \leq 0.6) = \int_{0.4}^{0.6} \text{Beta}(p \mid 6, 1) \ \mathrm{d}p. $$
+Approximating the integral in R, we get the following result.
 
+```{r}
+(q1res <- integrate(f = \(x) dbeta(x, 6, 1), lower = 0.4, upper = 0.6))
+```
+
+Our prior probability that the true probability of flipping heads is between
+0.4 and 0.6 is approximately $`r round(q1res$value, 4) * 100`\%$.
 
 ## Q2
 
@@ -33,6 +46,43 @@ flipping heads is between 0.4 and 0.6.
 
 :::
 
+We want to find a prior probability which guarantees
+$$0.95 \leq \int_{0.4}^{0.6} \text{Beta}(p \mid \alpha, \beta) \ \mathrm{d}p.$$
+
+We know that $\text{Beta}(1, 1)$ is uniform, so the probability will be too
+small in the interval we want. If we increase both numbers at the same time
+so that $\alpha = \beta$, we know that $p=0.5$ will be the most likely
+value, which is desirable for the prior we want to construct. So, if we
+instead take $\alpha = 6$ and $\beta = 6$, we get the following result.
+
+```{r}
+(q2res1 <- integrate(f = \(x) dbeta(x, 6, 6), lower = 0.4, upper = 0.6))
+```
+
+We see that this prior still isn't strong enough to give us the coverage we
+want in the given range. So let's try doubling both of the parameters.
+
+```{r}
+(q2res2 <- integrate(f = \(x) dbeta(x, 12, 12), lower = 0.4, upper = 0.6))
+```
+
+Even this still doesn't work -- we need an extremely strong beta prior to
+guarantee the probability we are interested in. So now I'll experiment with
+numbers, testing a grid until we get what we want.
+
+```{r}
+parms <- 1:100
+q2res3 <- sapply(
+	parms,
+	\(ab) integrate(f = \(x) dbeta(x, ab, ab), lower = 0.4, upper = 0.6)$value
+)
+
+# Get the minimum number where the probability is above the target.
+prior_parm <- parms[[which(q2res3 >= 0.95)[[1]]]]
+```
+
+We can obtain the correct probability bound by using a beta distribution where
+both parameters are equal to $`r prior_parm`$.
 
 ## Q3
 
@@ -45,15 +95,51 @@ let's say that this means that our belief in the rate of the coin being between
 
 :::
 
-We have to use the inclusion-exclusion rule here to avoid double-counting, since
-the two eggs having salmonella are not mutually exclusive (they could both
-have salmonella). So we get
-\begin{align*}
-P(\text{ate a salmonella egg}) &= P(\text{egg one had salmonella}) + P(\text{egg two had salmonella})
-\\ &\quad\quad -P(\text{both eggs had salmonella}) \\
-&= \frac{1}{20000} + \frac{1}{20000} - \left(\frac{1}{20000}\right) ^2 \\
-&= \frac{39,999}{400,000,000} \approx 0.009\%.
-\end{align*}
+We know that the posterior distribution after we observe $k$ more heads is
+equal to
+$$\text{Beta}(\alpha = `r prior_parm` + k, \beta = `r prior_parm`),$$
+so now what we want to find is
+$$
+\operatorname*{arg\,min}_k \int_{0.4}^{0.6} \text{Beta}(p \mid `r prior_parm` 
++ k, `r prior_parm`) \ \mathrm{d}p.
+$$
+We'll estimate $k$ using a grid search.
+
+```{r}
+k_vals <- 1L:100L
+integral_values <- sapply(
+	k_vals,
+	\(k) integrate(
+		f = \(x) dbeta(x, prior_parm + k, prior_parm),
+		lower = 0.4,
+		upper = 0.6
+	)$value
+)
+(min_k <- k_vals[which(integral_values < 0.5)[[1]]])
+```
+
+So it would take `r min_k` more heads in a row without any tail flips before
+our credibility that the coin is unfair is $50\%$ or higher.
+
+We can make a plot of the results as well to see this.
+
+```{r}
+plot(
+	NULL, NULL,
+	xlim = c(0, 50), ylim = c(0, 1),
+	xlab = latex2exp::TeX(r'($k$)'),
+	ylab = latex2exp::TeX(r'($P(0.4 \leq p \leq 0.6)$)'),
+	axes = FALSE
+)
+axis(1, at = c(seq(0, 50, 10), min_k))
+axis(2, at = c(seq(0, 1, 0.2), 0.5))
+abline(h = integral_values[min_k], lty = 2)
+abline(v = min_k, lty = 2)
+lines(1:50, integral_values[1:50], type = "o", lwd = 1.5)
+```
+
+
+<!--
 
 ## Q4
 
@@ -73,13 +159,14 @@ two things are all mutually independent from each other, both coin flips are
 independent, and all three die rolls are independent. The die rolls and coin
 flips do not affect each other. Once we have done all of these things during
 the experiment, we want to know the probability that we flipped two heads OR
-(inclusize) we rolled three sixes.
+(inclusive) we rolled three sixes.
 
-So, we use inclusion-exclusion again. We get that
+So, we use inclusion-exclusion. We get that
 
 $$P(\text{two heads}) = \frac{1}{2}\cdot \frac{1}{2} = \frac{1}{4},$$
 $$P(\text{three sixes}) = \left(\frac{1}{6}\right)^3 = \frac{1}{216},$$
 and thus
 $$P(\text{two heads} \cup \text{three sixes}) = \frac{1}{4} + \frac{1}{216} - \frac{1}{4 \cdot 216} = \frac{219}{864} \approx 25.35\%.$$
+-->
 
 <!-- end of file -->

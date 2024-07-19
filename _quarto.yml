@@ -15,8 +15,8 @@ website:
 format:
   html:
     theme:
-      dark: vapor
-      light: pulse
+      dark: darkly
+      light: flatly
     css: styles.css
 
 

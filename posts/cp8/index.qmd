@@ -66,7 +66,7 @@ believing $H_1$ over $H_2$?
 
 (I bolded the part that was supposed to be in the question but then wasn't.) If
 we do this, it only changes the numerator of our ratio and we get that
-$$B = \frac{3 / 100000}{1 / 21,900,000} = 675. $$
+$$B = \frac{3 / 100000}{1 / 21,900,000} = 657. $$
 So this decreases our ratio by a factor of 10, the same amount that our beliefs
 changed.
 
@@ -80,8 +80,10 @@ How unlikely would you have to believe being robbed is --- our prior for $H_1$
 :::
 
 Call our unknown prior probability $p$. Then we solve:
-$$\frac{p \ \frac{3}{100}}{1 / 21,900,000} \implies p = \frac{1}{65,700}.$$
-Our prior probability would need to decrease by a factor of 657.
-
+$$\frac{p \ \frac{3}{100}}{1 / 21,900,000} = 1 \implies p = \frac{1}{657,000}.$$
+So in order for the ratio to be 1, we would need to believe that getting robbed
+is 657 times less likely than the previous problem -- note that we could have
+gotten the same answer by dividing our prior probability by the Bayes factor
+from the previous problem.
 
 <!-- end of file -->

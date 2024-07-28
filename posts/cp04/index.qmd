@@ -1,5 +1,5 @@
 ---
-title: "Chapter 4"
+title: "Chapter 4: Creating a Binomial Probability Distribution"
 author: "Zane Billings"
 date: "2022-12-10"
 ---

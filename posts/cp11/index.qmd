@@ -1,0 +1,44 @@
+---
+title: "Chapter 11: Measuring the Spread of Our Data"
+draft: false
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 4)
+```
+
+This chapter defines the mean absolute deviation (MAD), variance, and
+standard deviation of a set of numbers.
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+One of the benefits of variance is that squaring the differences makes the
+penalties exponential. Give some examples of when this would be a useful
+property.
+
+:::
+
+The exponential penalty of the variance can be useful when we expect all of
+our data points to be somewhat close together, so that outlying data points
+are penalized more severely the further away they are. If error is expensive,
+we also want to penalize errors increasingly as they become larger.
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+Calculate the mean, variance, and standard deviation for the following
+values: `1, 2, 3, 4, 5, 6, 7, 8, 9, 10`.
+
+:::
+
+```{r}
+vec <- 1:10
+cat("Mean:    ", round(mean(vec), 3), "\n")
+cat("MAD:     ", round(mad(vec, center = mean(vec)), 3), "\n")
+cat("Variance:", round(var(vec), 3), "\n")
+cat("SD:      ", round(sd(vec), 3), "\n")
+```
+

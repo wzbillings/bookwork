@@ -1,5 +1,5 @@
 ---
-title: "Chapter 1"
+title: "Chapter 1: Bayesian Thinking and Everyday Reasoning"
 author: "Zane Billings"
 date: "2022-12-06"
 ---

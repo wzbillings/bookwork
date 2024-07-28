@@ -1,5 +1,5 @@
 ---
-title: "Chapter 3"
+title: "Chapter 3: The Logic of Uncertainty"
 author: "Zane Billings"
 date: "2022-12-09"
 ---

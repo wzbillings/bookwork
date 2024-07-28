@@ -1,0 +1,15 @@
+{
+  "hash": "ac04b80eb247786c6280b3a420b21de3",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Chapter 11: Measuring the Spread of Our Data\"\ndraft: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 4)\n```\n:::\n\n\n\nThis chapter defines the mean absolute deviation (MAD), variance, and\nstandard deviation of a set of numbers.\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nOne of the benefits of variance is that squaring the differences makes the\npenalties exponential. Give some examples of when this would be a useful\nproperty.\n\n:::\n\nThe exponential penalty of the variance can be useful when we expect all of\nour data points to be somewhat close together, so that outlying data points\nare penalized more severely the further away they are. If error is expensive,\nwe also want to penalize errors increasingly as they become larger.\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nCalculate the mean, variance, and standard deviation for the following\nvalues: `1, 2, 3, 4, 5, 6, 7, 8, 9, 10`.\n\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec <- 1:10\ncat(\"Mean:    \", round(mean(vec), 3), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nMean:     5.5 \n```\n\n\n:::\n\n```{.r .cell-code}\ncat(\"MAD:     \", round(mad(vec, center = mean(vec)), 3), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nMAD:      3.706 \n```\n\n\n:::\n\n```{.r .cell-code}\ncat(\"Variance:\", round(var(vec), 3), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nVariance: 9.167 \n```\n\n\n:::\n\n```{.r .cell-code}\ncat(\"SD:      \", round(sd(vec), 3), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nSD:       3.028 \n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

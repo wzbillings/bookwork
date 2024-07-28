@@ -1,0 +1,157 @@
+---
+title: "Chapter 12: The Normal Distribution"
+draft: false
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 4)
+```
+
+This chapter introduces the normal distribution. There's not much else to
+say about it.
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+What is the probability of observing a value five sigma greater than the mean
+or more?
+
+:::
+
+Since we know that this property is invariant for all normal family
+distributions, we can estimate it numerically using a standard normal
+distribution, for which the standard deviation is 1. Therefore, we can estimate
+the probability of interest by calculating
+$$P(x \geq 5) = \int_{5}^{\infty} \mathcal{N}(0, 1) \ \mathrm{d}x,$$
+which is easy to approximate in
+R.
+
+```{r}
+prob <- integrate(\(x) dnorm(x), 5, Inf)$value
+print(prob)
+```
+
+The probability is `r signif(prob, 4) |> as.character()`, which is quite low,
+less than a hundred-thousandth of a percent.
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+A fever is any temperature greater than 100.4 degrees Fahrenheit. Given the
+following measurements, what is the probability that the patient has a fever?
+
+> `100.0, 98.8, 101.0, 100.5, 99.7`
+
+:::
+
+```{r}
+temps <- c(100.0, 98.8, 101.0, 100.5, 99.7)
+(temp_mean <- mean(temps))
+(temp_sd <- sd(temps))
+```
+
+
+Assuming the temperature measurements have normally distributed error away
+from the true underlying temperature value (which we assume is constant),
+we can estimate the mean as `r round(temp_mean, 2)` degrees and the standard
+deviation as `r round(temp_sd, 2)`. Then, the probability that the patient has
+a fever is
+$$ P(\text{temp} \geq 100.4) = \int_{100.4}^{\infty} \mathcal{N}(`r round(temp_mean, 2)`, `r round(temp_sd, 2)`) \ \mathrm{d} (\text{temp}).$$
+
+```{r}
+fever_prob <- integrate(\(x) dnorm(x, temp_mean, temp_sd), 100.4, Inf)
+print(fever_prob)
+```
+
+Given all of our assumptions and measurements, the probability that the patient
+has a fever is about `r round(fever_prob$value * 100, 2)` percent.
+
+
+## Q3
+
+::: {.callout-note appearance="simple"}
+
+Suppose in Chapter 11 we tried to measure the depth of a well by timing coin
+drops and we got the following values:
+
+> `2.5, 3.0, 3.5, 4.0, 2.0`.
+
+The distance an object falls can be calculated (in meters) with the formula
+$$\text{distance} = \frac{1}{2}\times G \times \text{time}^2$$
+where $G = 9.8 \ \text{m}/\text{s}^2,$ the gravitational constant. What is the
+probability that the well is over 500 meters deep?
+
+:::
+
+First, we need to calculate the fall distances we would have gotten from
+these times.
+
+```{r times to distances}
+times <- c(2.5, 3.0, 3.5, 4.0, 2.0)
+distances <- 0.5 * 9.8 * times ^ 2
+knitr::kable(data.frame("t" = times, "d" = distances))
+```
+
+Now, assuming that the errors in measuring the distance are normally
+distributed, we can calculate the mean and standard deviation.
+
+```{r}
+(dist_mean <- mean(distances))
+(dist_sd <- sd(distances))
+```
+
+Finally, we compute the probability by integrating from 500 to infinity.
+
+```{r}
+prob_500_depth <- integrate(\(x) dnorm(x, dist_mean, dist_sd), 500, Inf)
+print(prob_500_depth)
+```
+
+The probability might as well be 0, it's actually somewhere around $10 ^ {`r round(log10(prob_500_depth$value), 2)`}$.
+
+
+## Q4
+
+::: {.callout-note appearance="simple"}
+
+What is the probability there is no well (i.e. the well is really 0 meters
+deep)? You'll notice that probability is higher than you might expect, given
+your observation is that there *is* a well. There are two good explanations for
+this probability being higher than it should. The first is that the normal
+distribution is a poor model for our measurements, the second is that, when
+making up numbers for an example, I chose values that you likely wouldn't see
+in real life. Which is more likely to you?
+
+:::
+
+The question is ill-posed. The probability that the depth of the well is 0
+meters is 0, because the probability of any single point is 0, since we've
+assumed a continuous distribution for the measurements. We have to approximate
+the probability by finding the probability of a small neighborhood around zero,
+which is similar but not quite the same thing. If we instead interpret the
+question to mean the depth of the well is *zero or less*, we can integrate
+from -infinity to zero.
+
+```{r}
+prob_0_depth <- integrate(\(x) dnorm(x, dist_mean, dist_sd), -Inf, 0)
+print(prob_0_depth)
+```
+
+According to our model, there is almost a $`r round(prob_0_depth$value * 100, 2)` \%$
+chance that the well has a zero or negative depth! Which clearly doesn't make sense.
+Notably, in the official solution, the author models the times instead of the
+distances, but also gets a nonsensical result.
+
+Clearly, a normal distribution is not appropriate here. Neither times nor
+distances can be negative, and yet using a normal distribution for either
+gives positive probabilities of negative results. Furthermore, the data are
+incredibly spread out on the distance scale, implying that our measurements
+are not very good. So both problems are true.
+
+The official solution claims that there is "no reason to question the
+assumptions of the normal distribution here", but that is an obviously
+untrue statement.
+
+<!-- END OF FILE -->

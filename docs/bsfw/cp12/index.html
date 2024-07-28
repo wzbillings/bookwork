@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Zane Billings">
+<meta name="dcterms.date" content="2024-07-28">
 
-<title>Bayesian Statistics the Fun Way – Book Solutions and Notes</title>
+<title>Chapter 12: The Normal Distribution – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +22,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,35 +104,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -130,17 +135,17 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Book Solutions and Notes</span>
     </a>
   </div>
@@ -176,383 +181,209 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Bayesian Statistics the Fun Way</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">Statistics</div>
-                <div class="quarto-category">Bayesian</div>
-              </div>
-                  </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Chapter 12: The Normal Distribution</h1>
+                      </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Zane Billings </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2024-07-28</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<p>Notes and solutions for “Bayesian Statistics the Fun Way” by Will Kurt, No Starch Press, 2019.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This chapter introduces the normal distribution. There’s not much else to say about it.</p>
+<section id="q1" class="level2">
+<h2 class="anchored" data-anchor-id="q1">Q1</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>What is the probability of observing a value five sigma greater than the mean or more?</p>
+</div>
+</div>
+</div>
+<p>Since we know that this property is invariant for all normal family distributions, we can estimate it numerically using a standard normal distribution, for which the standard deviation is 1. Therefore, we can estimate the probability of interest by calculating <span class="math display">\[P(x \geq 5) = \int_{5}^{\infty} \mathcal{N}(0, 1) \ \mathrm{d}x,\]</span> which is easy to approximate in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">integrate</span>(\(x) <span class="fu">dnorm</span>(x), <span class="dv">5</span>, <span class="cn">Inf</span>)<span class="sc">$</span>value</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0000002867</code></pre>
+</div>
+</div>
+<p>The probability is 0.0000002867, which is quite low, less than a hundred-thousandth of a percent.</p>
+</section>
+<section id="q2" class="level2">
+<h2 class="anchored" data-anchor-id="q2">Q2</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>A fever is any temperature greater than 100.4 degrees Fahrenheit. Given the following measurements, what is the probability that the patient has a fever?</p>
+<blockquote class="blockquote">
+<p><code>100.0, 98.8, 101.0, 100.5, 99.7</code></p>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>temps <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">100.0</span>, <span class="fl">98.8</span>, <span class="fl">101.0</span>, <span class="fl">100.5</span>, <span class="fl">99.7</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(temp_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(temps))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(temp_sd <span class="ot">&lt;-</span> <span class="fu">sd</span>(temps))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8337</code></pre>
+</div>
+</div>
+<p>Assuming the temperature measurements have normally distributed error away from the true underlying temperature value (which we assume is constant), we can estimate the mean as 100 degrees and the standard deviation as 0.83. Then, the probability that the patient has a fever is <span class="math display">\[ P(\text{temp} \geq 100.4) = \int_{100.4}^{\infty} \mathcal{N}(100, 0.83) \ \mathrm{d} (\text{temp}).\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fever_prob <span class="ot">&lt;-</span> <span class="fu">integrate</span>(\(x) <span class="fu">dnorm</span>(x, temp_mean, temp_sd), <span class="fl">100.4</span>, <span class="cn">Inf</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fever_prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.3157 with absolute error &lt; 0.0000009</code></pre>
+</div>
+</div>
+<p>Given all of our assumptions and measurements, the probability that the patient has a fever is about 31.57 percent.</p>
+</section>
+<section id="q3" class="level2">
+<h2 class="anchored" data-anchor-id="q3">Q3</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Suppose in Chapter 11 we tried to measure the depth of a well by timing coin drops and we got the following values:</p>
+<blockquote class="blockquote">
+<p><code>2.5, 3.0, 3.5, 4.0, 2.0</code>.</p>
+</blockquote>
+<p>The distance an object falls can be calculated (in meters) with the formula <span class="math display">\[\text{distance} = \frac{1}{2}\times G \times \text{time}^2\]</span> where <span class="math inline">\(G = 9.8 \ \text{m}/\text{s}^2,\)</span> the gravitational constant. What is the probability that the well is over 500 meters deep?</p>
+</div>
+</div>
+</div>
+<p>First, we need to calculate the fall distances we would have gotten from these times.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">3.0</span>, <span class="fl">3.5</span>, <span class="fl">4.0</span>, <span class="fl">2.0</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>distances <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fl">9.8</span> <span class="sc">*</span> times <span class="sc">^</span> <span class="dv">2</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="st">"t"</span> <span class="ot">=</span> times, <span class="st">"d"</span> <span class="ot">=</span> distances))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">d</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">30.62</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">44.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">60.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">78.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">19.60</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now, assuming that the errors in measuring the distance are normally distributed, we can calculate the mean and standard deviation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(dist_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(distances))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 46.55</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(dist_sd <span class="ot">&lt;-</span> <span class="fu">sd</span>(distances))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23.36</code></pre>
+</div>
+</div>
+<p>Finally, we compute the probability by integrating from 500 to infinity.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>prob_500_depth <span class="ot">&lt;-</span> <span class="fu">integrate</span>(\(x) <span class="fu">dnorm</span>(x, dist_mean, dist_sd), <span class="dv">500</span>, <span class="cn">Inf</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(prob_500_depth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.000000000000000000000000000000000000000000000000000000000000000000000000000000000002872 with absolute error &lt; 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000034</code></pre>
+</div>
+</div>
+<p>The probability might as well be 0, it’s actually somewhere around <span class="math inline">\(10 ^ {-83.54}\)</span>.</p>
+</section>
+<section id="q4" class="level2">
+<h2 class="anchored" data-anchor-id="q4">Q4</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>What is the probability there is no well (i.e.&nbsp;the well is really 0 meters deep)? You’ll notice that probability is higher than you might expect, given your observation is that there <em>is</em> a well. There are two good explanations for this probability being higher than it should. The first is that the normal distribution is a poor model for our measurements, the second is that, when making up numbers for an example, I chose values that you likely wouldn’t see in real life. Which is more likely to you?</p>
+</div>
+</div>
+</div>
+<p>The question is ill-posed. The probability that the depth of the well is 0 meters is 0, because the probability of any single point is 0, since we’ve assumed a continuous distribution for the measurements. We have to approximate the probability by finding the probability of a small neighborhood around zero, which is similar but not quite the same thing. If we instead interpret the question to mean the depth of the well is <em>zero or less</em>, we can integrate from -infinity to zero.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>prob_0_depth <span class="ot">&lt;-</span> <span class="fu">integrate</span>(\(x) <span class="fu">dnorm</span>(x, dist_mean, dist_sd), <span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(prob_0_depth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.02312 with absolute error &lt; 0.0000028</code></pre>
+</div>
+</div>
+<p>According to our model, there is almost a <span class="math inline">\(2.31 \%\)</span> chance that the well has a zero or negative depth! Which clearly doesn’t make sense. Notably, in the official solution, the author models the times instead of the distances, but also gets a nonsensical result.</p>
+<p>Clearly, a normal distribution is not appropriate here. Neither times nor distances can be negative, and yet using a normal distribution for either gives positive probabilities of negative results. Furthermore, the data are incredibly spread out on the distance scale, implying that our measurements are not very good. So both problems are true.</p>
+<p>The official solution claims that there is “no reason to question the assumptions of the normal distribution here”, but that is an obviously untrue statement.</p>
+<!-- END OF FILE -->
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1722186851000" data-listing-file-modified-sort="1722186851773" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="674">
-<div class="thumbnail">
-<p><a href="./bsfw/cp12/index.html" class="no-external"></a></p><a href="./bsfw/cp12/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp12/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp12/index.html" class="no-external">Chapter 12: The Normal Distribution</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp12/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp12/index.html" class="no-external">This chapter introduces the normal distribution. There’s not much else to say about it.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp12/index.html" class="no-external">
-<div class="listing-date">
-Jul 28, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1722142909000" data-listing-file-modified-sort="1722142909838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
-<div class="thumbnail">
-<p><a href="./bsfw/cp11/index.html" class="no-external"></a></p><a href="./bsfw/cp11/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp11/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp11/index.html" class="no-external">Chapter 11: Measuring the Spread of Our Data</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp11/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp11/index.html" class="no-external">This chapter defines the mean absolute deviation (MAD), variance, and standard deviation of a set of numbers.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp11/index.html" class="no-external">
-<div class="listing-date">
-Jul 28, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1722130112000" data-listing-file-modified-sort="1722130112354" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="394">
-<div class="thumbnail">
-<p><a href="./bsfw/cp10/index.html" class="no-external"></a></p><a href="./bsfw/cp10/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp10/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp10/index.html" class="no-external">Chapter 10: Introduction to Averaging and Parameter Estimation</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp10/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp10/index.html" class="no-external">This chapter covers the basics of parameter estimation, particularly focusing on how to compute unweighted and weighted averages (resulting in the formula for the discrete…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp10/index.html" class="no-external">
-<div class="listing-date">
-Jul 27, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1721420164000" data-listing-file-modified-sort="1721420164636" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="789">
-<div class="thumbnail">
-<p><a href="./bsfw/cp09/index.html" class="no-external"></a></p><a href="./bsfw/cp09/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp09\index_files\figure-html\unnamed-chunk-6-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp09/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp09/index.html" class="no-external">Chapter 9: Bayesian Priors and Working with Probability Distributions</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp09/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp09/index.html" class="no-external">This chapter introduces the concept of a prior probability distribution, rather than a single point prior (which is also, technically, a prior distribution, but it is the…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp09/index.html" class="no-external">
-<div class="listing-date">
-Jul 19, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1670734800000" data-listing-file-modified-sort="1670776294250" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1562">
-<div class="thumbnail">
-<p><a href="./bsfw/cp06/index.html" class="no-external"></a></p><a href="./bsfw/cp06/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp06/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp06/index.html" class="no-external">Chapter 6: Conditional Probability</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp06/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp06/index.html" class="no-external">This chapter introduces the concept of <strong>conditional probability</strong>, which, in my opinion, is one of the least intuitive parts of probability. I didn’t take a lot of notes here…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp06/index.html" class="no-external">
-<div class="listing-date">
-Dec 11, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1670648400000" data-listing-file-modified-sort="1670776437824" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1083">
-<div class="thumbnail">
-<p><a href="./bsfw/cp05/index.html" class="no-external"></a></p><a href="./bsfw/cp05/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp05\index_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp05/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp05/index.html" class="no-external">Chapter 5: the Beta Distribution</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp05/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp05/index.html" class="no-external">I actually took notes this time! I already know a pretty good amount about the beta distribution, but I’ve never used it like this before.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp05/index.html" class="no-external">
-<div class="listing-date">
-Dec 10, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1670648400000" data-listing-file-modified-sort="1722140725317" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1036">
-<div class="thumbnail">
-<p><a href="./bsfw/cp04/index.html" class="no-external"></a></p><a href="./bsfw/cp04/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp04/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp04/index.html" class="no-external">Chapter 4: Creating a Binomial Probability Distribution</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp04/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp04/index.html" class="no-external">My original intention was also to post all of the notes I took while reading through this book. But we’re still in stuff that I felt pretty comfortable with (because I’ve…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp04/index.html" class="no-external">
-<div class="listing-date">
-Dec 10, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1721414032236" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="507">
-<div class="thumbnail">
-<p><a href="./bsfw/cp08/index.html" class="no-external"></a></p><a href="./bsfw/cp08/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp08/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp08/index.html" class="no-external">Chapter 8: Priors, posteriors, and likelihoods of Bayes’ Theorem</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp08/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp08/index.html" class="no-external">This chapter is mostly about Bayes’ factors without saying that it’s about Bayes factors, but it also discusses what happens when prior beliefs change (in a particularly…<em></em></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp08/index.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1671284105379" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="526">
-<div class="thumbnail">
-<p><a href="./bsfw/cp07/index.html" class="no-external"></a></p><a href="./bsfw/cp07/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp07/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp07/index.html" class="no-external">Chapter 7: Bayes’s Theorem with LEGO</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp07/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp07/index.html" class="no-external">Again, no notes. Mostly because this chapter is super short. Just for good measure, I’ll do the mathematician thing and say. Recall Bayes’ Theorem:</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp07/index.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1722140739114" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="450">
-<div class="thumbnail">
-<p><a href="./bsfw/cp03/index.html" class="no-external"></a></p><a href="./bsfw/cp03/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp03/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp03/index.html" class="no-external">Chapter 3: The Logic of Uncertainty</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp03/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp03/index.html" class="no-external">What is the probability of rolling a 20 three times in a row on a 20-sided die?</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp03/index.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1670389200000" data-listing-file-modified-sort="1722140715369" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="403">
-<div class="thumbnail">
-<p><a href="./bsfw/cp02/index.html" class="no-external"></a></p><a href="./bsfw/cp02/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp02/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp02/index.html" class="no-external">Chapter 2: Measuring Uncertainty</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp02/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp02/index.html" class="no-external">What is the probability of rolling two six-sided dice and getting a value greater than 7?</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp02/index.html" class="no-external">
-<div class="listing-date">
-Dec 7, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1670302800000" data-listing-file-modified-sort="1722140706171" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="355">
-<div class="thumbnail">
-<p><a href="./bsfw/cp01/index.html" class="no-external"></a></p><a href="./bsfw/cp01/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp01/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp01/index.html" class="no-external">Chapter 1: Bayesian Thinking and Everyday Reasoning</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp01/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp01/index.html" class="no-external">I already have a math degree where I focused on stats, so I kind of rushed through this chapter.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp01/index.html" class="no-external">
-<div class="listing-date">
-Dec 6, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

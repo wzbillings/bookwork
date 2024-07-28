@@ -1,0 +1,15 @@
+{
+  "hash": "cd7d08a88465c9687d691f0e320b68cf",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Chapter 13\"\ndraft: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 4)\n```\n:::\n\n\n\n\n\nNote\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nUsing the code example for plotting the PDF on page 127, plot the CDF and\nquantile functions.\n\n:::\n\nSolution\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nReturning to the task of measuring snowfall from Chapter 10, say you have the\nfollowing measurements (in inches) of snowfall:\n\n> `7.4, 9.4, 10.0, 7.9, 9.4, 7.0, 7.0, 7.1, 8.9, 7.4`.\n\nWhat is your 99.9% confidence interval for the true value of snowfall?\n\n:::\n\nSolution\n\n## Q3\n\n::: {.callout-note appearance=\"simple\"}\n\nA child is going door to door selling candy bars. So far she has visited 30\nhouses and sold 10 candy bars. She will visit 40 more houses today. What is the\n95% confidence interval for how many candy bars she will sell the rest of the\nday?\n\n:::\n\nSolution\n\n<!-- END OF FILE -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

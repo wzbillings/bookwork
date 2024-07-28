@@ -219,11 +219,8 @@ window.Quarto = {
 
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(latex2exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'latex2exp' was built under R version 4.2.2</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(latex2exp)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="notes" class="level1">
 <h1>Notes</h1>
@@ -245,12 +242,12 @@ P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0
 <li>We could also take a systematic sample of potential probabilities over the range <span class="math inline">\((0, 1)\)</span>, since we have observed both outcomes – these would be our “hypotheses”. Plotting this likelihood curve over the possible values of <span class="math inline">\(p\)</span> would look like this.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    p, <span class="fu">dbinom</span>(<span class="dv">14</span>, <span class="dv">41</span>, p), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">2</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">TeX</span>(<span class="st">'$</span><span class="sc">\\</span><span class="st">hat{p}$'</span>),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="fu">TeX</span>(<span class="st">'$P(D </span><span class="sc">\\</span><span class="st"> | </span><span class="sc">\\</span><span class="st"> </span><span class="sc">\\</span><span class="st">hat{p})$'</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p, <span class="fu">dbinom</span>(<span class="dv">14</span>, <span class="dv">41</span>, p), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">TeX</span>(<span class="st">'$</span><span class="sc">\\</span><span class="st">hat{p}$'</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="fu">TeX</span>(<span class="st">'$P(D </span><span class="sc">\\</span><span class="st"> | </span><span class="sc">\\</span><span class="st"> </span><span class="sc">\\</span><span class="st">hat{p})$'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -274,7 +271,7 @@ P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0
 \mathrm{d}p.\]</span></p>
 <p>We can get this in <code>R</code> via numerical integration (more details on this in the first exercise).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="cf">function</span>(p) <span class="fu">dbeta</span>(p, <span class="dv">14</span>, <span class="dv">27</span>), <span class="dv">0</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="cf">function</span>(p) <span class="fu">dbeta</span>(p, <span class="dv">14</span>, <span class="dv">27</span>), <span class="dv">0</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.9807613458578994 with absolute error &lt; 0.0000059</code></pre>
 </div>
@@ -290,7 +287,7 @@ P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">dbeta</span>(x, <span class="dv">5</span>, <span class="dv">1195</span>), <span class="fl">0.005</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">dbeta</span>(x, <span class="dv">5</span>, <span class="dv">1195</span>), <span class="fl">0.005</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.2850559397969717 with absolute error &lt; 0.0001</code></pre>
 </div>
@@ -315,36 +312,36 @@ P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0
 <p>We could, of course, write out the distribution and integrate it: <span class="math display">\[P(p \geq 0.6) = \int_0^{0.6}  \frac{1}{\mathrm{B} \left(4, 6\right)}p^{4-1}(1-p)^{6-1} \ \mathrm{d}p.\]</span></p>
 <p>Here, <span class="math inline">\(\mathrm{B}(a, b)\)</span> is the beta function, not the binomial distribution. In general, we could integrate <span class="math display">\[\int p^{a - 1}(1-p)^{b - 1} \ \mathrm{d}p \]</span> for real, known constants <span class="math inline">\(k, a, b\)</span>, but the general integral in terms of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is non-elementary, so it is impractical to do this symbolically. The solution to this integral is called the “regularized incomplete beta function”, <span class="math inline">\(I_x(a, b).\)</span> That means the solution to our original integral is <span class="math display">\[ P(p \geq 0.6) = I_{0.6}(4, 6) = \frac{\mathrm{B}_{0.6}(4, 6)}{\mathrm{B}(4, 6)}, \]</span> which we can’t actually calculate in base <code>R</code> (there is no built-in function for the incomplete beta function, although there could be a math identity that I don’t know that lets us calculate it with the tools at our disposal). Apparently this does not come up too often (for reasons we will see shortly), but there are a few packages that offer the incomplete beta function. I found: <code>spsh</code>, <code>UCS</code>, and the one I’ll load, <code>zipfR</code>. These all do other things so it seems potentially worthwhile to me to implement a package that ONLY includes the incomplete beta and gamma functions.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>zipfR<span class="sc">::</span><span class="fu">Ibeta</span>(<span class="fl">0.6</span>, <span class="dv">4</span>, <span class="dv">6</span>) <span class="sc">/</span> <span class="fu">beta</span>(<span class="dv">4</span>, <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>zipfR<span class="sc">::</span><span class="fu">Ibeta</span>(<span class="fl">0.6</span>, <span class="dv">4</span>, <span class="dv">6</span>) <span class="sc">/</span> <span class="fu">beta</span>(<span class="dv">4</span>, <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9006474239999999</code></pre>
 </div>
 </div>
 <p>Note that we could get the same thing by numerical integration.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) (<span class="dv">1</span> <span class="sc">/</span> <span class="fu">beta</span>(<span class="dv">4</span>, <span class="dv">6</span>)) <span class="sc">*</span> p <span class="sc">^</span> <span class="dv">3</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p) <span class="sc">^</span> <span class="dv">5</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="dv">0</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.6</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) (<span class="dv">1</span> <span class="sc">/</span> <span class="fu">beta</span>(<span class="dv">4</span>, <span class="dv">6</span>)) <span class="sc">*</span> p <span class="sc">^</span> <span class="dv">3</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p) <span class="sc">^</span> <span class="dv">5</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="dv">0</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.6</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.9006474239999995 with absolute error &lt; 0.00000000000001</code></pre>
 </div>
 </div>
 <p>The two values are the same to like 15 digits of precision. So we really don’t need to go through all of that mess, we can just use numerical integration. As you may have guessed, <code>R</code> has multiple easier ways to do this. First, the beta density is already built into <code>R</code>, so we don’t have to write out the entire thing.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) <span class="fu">dbeta</span>(p, <span class="dv">4</span>, <span class="dv">6</span>),</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="dv">0</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.6</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) <span class="fu">dbeta</span>(p, <span class="dv">4</span>, <span class="dv">6</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="dv">0</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.6</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.900647424 with absolute error &lt; 0.00000000000001</code></pre>
 </div>
 </div>
 <p>And of course, <code>R</code> has a built-in, better way to get this probability than using the standard numerical integrator. (And since the beta distribution is continuous, we don’t even have to worry about the boundaries this time.)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.6</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="at">lower.tail =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.6</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="at">lower.tail =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9006474239999999</code></pre>
 </div>
@@ -364,18 +361,18 @@ P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0
 </div>
 <p>So, we can either numerically integrate, which allows us to specify whatever bounds we want (since this integrand is pretty well-behaved for this kind of thing).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) <span class="fu">dbeta</span>(p, <span class="dv">9</span>, <span class="dv">11</span>),</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="fl">0.45</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.55</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) <span class="fu">dbeta</span>(p, <span class="dv">9</span>, <span class="dv">11</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="fl">0.45</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.55</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.3098800156513043 with absolute error &lt; 0.0000000000000034</code></pre>
 </div>
 </div>
 <p>Or we can just subtract.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.55</span>, <span class="dv">9</span>, <span class="dv">11</span>) <span class="sc">-</span> <span class="fu">pbeta</span>(<span class="fl">0.45</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.55</span>, <span class="dv">9</span>, <span class="dv">11</span>) <span class="sc">-</span> <span class="fu">pbeta</span>(<span class="fl">0.45</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3098800156513036</code></pre>
 </div>
@@ -396,7 +393,7 @@ P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0
 </div>
 <p>Alright, I’ve already talked enough about how to solve these problems, this is just another of the same thing. So let’s just solve it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.55</span>, <span class="dv">109</span>, <span class="dv">111</span>) <span class="sc">-</span> <span class="fu">pbeta</span>(<span class="fl">0.45</span>, <span class="dv">109</span>, <span class="dv">111</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.55</span>, <span class="dv">109</span>, <span class="dv">111</span>) <span class="sc">-</span> <span class="fu">pbeta</span>(<span class="fl">0.45</span>, <span class="dv">109</span>, <span class="dv">111</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.8589371426532764</code></pre>
 </div>

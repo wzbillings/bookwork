@@ -2,7 +2,9 @@
 title: "Doing Bayesian Statistics the Fun Way -- Solutions"
 listing:
   contents: posts
-  sort: "title desc"
+  sort:
+    - "date desc"
+    - "title desc"
   type: default
   categories: false
   sort-ui: false

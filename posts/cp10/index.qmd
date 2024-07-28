@@ -1,0 +1,63 @@
+---
+title: "Chapter 10: Introduction to Averaging and Parameter Estimation"
+draft: false
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 4)
+```
+
+This chapter covers the basics of parameter estimation, particularly focusing
+on how to compute unweighted and weighted averages (resulting in the
+formula for the discrete expected value).
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+It's possible to get errors that don't quite cancel out the way we want. In the
+Fahrenheit temperature scale, 98.6 degrees is the normal body temperature and
+100.4 degrees is the typical threshold for a fever. Say you are taking care of
+a child that feels warm and seems sick, but you take repeated readings from the
+thermometer yourself and get several readings between 97.5 and 98. What could
+be wrong with the thermometer?
+
+:::
+
+The therometer might be miscalibrated, giving us errors which are systematically
+biased to be lower than the true values we are tying to measure. So even if
+the child has a fever, the therometer might not tell us that.
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+Given that you feel healthy and have traditionally had a very consistently
+normal temperature, how could you alter the measurements 100, 99.5, 99.6, and
+100.2 to estimate if the child has a fever?
+
+:::
+
+I don't really think the wording of this question makes any sense, it's
+hard to tell what it is actually asking. If we had a consistently
+normal temperature and weren't sick, but we got those measurements, we could
+subtract the bias in the measurement to correct for it. For example, if we
+subtract 1.5 degrees from all of those measurements, we get temperatures that
+are all in a normal range, indicating that the thermometer might be
+miscalibrated.
+
+However, the question asks how we can use this information to measure whether
+the child has a fever, but in question 1 we were worried about the thermometer
+giving erroneously low readings. So it's not really clear what the question
+wants us to do. Either way, if we have a way to estimate the bias of the
+thermometer (e.g. by taking temperatures with multiple thermometers or by
+comparing the current readings with earlier readings when the child was healthy)
+we could use that bias estimate to correct the measurements we got. However,
+that would assume that the bias is constant with the temperatures which is
+not necessarily true, the thermometer might be really bad at reading temperatures
+above a certain threshold instead. We don't have nearly enough information
+in this problem to figure out what is wrong with the child other than they
+feel warm and seem sick, so we should instead use our best non-thermometer
+related judgement to decide what to do.
+
+<!-- END OF FILE -->

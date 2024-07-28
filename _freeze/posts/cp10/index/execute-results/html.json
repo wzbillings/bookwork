@@ -1,0 +1,15 @@
+{
+  "hash": "4ca65e1c9c2a76ac988ac7cb22b1fcdb",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Chapter 10: Introduction to Averaging and Parameter Estimation\"\ndraft: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 4)\n```\n:::\n\n\n\nThis chapter covers the basics of parameter estimation, particularly focusing\non how to compute unweighted and weighted averages (resulting in the\nformula for the discrete expected value).\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nIt's possible to get errors that don't quite cancel out the way we want. In the\nFahrenheit temperature scale, 98.6 degrees is the normal body temperature and\n100.4 degrees is the typical threshold for a fever. Say you are taking care of\na child that feels warm and seems sick, but you take repeated readings from the\nthermometer yourself and get several readings between 97.5 and 98. What could\nbe wrong with the thermometer?\n\n:::\n\nThe therometer might be miscalibrated, giving us errors which are systematically\nbiased to be lower than the true values we are tying to measure. So even if\nthe child has a fever, the therometer might not tell us that.\n\n## Q2\n\n::: {.callout-note appearance=\"simple\"}\n\nGiven that you feel healthy and have traditionally had a very consistently\nnormal temperature, how could you alter the measurements 100, 99.5, 99.6, and\n100.2 to estimate if the child has a fever?\n\n:::\n\nI don't really think the wording of this question makes any sense, it's\nhard to tell what it is actually asking. If we had a consistently\nnormal temperature and weren't sick, but we got those measurements, we could\nsubtract the bias in the measurement to correct for it. For example, if we\nsubtract 1.5 degrees from all of those measurements, we get temperatures that\nare all in a normal range, indicating that the thermometer might be\nmiscalibrated.\n\nHowever, the question asks how we can use this information to measure whether\nthe child has a fever, but in question 1 we were worried about the thermometer\ngiving erroneously low readings. So it's not really clear what the question\nwants us to do. Either way, if we have a way to estimate the bias of the\nthermometer (e.g. by taking temperatures with multiple thermometers or by\ncomparing the current readings with earlier readings when the child was healthy)\nwe could use that bias estimate to correct the measurements we got. However,\nthat would assume that the bias is constant with the temperatures which is\nnot necessarily true, the thermometer might be really bad at reading temperatures\nabove a certain threshold instead. We don't have nearly enough information\nin this problem to figure out what is wrong with the child other than they\nfeel warm and seem sick, so we should instead use our best non-thermometer\nrelated judgement to decide what to do.\n\n<!-- END OF FILE -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

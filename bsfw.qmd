@@ -1,0 +1,21 @@
+---
+title: "Bayesian Statistics the Fun Way"
+listing:
+  contents: bsfw
+  sort:
+    - "date desc"
+    - "title desc"
+  type: default
+  categories: false
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+categories:
+  - Statistics
+  - Bayesian
+image: "static/bsfw.jpg"
+---
+
+Notes and solutions for "Bayesian Statistics the Fun Way" by Will Kurt, No
+Starch Press, 2019.

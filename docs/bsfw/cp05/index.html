@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Zane Billings">
+<meta name="dcterms.date" content="2022-12-10">
 
-<title>Bookwork Blog – Book Solutions and Notes</title>
+<title>Chapter 5: the Beta Distribution – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +22,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,35 +104,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -130,17 +135,17 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Book Solutions and Notes</span>
     </a>
   </div>
@@ -174,95 +179,233 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Chapter 5: the Beta Distribution</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Zane Billings </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2022-12-10</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Bayesian">Bayesian <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Statistics">Statistics <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Bookwork Blog</h1>
+
+
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(latex2exp)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>This is my blog for storing notes and work from books that I read, so I could consolidate them all into one web page.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-author" data-direction="asc">
-          Author
-        </option>
-     </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Statistics,Bayesian" data-listing-file-modified-sort="1722181236398" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="./bsfw.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./static/bsfw.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Bayesian Statistics the Fun Way
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Statistics'); return false;">
-Statistics
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Bayesian'); return false;">
-Bayesian
-</div>
-</div>
-<div class="card-text listing-description">
-Notes and solutions for “Bayesian Statistics the Fun Way” by Will Kurt, No Starch Press, 2019.
-</div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-
+<section id="notes" class="level1">
+<h1>Notes</h1>
+<p>I actually took notes this time! I already know a pretty good amount about the beta distribution, but I’ve never used it like this before.</p>
+<ul>
+<li><strong>Motivation</strong>: an event occurs with an unknown probability. How do we estimate the probability of occurrence? E.g. if you flip a coin 20 times and observe 7 heads, what is the probability of getting heads?</li>
+<li>Black box problem: you put in a quarter. Sometimes the quarter disappears and sometimes it gives you the quarter back. Sometimes it also gives you two quarters. Suppose we try 40 times and we get two quarters 14 times. Then, we could suppose that</li>
+</ul>
+<p><span class="math display">\[\begin{align*}
+H_1 &amp;: P(\text{two quarters}) = \frac{1}{2} \text{ and} \\
+H_2 &amp;: P(\text{two quarters}) = \frac{14}{41}.
+\end{align*}\]</span></p>
+<p>Using a binomial likelihood to calculate the probability of each hypothesis, we would get that <span class="math display">\[\begin{align*}
+P(D \mid H_1) &amp;= \mathcal{B}\left(14 \mid 41, \frac{1}{2}\right) \approx 0.016, \\
+P(D \mid H_2) &amp;= \mathcal{B}\left(14 \mid 41, \frac{14}{41}\right) \approx 0.130, \text{ and therefore} \\
+\frac{P(D \mid H_2)}{P(D \mid H_1)} &amp;\approx 8.125.
+\end{align*}\]</span> But even though <span class="math inline">\(H_2\)</span> appears much more likely, neither is impossible!</p>
+<ul>
+<li>We could also take a systematic sample of potential probabilities over the range <span class="math inline">\((0, 1)\)</span>, since we have observed both outcomes – these would be our “hypotheses”. Plotting this likelihood curve over the possible values of <span class="math inline">\(p\)</span> would look like this.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p, <span class="fu">dbinom</span>(<span class="dv">14</span>, <span class="dv">41</span>, p), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">TeX</span>(<span class="st">'$</span><span class="sc">\\</span><span class="st">hat{p}$'</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="fu">TeX</span>(<span class="st">'$P(D </span><span class="sc">\\</span><span class="st"> | </span><span class="sc">\\</span><span class="st"> </span><span class="sc">\\</span><span class="st">hat{p})$'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
+<ul>
+<li>These discrete values approximate a <strong>beta distribution</strong> (a fact that we will not prove). The functional form of the Beta distribution is given by</li>
+</ul>
+<p><span class="math display">\[\text{Beta}\left( p; \alpha, \beta \right) = \frac{p^{\alpha - 1}(1-p)^{\beta - 1}}{\mathrm{B}(\alpha, \beta)},\]</span> where <span class="math inline">\(\mathrm{B}(a, b)\)</span> is the beta function, defined as <span class="math display">\[\mathrm{B}(a, b) = \int_0^1 t^{a-1}(1-t)^{b-1} \ \mathrm{d}t =
+\frac{\Gamma(a)\Gamma(b)}{\Gamma(a + b)}.\]</span></p>
+<p>The beta function acts as a normalizing constant in this case.</p>
+<p>To use this for getting the same curve, use: + <span class="math inline">\(p\)</span>: the probability of the event; + <span class="math inline">\(a\)</span>: how many times we observe a success; + <span class="math inline">\(b\)</span>: how many times we observe a failure.</p>
+<ul>
+<li>What if we want to know the probability that the true chance of getting back two quarters from the black box is less than <span class="math inline">\(\frac{1}{2}\)</span>? (As a quick note, the probability that it will be exactly <span class="math inline">\(\frac{1}{2}\)</span> is zero. With continuous distributions, all single outcomes have zero probability, we can only calculate the probability of ranges.) We can calculate:</li>
+</ul>
+<p><span class="math display">\[P\left(p \leq \frac{1}{2}\right) = \int_{0}^{1/2} \
+\frac{p^{14-1}(1-p)^{27-1}}{\mathrm{B}(14, 27)} \
+\mathrm{d}p.\]</span></p>
+<p>We can get this in <code>R</code> via numerical integration (more details on this in the first exercise).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="cf">function</span>(p) <span class="fu">dbeta</span>(p, <span class="dv">14</span>, <span class="dv">27</span>), <span class="dv">0</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9807613458578994 with absolute error &lt; 0.0000059</code></pre>
 </div>
-</a>
+</div>
+<ul>
+<li><p>There is a 98% chance, given our evidence, that the probability of getting two coins back is less than one half.</p></li>
+<li><p>Quick workthrough of the Gacha game example!</p>
+<ul>
+<li><span class="math inline">\(n = 1000\)</span> trials</li>
+<li><span class="math inline">\(k = 5\)</span> Bradley Efron cards</li>
+<li>We’ll model this with a <span class="math inline">\(\mathrm{Beta}(5, 1195)\)</span> distribution.</li>
+<li>Our friend will play the game if <span class="math inline">\(P(p \geq 0.005) &gt; 70\%\)</span>.</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">dbeta</span>(x, <span class="dv">5</span>, <span class="dv">1195</span>), <span class="fl">0.005</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.2850559397969717 with absolute error &lt; 0.0001</code></pre>
 </div>
 </div>
-<div class="listing-no-matching d-none">
-No matching items
+<p>So the probability is only <span class="math inline">\(29\%\)</span>, so our friend will not play the game.</p>
+</section>
+<section id="solutions" class="level1">
+<h1>Solutions</h1>
+<section id="q1" class="level2">
+<h2 class="anchored" data-anchor-id="q1">Q1</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-</div></main> <!-- /main -->
+<div class="callout-body-container">
+<p>You want to use the beta distribution to determine whether or not a coin you have is a fair coin — meaning that the coin gives you heads and tails equally. You flip the coin 10 times and get 4 heads and 6 tails. Using the beta distribution, what is the probability that the coin will land on heads more than 60 percent of the time?</p>
+</div>
+</div>
+</div>
+<p>The probability we are interested in is <span class="math display">\[P(p \geq 0.6) = \int_0^{0.6} \mathrm{Beta}(p, 4, 6) \ \mathrm{d}p.\]</span></p>
+<p>We could, of course, write out the distribution and integrate it: <span class="math display">\[P(p \geq 0.6) = \int_0^{0.6}  \frac{1}{\mathrm{B} \left(4, 6\right)}p^{4-1}(1-p)^{6-1} \ \mathrm{d}p.\]</span></p>
+<p>Here, <span class="math inline">\(\mathrm{B}(a, b)\)</span> is the beta function, not the binomial distribution. In general, we could integrate <span class="math display">\[\int p^{a - 1}(1-p)^{b - 1} \ \mathrm{d}p \]</span> for real, known constants <span class="math inline">\(k, a, b\)</span>, but the general integral in terms of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is non-elementary, so it is impractical to do this symbolically. The solution to this integral is called the “regularized incomplete beta function”, <span class="math inline">\(I_x(a, b).\)</span> That means the solution to our original integral is <span class="math display">\[ P(p \geq 0.6) = I_{0.6}(4, 6) = \frac{\mathrm{B}_{0.6}(4, 6)}{\mathrm{B}(4, 6)}, \]</span> which we can’t actually calculate in base <code>R</code> (there is no built-in function for the incomplete beta function, although there could be a math identity that I don’t know that lets us calculate it with the tools at our disposal). Apparently this does not come up too often (for reasons we will see shortly), but there are a few packages that offer the incomplete beta function. I found: <code>spsh</code>, <code>UCS</code>, and the one I’ll load, <code>zipfR</code>. These all do other things so it seems potentially worthwhile to me to implement a package that ONLY includes the incomplete beta and gamma functions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>zipfR<span class="sc">::</span><span class="fu">Ibeta</span>(<span class="fl">0.6</span>, <span class="dv">4</span>, <span class="dv">6</span>) <span class="sc">/</span> <span class="fu">beta</span>(<span class="dv">4</span>, <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9006474239999999</code></pre>
+</div>
+</div>
+<p>Note that we could get the same thing by numerical integration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) (<span class="dv">1</span> <span class="sc">/</span> <span class="fu">beta</span>(<span class="dv">4</span>, <span class="dv">6</span>)) <span class="sc">*</span> p <span class="sc">^</span> <span class="dv">3</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p) <span class="sc">^</span> <span class="dv">5</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="dv">0</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.6</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9006474239999995 with absolute error &lt; 0.00000000000001</code></pre>
+</div>
+</div>
+<p>The two values are the same to like 15 digits of precision. So we really don’t need to go through all of that mess, we can just use numerical integration. As you may have guessed, <code>R</code> has multiple easier ways to do this. First, the beta density is already built into <code>R</code>, so we don’t have to write out the entire thing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) <span class="fu">dbeta</span>(p, <span class="dv">4</span>, <span class="dv">6</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="dv">0</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.6</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.900647424 with absolute error &lt; 0.00000000000001</code></pre>
+</div>
+</div>
+<p>And of course, <code>R</code> has a built-in, better way to get this probability than using the standard numerical integrator. (And since the beta distribution is continuous, we don’t even have to worry about the boundaries this time.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.6</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="at">lower.tail =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9006474239999999</code></pre>
+</div>
+</div>
+</section>
+<section id="q2" class="level2">
+<h2 class="anchored" data-anchor-id="q2">Q2</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>You flip the coin 10 more times and now have 9 heads and 11 tails total. What is the probability that the coin is fair, using our definition of fair, give or take 5%?</p>
+</div>
+</div>
+</div>
+<p>So, we can either numerically integrate, which allows us to specify whatever bounds we want (since this integrand is pretty well-behaved for this kind of thing).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">f =</span> \(p) <span class="fu">dbeta</span>(p, <span class="dv">9</span>, <span class="dv">11</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> <span class="fl">0.45</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> <span class="fl">0.55</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.3098800156513043 with absolute error &lt; 0.0000000000000034</code></pre>
+</div>
+</div>
+<p>Or we can just subtract.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.55</span>, <span class="dv">9</span>, <span class="dv">11</span>) <span class="sc">-</span> <span class="fu">pbeta</span>(<span class="fl">0.45</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3098800156513036</code></pre>
+</div>
+</div>
+<p>Sometimes subtraction can be a problem with numerical computing, but if subtraction will cause a problem, so will numerical integration, so this latter method is what I would default to.</p>
+</section>
+<section id="q3" class="level2">
+<h2 class="anchored" data-anchor-id="q3">Q3</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Data is the best way to become more confident in your assertions. You flip the coin 200 more times and end up with 109 heads and 111 tails. Now what is the probability that the coin is fair, give or take 5%?</p>
+</div>
+</div>
+</div>
+<p>Alright, I’ve already talked enough about how to solve these problems, this is just another of the same thing. So let’s just solve it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbeta</span>(<span class="fl">0.55</span>, <span class="dv">109</span>, <span class="dv">111</span>) <span class="sc">-</span> <span class="fu">pbeta</span>(<span class="fl">0.45</span>, <span class="dv">109</span>, <span class="dv">111</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8589371426532764</code></pre>
+</div>
+</div>
+<p>That’s a pretty good chance, I think.</p>
+<!-- end of file -->
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

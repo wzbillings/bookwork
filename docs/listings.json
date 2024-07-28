@@ -1,18 +1,24 @@
 [
   {
+    "listing": "/bsfw.html",
+    "items": [
+      "/bsfw/cp11/index.html",
+      "/bsfw/cp10/index.html",
+      "/bsfw/cp09/index.html",
+      "/bsfw/cp06/index.html",
+      "/bsfw/cp05/index.html",
+      "/bsfw/cp04/index.html",
+      "/bsfw/cp08/index.html",
+      "/bsfw/cp07/index.html",
+      "/bsfw/cp03/index.html",
+      "/bsfw/cp02/index.html",
+      "/bsfw/cp01/index.html"
+    ]
+  },
+  {
     "listing": "/index.html",
     "items": [
-      "/posts/cp11/index.html",
-      "/posts/cp10/index.html",
-      "/posts/cp09/index.html",
-      "/posts/cp06/index.html",
-      "/posts/cp05/index.html",
-      "/posts/cp04/index.html",
-      "/posts/cp08/index.html",
-      "/posts/cp07/index.html",
-      "/posts/cp03/index.html",
-      "/posts/cp02/index.html",
-      "/posts/cp01/index.html"
+      "/bsfw.html"
     ]
   }
 ]

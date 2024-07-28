@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Zane's DBSFW Solutions"
+  title: "Book Solutions and Notes"
   navbar:
     right:
       - icon: house-door-fill

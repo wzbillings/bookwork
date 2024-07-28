@@ -1,16 +1,16 @@
 ---
-title: "Doing Bayesian Statistics the Fun Way -- Solutions"
+title: "Bookwork Blog"
 listing:
-  contents: posts
-  sort:
-    - "date desc"
-    - "title desc"
-  type: default
-  categories: false
-  sort-ui: false
-  filter-ui: false
-page-layout: full
-title-block-banner: true
+  contents:
+    - "*.qmd"
+    - "!index.qmd"
+  sort: "title desc"
+  type: grid
+  categories: true
+  sort-ui: true
+  filter-ui: true
 ---
 
-I've been working through this book, and I decided to type my solutions so it will not be a problem when I inevitably lose the papers.
+This is my blog for storing notes and work from books that I read, so I could
+consolidate them all into one web page.
+

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Bookwork Blog – Book Solutions and Notes</title>
+<title>Bayesian Statistics the Fun Way – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -80,9 +80,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -136,7 +136,7 @@ window.Quarto = {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -174,89 +174,351 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page">
+      <h1 class="title">Bayesian Statistics the Fun Way</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Statistics</div>
+                <div class="quarto-category">Bayesian</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Bayesian">Bayesian <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Statistics">Statistics <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Bookwork Blog</h1>
+
+
+
+
+<p>Notes and solutions for “Bayesian Statistics the Fun Way” by Will Kurt, No Starch Press, 2019.</p>
+
+
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1722142909000" data-listing-file-modified-sort="1722142909838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
+<div class="thumbnail">
+<p><a href="./bsfw/cp11/index.html" class="no-external"></a></p><a href="./bsfw/cp11/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp11/index.html" class="no-external"></a></p>
 </div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>This is my blog for storing notes and work from books that I read, so I could consolidate them all into one web page.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-author" data-direction="asc">
-          Author
-        </option>
-     </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp11/index.html" class="no-external">Chapter 11: Measuring the Spread of Our Data</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp11/index.html" class="no-external"></a>
 </div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Statistics,Bayesian" data-listing-file-modified-sort="1722181236398" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="./bsfw.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./static/bsfw.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Bayesian Statistics the Fun Way
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Statistics'); return false;">
-Statistics
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Bayesian'); return false;">
-Bayesian
+<div class="listing-description">
+<a href="./bsfw/cp11/index.html" class="no-external">This chapter defines the mean absolute deviation (MAD), variance, and standard deviation of a set of numbers.</a>
 </div>
 </div>
-<div class="card-text listing-description">
-Notes and solutions for “Bayesian Statistics the Fun Way” by Will Kurt, No Starch Press, 2019.
+<div class="metadata">
+<a href="./bsfw/cp11/index.html" class="no-external">
+<div class="listing-date">
+Jul 28, 2024
 </div>
-<div class="card-attribution card-text-small start">
 <div class="listing-author">
-
-</div>
-</div>
-</div>
+Zane Billings
 </div>
 </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1722130112000" data-listing-file-modified-sort="1722130112354" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="394">
+<div class="thumbnail">
+<p><a href="./bsfw/cp10/index.html" class="no-external"></a></p><a href="./bsfw/cp10/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp10/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp10/index.html" class="no-external">Chapter 10: Introduction to Averaging and Parameter Estimation</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp10/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp10/index.html" class="no-external">This chapter covers the basics of parameter estimation, particularly focusing on how to compute unweighted and weighted averages (resulting in the formula for the discrete…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp10/index.html" class="no-external">
+<div class="listing-date">
+Jul 27, 2024
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1721420164000" data-listing-file-modified-sort="1721420164636" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="789">
+<div class="thumbnail">
+<p><a href="./bsfw/cp09/index.html" class="no-external"></a></p><a href="./bsfw/cp09/index.html" class="no-external">
+<p class="card-img-top"><img src="bsfw\cp09\index_files\figure-html\unnamed-chunk-6-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./bsfw/cp09/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp09/index.html" class="no-external">Chapter 9: Bayesian Priors and Working with Probability Distributions</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp09/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp09/index.html" class="no-external">This chapter introduces the concept of a prior probability distribution, rather than a single point prior (which is also, technically, a prior distribution, but it is the…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp09/index.html" class="no-external">
+<div class="listing-date">
+Jul 19, 2024
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1670734800000" data-listing-file-modified-sort="1670776294250" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1562">
+<div class="thumbnail">
+<p><a href="./bsfw/cp06/index.html" class="no-external"></a></p><a href="./bsfw/cp06/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp06/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp06/index.html" class="no-external">Chapter 6: Conditional Probability</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp06/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp06/index.html" class="no-external">This chapter introduces the concept of <strong>conditional probability</strong>, which, in my opinion, is one of the least intuitive parts of probability. I didn’t take a lot of notes here…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp06/index.html" class="no-external">
+<div class="listing-date">
+Dec 11, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1670648400000" data-listing-file-modified-sort="1670776437824" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1083">
+<div class="thumbnail">
+<p><a href="./bsfw/cp05/index.html" class="no-external"></a></p><a href="./bsfw/cp05/index.html" class="no-external">
+<p class="card-img-top"><img src="bsfw\cp05\index_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./bsfw/cp05/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp05/index.html" class="no-external">Chapter 5: the Beta Distribution</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp05/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp05/index.html" class="no-external">I actually took notes this time! I already know a pretty good amount about the beta distribution, but I’ve never used it like this before.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp05/index.html" class="no-external">
+<div class="listing-date">
+Dec 10, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1670648400000" data-listing-file-modified-sort="1722140725317" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1036">
+<div class="thumbnail">
+<p><a href="./bsfw/cp04/index.html" class="no-external"></a></p><a href="./bsfw/cp04/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp04/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp04/index.html" class="no-external">Chapter 4: Creating a Binomial Probability Distribution</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp04/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp04/index.html" class="no-external">My original intention was also to post all of the notes I took while reading through this book. But we’re still in stuff that I felt pretty comfortable with (because I’ve…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp04/index.html" class="no-external">
+<div class="listing-date">
+Dec 10, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1721414032236" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="507">
+<div class="thumbnail">
+<p><a href="./bsfw/cp08/index.html" class="no-external"></a></p><a href="./bsfw/cp08/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp08/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp08/index.html" class="no-external">Chapter 8: Priors, posteriors, and likelihoods of Bayes’ Theorem</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp08/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp08/index.html" class="no-external">This chapter is mostly about Bayes’ factors without saying that it’s about Bayes factors, but it also discusses what happens when prior beliefs change (in a particularly…<em></em></a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp08/index.html" class="no-external">
+<div class="listing-date">
+Dec 9, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1671284105379" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="526">
+<div class="thumbnail">
+<p><a href="./bsfw/cp07/index.html" class="no-external"></a></p><a href="./bsfw/cp07/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp07/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp07/index.html" class="no-external">Chapter 7: Bayes’s Theorem with LEGO</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp07/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp07/index.html" class="no-external">Again, no notes. Mostly because this chapter is super short. Just for good measure, I’ll do the mathematician thing and say. Recall Bayes’ Theorem:</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp07/index.html" class="no-external">
+<div class="listing-date">
+Dec 9, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1722140739114" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="450">
+<div class="thumbnail">
+<p><a href="./bsfw/cp03/index.html" class="no-external"></a></p><a href="./bsfw/cp03/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp03/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp03/index.html" class="no-external">Chapter 3: The Logic of Uncertainty</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp03/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp03/index.html" class="no-external">What is the probability of rolling a 20 three times in a row on a 20-sided die?</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp03/index.html" class="no-external">
+<div class="listing-date">
+Dec 9, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1670389200000" data-listing-file-modified-sort="1722140715369" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="403">
+<div class="thumbnail">
+<p><a href="./bsfw/cp02/index.html" class="no-external"></a></p><a href="./bsfw/cp02/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp02/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp02/index.html" class="no-external">Chapter 2: Measuring Uncertainty</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp02/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp02/index.html" class="no-external">What is the probability of rolling two six-sided dice and getting a value greater than 7?</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp02/index.html" class="no-external">
+<div class="listing-date">
+Dec 7, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1670302800000" data-listing-file-modified-sort="1722140706171" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="355">
+<div class="thumbnail">
+<p><a href="./bsfw/cp01/index.html" class="no-external"></a></p><a href="./bsfw/cp01/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./bsfw/cp01/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./bsfw/cp01/index.html" class="no-external">Chapter 1: Bayesian Thinking and Everyday Reasoning</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./bsfw/cp01/index.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./bsfw/cp01/index.html" class="no-external">I already have a math degree where I focused on stats, so I kind of rushed through this chapter.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./bsfw/cp01/index.html" class="no-external">
+<div class="listing-date">
+Dec 6, 2022
+</div>
+<div class="listing-author">
+Zane Billings
+</div>
+</a>
+</div>
 </div>
 </div>
 <div class="listing-no-matching d-none">

@@ -1,26 +1,38 @@
 [
   {
-    "listing": "/bsfw.html",
+    "listing": "/index.html",
     "items": [
-      "/bsfw/cp13/index.html",
-      "/bsfw/cp12/index.html",
-      "/bsfw/cp11/index.html",
-      "/bsfw/cp10/index.html",
-      "/bsfw/cp09/index.html",
-      "/bsfw/cp06/index.html",
-      "/bsfw/cp05/index.html",
-      "/bsfw/cp04/index.html",
-      "/bsfw/cp08/index.html",
-      "/bsfw/cp07/index.html",
-      "/bsfw/cp03/index.html",
-      "/bsfw/cp02/index.html",
-      "/bsfw/cp01/index.html"
+      "/sr.html",
+      "/sr/cp8.html",
+      "/sr/cp7.html",
+      "/sr/cp6.html",
+      "/sr/cp5.html",
+      "/sr/cp4.html",
+      "/sr/cp3.html",
+      "/sr/cp2.html",
+      "/sr/cp1.html",
+      "/bsfw.html",
+      "/sr/week4.html",
+      "/sr/week3.html",
+      "/sr/week2.html",
+      "/sr/week1.html"
     ]
   },
   {
-    "listing": "/index.html",
+    "listing": "/sr.html",
     "items": [
-      "/bsfw.html"
+      "/sr/cp8.html",
+      "/sr/cp7.html",
+      "/sr/cp6.html",
+      "/sr/week4.html",
+      "/sr/week3.html",
+      "/sr/week2.html",
+      "/sr/week1.html",
+      "/sr/cp4.html",
+      "/sr/cp3.html",
+      "/sr/cp2.html",
+      "/sr/cp5.html",
+      "/sr/cp1.html"
     ]
   }
 ]

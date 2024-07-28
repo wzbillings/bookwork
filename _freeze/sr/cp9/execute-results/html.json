@@ -1,0 +1,15 @@
+{
+  "hash": "0481574fd04ab3b642281a4263227df5",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Chapter 9: \"\ndraft: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(rethinking)\nlibrary(dagitty)\n```\n:::\n\n\n\n\nThis chapter covers Markov Chain Monte Carlo, Gibbs sampling, Hamiltonian\nMonte Carlo, and the HMC implementation in `rethinking`.\n\n## Chapter notes\n\n\n\n## Exercises\n\n### 9E1\n\nThe simple Metropolis algorithm requires that the proposal distribution must\nbe symmetric.\n\n### 9E2\n\nGibbs sampling achieves better efficiency than the simple Metropolis algorithm\nby using conjugate prior distributions to adapt the proposal distribution\nas the parameters change. This allows a Gibbs sampler to make intelligent\njumps around the posterior distribution, rather than blindly guessing. However,\nGibbs samplers require the use of these conjugate priors, and often fail\nto retain their efficiency for high-dimensional, multilevel parameter spaces.\n\n### 9E3\n\nHamiltonian Monte Carlo cannot handle discrete parameters, because the gradient\nis not continuous and the physics simulation that generates proposals will\nnot be able to move along a discrete parameter space.\n\n### 9E4\n\nThe effective number of samples is the number of samples from the posterior\nadjusted for the autocorrelation between successive samples. Autocorrelated\nsamples do not provide as much information as independent samples, and so\nmultiple highly autocorrelated draws give us less information than the reported\nsample size would have if the draws were independent. Conversely, anticorrelated\nsamples provide more information than the corresponding number of independent\nsamples.\n\n### 9E5\n\nIf the chains are mixing correctly, $\\hat{R}$ should approach 1.\n\n<!-- END OF FILE -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

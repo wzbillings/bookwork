@@ -2,8 +2,8 @@
 title: "Bookwork Blog"
 listing:
   contents:
-    - "*.qmd"
-    - "!index.qmd"
+    - "sr.qmd"
+    - "bsfw.qmd"
   sort: "title desc"
   type: grid
   categories: true

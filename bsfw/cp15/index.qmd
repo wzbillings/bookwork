@@ -242,6 +242,31 @@ results <- runif(number.of.samples) <= true.rate
 
 :::
 
-Answer
+I think this question, like many others in this book, is quite poorly worded.
+But I'll assume that what we actually want to know is how many samples we would
+need to convince either person that the $P(B > A) = 0.95$.
+
+First we'll run a simulate for the director of marketing, using their priors.
+
+```{r}
+samples_seq <- seq(10, 10000, 10)
+true_a <- 0.25
+true_b <- 0.35
+prior_alpha <- 300
+prior_beta <- 700
+
+res <- sapply(
+	samples_seq,
+	function (n_samples) {
+		sample_a <- runif(n_samples) <= true_a
+		sample_b <- runif(n_samples) <= true_b
+		imp <- sample_a / sample_b
+		
+	}
+)
+
+
+```
+
 
 <!-- END OF FILE -->

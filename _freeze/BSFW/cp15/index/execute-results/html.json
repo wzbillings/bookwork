@@ -1,0 +1,15 @@
+{
+  "hash": "8d46b137aebce581281a4ef541a5fbee",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Chapter 14: Parameter Estimation with Prior Probabilities\"\ndraft: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\noptions(\"scipen\" = 9999, \"digits\" = 4)\n```\n:::\n\n\n\n\n\nNotes\n\n## Q1\n\n::: {.callout-note appearance=\"simple\"}\n\nSuppose you're playing air hockey with some friends and flip a coin to see who\nstarts with the puck. After playing 12 times, you realize that the friend who\nbrings the coin almost always seems to go first: 9 out of 12 times. Some of your\nother friends start to get suspicious. Define prior probability distributions\nfor the following beliefs:\n\n1. One person who weakly believes that the friend is cheating and the true\nrate of coming up heads is closer to 70 percent.\n1. One person who very strongly trusts that the coin is fair and provided a\n50 percent chance of coming up heads.\n1. One person who strongly believes the coin is biased to come up heads 70\npercent of the time.\n\n:::\n\nAnswer\n\n<!-- END OF FILE -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

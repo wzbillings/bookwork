@@ -7,8 +7,6 @@ draft: false
 options("scipen" = 9999, "digits" = 4)
 ```
 
-Notes
-
 ## Q1
 
 ::: {.callout-note appearance="simple"}

@@ -1,0 +1,247 @@
+---
+title: "Chapter 15: From Parameter Estimation to Hypothesis Testing"
+draft: true
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 4)
+```
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+Suppose a director of marketing with many years of experience tells you he
+believes very strongly that the variant without images (B) won't perform
+any differently than the original variant. How could you account for this in
+our model? Implement this change and see how your final conclusions change
+as well.
+
+:::
+
+We can account for the director of marketing's experience by adjusting our
+priors. To make our prior belief that the conversion rates are the same more
+stringent, we could use, say, a $\text{Beta}(300, 700)$ prior.
+
+That means the posterior distribution for variant A is $\text{Beta}(336, 814)$
+and the posterior distribution for variant B is $\text{Beta}(350, 800)$. We
+can repeat the Monte Carlo simulation for these priors and draw $100,000$
+samples for each variant.
+
+```{r q1 sim}
+#| code-fold: true
+
+set.seed(370)
+n_sims <- 1e5
+a_sims <- rbeta(n_sims, 336, 814)
+b_sims <- rbeta(n_sims, 350, 800)
+
+a_density <- density(a_sims, kernel = "epanechnikov")
+b_density <- density(b_sims, kernel = "epanechnikov")
+
+plot(
+	NULL, NULL,
+	xlim = c(0.1, 0.5),
+	ylim = c(0, 30),
+	xlab = "Conversion rate",
+	ylab = "Density",
+	main = "Simulated conversion rate distributions for variants A and B",
+	axes = FALSE
+)
+lines(a_density, lwd = 3, col = "dodgerblue2")
+lines(b_density, lwd = 3, col = "springgreen3")
+axis(1, seq(0.1, 0.5, 0.1))
+axis(2, seq(0, 30, 10))
+legend(
+	0.1, 30, c("A", "B"), col = c("dodgerblue2", "springgreen3"),
+	lty = 1, lwd = 3, box.lwd = 0, cex = 1.5
+)
+```
+
+We can see that the posterior distributions for variants A and B are much
+closer together. In total, $`r round(mean(b_sims > a_sims) * 100, 2)`\%$ of the
+simulated conversation rates for variant B were greater than the simulated
+conversation rate for variant A. The empirical CDF for relative improvements
+is shown below.
+
+```{r q1 ecdf}
+#| code-fold: true
+imp <- b_sims / a_sims
+imp_ecdf <- ecdf(imp)
+xs <- seq(min(imp), max(imp), length.out = 1e3)
+ys <- imp_ecdf(xs)
+plot(
+	NULL, NULL,
+	main = "Emperical cdf of simulated relative improvements of B over A",
+	xlab = "Relative improvement of B over A",
+	ylab = "Empirical cumulative probability",
+	axes = FALSE,
+	xlim = c(0.68, 1.42),
+	ylim = c(-0.02, 1.02),
+	xaxs = "i", yaxs = "i"
+)
+abline(h = 0.25, lty = 2, col = "gray")
+abline(h = 0.50, lty = 2, col = "gray")
+abline(h = 0.75, lty = 2, col = "gray")
+abline(v = xs[which.min(abs(ys - 0.25))], lty = 2, col = "gray")
+abline(v = xs[which.min(abs(ys - 0.50))], lty = 2, col = "gray")
+abline(v = xs[which.min(abs(ys - 0.75))], lty = 2, col = "gray")
+lines(
+	xs, ys,
+	lwd = 3, col = "firebrick4", type = "s",
+)
+axis(1, seq(0.7, 1.4, 0.1))
+axis(2, seq(0, 1, 0.25))
+```
+
+Under the new more stringent prior, we can see that nearly a quarter of all
+samples showed a higher conversion rate for variant A than variant B, and
+very few samples showed a relative improvement of variant B more than 1.2.
+So while our simulation suggests that B is most likely better than A, we are
+less confident in that assertion, and the magnitude of improvement is
+estimated to be smaller on average.
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+The lead designer sees your results and insists there's no way that variant B
+should perform better with no images. She feels that you should assume the
+conversion rate for variant B is closer to $20\%$ than $30\%$. Implement a
+solution for this and again review the results of our analysis.
+
+:::
+
+To accomodate the lead designer's prior beliefs, we'll return to our original
+prior of $\text{Beta}(3, 7)$. However, we'll only use this prior for variant
+A. For variant B, we want a prior that has a mean conversion rate closer to
+$20\%$, so we'll use $\text{Beta}(2, 8)$. Let's take a look at the priors.
+
+```{r}
+#| label: q2 priors
+#| code-fold: true
+
+xs <- seq(1e-4, 1 - 1e-4, 1e-4)
+a_prior_q2 <- dbeta(xs, 3, 7)
+b_prior_q2 <- dbeta(xs, 2, 8)
+
+plot(
+	NULL, NULL,
+	xlim = c(0, 1),
+	ylim = c(0, 3.6),
+	xlab = "Conversion rate",
+	ylab = "Density",
+	main = "Prior conversion rate distributions for variants A and B",
+	axes = FALSE
+)
+lines(xs, a_prior_q2, lwd = 3, col = "dodgerblue2")
+lines(xs, b_prior_q2, lwd = 3, col = "springgreen3")
+axis(1, seq(0, 1, 0.25))
+axis(2, seq(0, 3.6, 0.5))
+legend(
+	0.6, 3.2, c("A", "B"), col = c("dodgerblue2", "springgreen3"),
+	lty = 1, lwd = 3, box.lwd = 0, cex = 1.5
+)
+```
+
+We can see that our priors now assume the average conversion rate for variant
+B is around $\20%$ as desired, although both priors are not too strict. So
+now our posterior distributions given the observed data are
+$\text{Beta}(39, 121)$ for variant A and $\text{Beta}(52, 108)$ for variant B.
+Let's take a look at the posterior distributions.
+
+```{r}
+#| label: q2 posteriors
+#| code-fold: true
+
+xs <- seq(1e-4, 1 - 1e-4, 1e-4)
+a_post_q2 <- dbeta(xs, 39, 121)
+b_post_q2 <- dbeta(xs, 52, 108)
+
+plot(
+	NULL, NULL,
+	xlim = c(0, 1),
+	ylim = c(0, 12),
+	xlab = "Conversion rate",
+	ylab = "Density",
+	main = "Posterior conversion rate distributions for variants A and B",
+	axes = FALSE
+)
+lines(xs, a_post_q2, lwd = 3, col = "dodgerblue2")
+lines(xs, b_post_q2, lwd = 3, col = "springgreen3")
+axis(1, seq(0, 1, 0.25))
+axis(2, seq(0, 12, 2))
+legend(
+	0.6, 10, c("A", "B"), col = c("dodgerblue2", "springgreen3"),
+	lty = 1, lwd = 3, box.lwd = 0, cex = 1.5
+)
+```
+
+Our posterior distributions again seem to show that the conversion rate for
+B is, on average, higher than the conversion rate for A. However, the spread
+of the two posterior distributions is now different and we are less certain in
+the magnitude of the conversion rate for B than we are for B. Let's repeat
+the Monte Carlo simulation with these new priors and look at the ECDF of
+improvements.
+
+```{r q2 ecdf}
+#| code-fold: true
+a_sims_q2 <- rbeta(n_sims, 39, 121)
+b_sims_q2 <- rbeta(n_sims, 52, 108)
+imp_q2 <- b_sims_q2 / a_sims_q2
+imp_ecdf_q2 <- ecdf(imp_q2)
+xs <- seq(min(imp_q2), max(imp_q2), length.out = 1e3)
+ys <- imp_ecdf(xs)
+plot(
+	NULL, NULL,
+	main = "Emperical cdf of simulated relative improvements of B over A",
+	xlab = "Relative improvement of B over A",
+	ylab = "Empirical cumulative probability",
+	axes = FALSE,
+	xlim = c(0.48, 3),
+	ylim = c(-0.02, 1.02),
+	xaxs = "i", yaxs = "i"
+)
+abline(h = 0.25, lty = 2, col = "gray")
+abline(h = 0.50, lty = 2, col = "gray")
+abline(h = 0.75, lty = 2, col = "gray")
+abline(v = xs[which.min(abs(ys - 0.25))], lty = 2, col = "gray")
+abline(v = xs[which.min(abs(ys - 0.50))], lty = 2, col = "gray")
+abline(v = xs[which.min(abs(ys - 0.75))], lty = 2, col = "gray")
+lines(
+	xs, ys,
+	lwd = 3, col = "firebrick4", type = "s",
+)
+axis(1, seq(0.5, 3, 0.5))
+axis(2, seq(0, 1, 0.25))
+```
+
+Under these priors, $`r round(mean(b_sims_q2 > a_sims_q2) * 100, 2)`\%$ of
+sampled conversation rates for variant B were higher than the sampled conversion
+rates for variant A. So despite the lowered probability for variant B, we are
+still very confident that B outperforms A, although we are slightly less
+confident than the example in the book using the same priors for B and A.
+
+## Q3
+
+::: {.callout-note appearance="simple"}
+
+Assume that being 95% certain means that you're more or less "convinced" of
+a hypothesis. Also assume that there's no longer any limit to the number of
+emails you can send in your test. If the true conversion rate for A is 0.25
+and the true conversion rate for B is 0.3, explore how many samples it would
+take to convince the director of marketing that B was in fact superior.
+Explore the same for the lead designer. You can generate samples of conversions
+with the following snippet of R:
+
+````{r}
+true.rate <- 0.25
+number.of.samples <- 100
+results <- runif(number.of.samples) <= true.rate
+```
+
+:::
+
+Answer
+
+<!-- END OF FILE -->

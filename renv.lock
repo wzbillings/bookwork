@@ -1402,17 +1402,6 @@
         "utils"
       ],
       "Hash": "d9f5db3d5667bed8d453192e6917e2fd"
-    },
-    "zlib": {
-      "Package": "zlib",
-      "Version": "1.0.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "Rcpp"
-      ],
-      "Hash": "69c4006026d0d48bfc0635b238ff7a70"
     }
   }
 }

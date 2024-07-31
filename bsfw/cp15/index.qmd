@@ -1,6 +1,6 @@
 ---
 title: "Chapter 15: From Parameter Estimation to Hypothesis Testing"
-draft: true
+draft: false
 ---
 
 ```{r setup}
@@ -145,7 +145,7 @@ legend(
 ```
 
 We can see that our priors now assume the average conversion rate for variant
-B is around $\20%$ as desired, although both priors are not too strict. So
+B is around $20\%$ as desired, although both priors are not too strict. So
 now our posterior distributions given the observed data are
 $\text{Beta}(39, 121)$ for variant A and $\text{Beta}(52, 108)$ for variant B.
 Let's take a look at the posterior distributions.
@@ -231,14 +231,7 @@ a hypothesis. Also assume that there's no longer any limit to the number of
 emails you can send in your test. If the true conversion rate for A is 0.25
 and the true conversion rate for B is 0.3, explore how many samples it would
 take to convince the director of marketing that B was in fact superior.
-Explore the same for the lead designer. You can generate samples of conversions
-with the following snippet of R:
-
-````{r}
-true.rate <- 0.25
-number.of.samples <- 100
-results <- runif(number.of.samples) <= true.rate
-```
+Explore the same for the lead designer.
 
 :::
 
@@ -246,27 +239,161 @@ I think this question, like many others in this book, is quite poorly worded.
 But I'll assume that what we actually want to know is how many samples we would
 need to convince either person that the $P(B > A) = 0.95$.
 
-First we'll run a simulate for the director of marketing, using their priors.
+So, for a number of different sample sizes, we'll simulate conversions. Then,
+from those simulated conversion trials (pretend they are real data), we'll
+run our original Monte Carlo simulation using the updated prior based on the
+number of conversion events we observed for variants A and B. We'll repeat
+this entire scheme 100 times for both the director and the lead designer in
+order to make sure our results aren't due to variance. Then we can plot the
+results.
 
 ```{r}
-samples_seq <- seq(10, 10000, 10)
-true_a <- 0.25
-true_b <- 0.35
-prior_alpha <- 300
-prior_beta <- 700
+#| label: Q3
+#| code-fold: true
 
-res <- sapply(
-	samples_seq,
-	function (n_samples) {
-		sample_a <- runif(n_samples) <= true_a
-		sample_b <- runif(n_samples) <= true_b
-		imp <- sample_a / sample_b
+# This function runs a single round of our simulation procedure. That is,
+# we generate n_samples number of trials, where a trial is defined as one
+# variant A email being sent and one variant B email being sent. We simulate
+# from the true conversion rate whether those are conversions, and then create
+# the posterior and repeat our MC simulation as before.
+simulate_probability <- function (
+		n_samples, true_a, true_b,
+		prior_alpha_a, prior_alpha_b,
+		prior_beta_a, prior_beta_b
+	) {
+		# Generate the number of conversions in this simulation
+		events_a <- runif(n_samples) <= true_a
+		events_b <- runif(n_samples) <= true_b
 		
+		# Calculate the parameters for the posterior distributions
+			post_alpha_a <- prior_alpha_a + sum(events_a)
+		post_beta_a <- prior_beta_a + sum(!events_a)
+		post_alpha_b <- prior_alpha_b + sum(events_b)
+		post_beta_b <- prior_beta_b + sum(!events_b)
+		
+		# Now run the Monte Carlo simulation from the implied posterior
+		samples_a <- rbeta(1e5, post_alpha_a, post_beta_a)
+		samples_b <- rbeta(1e5, post_alpha_b, post_beta_b)
+		
+		# Get the probability b > a
+		prob_bga <- mean(samples_b > samples_a)
+		return(prob_bga)
 	}
+
+# This function runs the simulate_probability() function multiple times, each
+# time using a different number of samples defined by the samples_seq argument.
+# The result is given as a matrix where each column is the output of one
+# run of simulate_probability().
+run_sample_seq <- function(
+		samples_seq = seq(25, 1000, 25),
+		...
+	) {
+	sapply(
+		samples_seq,
+		\(n) simulate_probability(n, ...)
+	)
+}
+
+# This function will take in our results and return a data frame.
+summarize_replicate_results <- function(res, alpha = 0.1) {
+	res_mean <- rowMeans(res)
+	res_PI <- apply(res, 1, quantile, probs = c(alpha / 2, 1 - alpha / 2))
+	out <- data.frame(
+		est = res_mean,
+		lwr = res_PI[1, ],
+		upr = res_PI[2, ]
+	)
+	return(out)
+}
+
+samples_vector <- seq(25, 1000, 25)
+
+# Run the simulation for the director
+sims_director <- replicate(
+	100,
+	run_sample_seq(
+		samples_seq = samples_vector,
+		true_a = 0.25,
+		true_b = 0.35,
+		prior_alpha_a = 300,
+		prior_alpha_b = 300,
+		prior_beta_a = 700,
+		prior_beta_b = 700
+	)
+)
+res_director <- cbind(
+	n = samples_vector,
+	person = 1,
+	summarize_replicate_results(sims_director)
 )
 
+# And for the designer
+sims_designer <- replicate(
+	100,
+	run_sample_seq(
+		samples_seq = samples_vector,
+		true_a = 0.25,
+		true_b = 0.35,
+		prior_alpha_a = 3,
+		prior_alpha_b = 7,
+		prior_beta_a = 2,
+		prior_beta_b = 8
+	)
+)
+res_designer <- cbind(
+	n = samples_vector,
+	person = 2,
+	summarize_replicate_results(sims_designer)
+)
 
+# Data cleaning
+res_combined <- rbind(res_director, res_designer)
+res_combined$person <- factor(
+	res_combined$person,
+	levels = c(1, 2),
+	labels = c("Director of Marketing", "Lead Designer")
+)
+
+# Get the intercepts for the number of samples closest to 95% probability
+director_n <- res_director$n[which.min(abs(res_director$est - 0.95))]
+designer_n <- res_director$n[which.min(abs(res_designer$est - 0.95))]
+
+# Plot the results
+library(ggplot2)
+res_combined |>
+	ggplot() +
+	aes(
+		x = n, y = est, ymin = lwr, ymax = upr, group = person,
+		color = person, fill = person, shape = person
+	) +
+	geom_ribbon(alpha = 0.3, color = "transparent") +
+	geom_hline(yintercept = 0.95, linetype = 2, linewidth = 1) +
+	geom_vline(
+		xintercept = c(director_n, designer_n),
+		linetype = 2, linewidth = 1
+	) +
+	geom_line(linewidth = 1.5, alpha = 0.8) +
+	geom_point(size = 3, stroke = 2, fill = "white", alpha = 0.8) +
+	scale_color_manual(values = c("dodgerblue2", "firebrick3")) +
+	scale_fill_manual(values = c("dodgerblue2", "firebrick3")) +
+	scale_shape_manual(values = c(21, 22)) +
+	hgp::theme_ms() +
+	labs(
+		x = "Number of samples",
+		y = "Probability of B > A",
+		color = NULL,
+		fill = NULL,
+		shape = NULL
+	)
 ```
+
+From the plot, we can see that we would need about 250 samples to convince the
+lead designer, and around 475 samples to convince the director of marketing.
+However, if we wanted to make sure we take the sampling variability into
+account, (instead assuming that our lower bound for the probability over all of
+our sampling replications is 95% or higher), we would actually need around 475
+samples to convince the lead designer and 750 samples to convince the director
+of marketing.
 
 
 <!-- END OF FILE -->

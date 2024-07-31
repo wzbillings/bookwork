@@ -1,0 +1,93 @@
+---
+title: "Chapter 16: Introduction to the Bayes factor and posterior odds"
+draft: false
+code-fold: true
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 4)
+```
+
+Recall that from Bayes' theorem,
+$$P(H \mid D) \propto P(H) \times P(D\mid H).$$
+If we want to compare the relative likelihood of two events, we do not need the
+normalizing factor $P(D)$, because it will cancel out, so we can use the
+ratio
+$$\frac{P(H_1) \times P(D\mid H_1)}{P(H_2) \times P(D\mid H_2)}.$$
+The second part,
+$$B = \frac{P(D\mid H_1)}{P(D\mid H_2)},$$
+is called the *Bayes factor* and measures the relative likelihood of two
+hypothesis if our prior belief in both is equal. The first part,
+$$O(H_1) = \frac{P(H_1)}{P(H_2)},$$
+is called the *prior odds* even though it's a risk ratio (it is only really
+the "odds" if $H_1$ and $H_2$ are mutually exclusive which is rarely true
+in real life). When we combine the two, we get the posterior odds:
+$$\tilde{O}(H_1) = O(H_1) \times B.$$
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+Returning to the dice problem, assume that your friend made a mistake and
+suddenly realized that there were, in fact, two loaded dice and only one
+fair die. How does this change the prior and therefore the posterior
+odds for our problem? Are you more willing to believe that they die being
+rolled is the loaded die?
+
+:::
+
+The likelihoods of the die rolls are still the same, so we don't need to edit
+that. However, we need to update our prior possibilities to
+$$P(H_1) = 2/3; \text{ and } P(H_2) = 1/3,$$
+where $H_1$ is the hypothesis that the die is loaded and $H_2$ is the
+hypothesis that the die is fair.
+
+When we recompute teh posterior odds, we get
+$$\frac{2/3}{1/3} \times 3.77 = 2 \times 3.77 = 7.54,$$
+so given the data and our prior knowledge, we now believe that the probability
+that the rolled die was loaded is $7.5 \times$ higher than the probability that
+the rolled die was fair.
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+Returning to the rare diseases example, suppose you go to the doctor and after
+having your ears cleaned you notice that your symptoms persist. Even worse, you
+have a new symptom: vertigo. The doctor proposes another possible explanation,
+labyrinthitis, which is a viral infection of the inner ear in which 98 percent of
+cases involve vertigo. However, hearing loss and tinnitus are less common in
+this disease; hearing loss occurs only 30 percent of the time and tinnitus
+occurs only 28 percent of the time. Vertigo is also a possible symptom of
+vestibular schwannoma, but occurs in only 49 percent of cases. In the general
+population, 35 people per million contract labyrinthitis annually. What is the
+posterior odds when you compare the hypothesis that you have labyrinthitis
+against the hypothesis that you have vestibular schwannoma?
+
+:::
+
+If you had vestibular schwannoma ($H_\text{VS}$), the probability of experiencing
+hearing loss, tinnitus, and vertigo would be
+$$P(\text{symptoms} \mid \text{VS}) = 0.94 \times 0.83 \times 0.49 = 0.38.$$
+
+If you had labyrinthitis ($H_\text{L}$), the probability of experiencing all
+three symptoms simultaneously would be
+$$P(\text{symptoms} \mid \text{L}) = 0.30 \times 0.28 \times 0.98 = 0.08.$$
+
+The bayes factor for the ratio of labyrinthitis to vestibular schwannoma is then
+$$B_{\text{L} / \text{VS}} = \frac{0.08}{0.38} = 0.21,$$
+indicating that vestibular schwannoma is about 5 times as likely given your
+currently symptoms, **if** both diseases were equally likely. Not good!
+
+However, if we compute the prior odds of labyrinthitis relative to vestibular
+schwannoma, we get
+$$O(\text{L}) = \frac{35/1000000}{11/1000000} = 3.18.$$
+
+Thus, the posterior odds of labyrinthitis relative to vestibular schwannoma
+is
+$$3.18 \times 0.21 = 0.67,$$
+so given our data and the prevalence of both conditions, so unfortunately it
+seems that vestibular schwannoma is a slightly better explanation than
+labyrinthitis, but the evidence is not extremely strong either way.
+
+<!-- END OF FILE -->

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Zane Billings">
+<meta name="dcterms.date" content="2024-07-31">
 
-<title>Bayesian Statistics the Fun Way – Book Solutions and Notes</title>
+<title>Chapter 16: Introduction to the Bayes factor and posterior odds – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +22,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,35 +104,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -130,17 +135,17 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Book Solutions and Notes</span>
     </a>
   </div>
@@ -176,495 +181,88 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Bayesian Statistics the Fun Way</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">Statistics</div>
-                <div class="quarto-category">Bayesian</div>
-              </div>
-                  </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Chapter 16: Introduction to the Bayes factor and posterior odds</h1>
+                      </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Zane Billings </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2024-07-31</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<p>Notes and solutions for “Bayesian Statistics the Fun Way” by Will Kurt, No Starch Press, 2019.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"scipen"</span> <span class="ot">=</span> <span class="dv">9999</span>, <span class="st">"digits"</span> <span class="ot">=</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Recall that from Bayes’ theorem, <span class="math display">\[P(H \mid D) \propto P(H) \times P(D\mid H).\]</span> If we want to compare the relative likelihood of two events, we do not need the normalizing factor <span class="math inline">\(P(D)\)</span>, because it will cancel out, so we can use the ratio <span class="math display">\[\frac{P(H_1) \times P(D\mid H_1)}{P(H_2) \times P(D\mid H_2)}.\]</span> The second part, <span class="math display">\[B = \frac{P(D\mid H_1)}{P(D\mid H_2)},\]</span> is called the <em>Bayes factor</em> and measures the relative likelihood of two hypothesis if our prior belief in both is equal. The first part, <span class="math display">\[O(H_1) = \frac{P(H_1)}{P(H_2)},\]</span> is called the <em>prior odds</em> even though it’s a risk ratio (it is only really the “odds” if <span class="math inline">\(H_1\)</span> and <span class="math inline">\(H_2\)</span> are mutually exclusive which is rarely true in real life). When we combine the two, we get the posterior odds: <span class="math display">\[\tilde{O}(H_1) = O(H_1) \times B.\]</span></p>
+<section id="q1" class="level2">
+<h2 class="anchored" data-anchor-id="q1">Q1</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Returning to the dice problem, assume that your friend made a mistake and suddenly realized that there were, in fact, two loaded dice and only one fair die. How does this change the prior and therefore the posterior odds for our problem? Are you more willing to believe that they die being rolled is the loaded die?</p>
+</div>
+</div>
+</div>
+<p>The likelihoods of the die rolls are still the same, so we don’t need to edit that. However, we need to update our prior possibilities to <span class="math display">\[P(H_1) = 2/3; \text{ and } P(H_2) = 1/3,\]</span> where <span class="math inline">\(H_1\)</span> is the hypothesis that the die is loaded and <span class="math inline">\(H_2\)</span> is the hypothesis that the die is fair.</p>
+<p>When we recompute teh posterior odds, we get <span class="math display">\[\frac{2/3}{1/3} \times 3.77 = 2 \times 3.77 = 7.54,\]</span> so given the data and our prior knowledge, we now believe that the probability that the rolled die was loaded is <span class="math inline">\(7.5 \times\)</span> higher than the probability that the rolled die was fair.</p>
+</section>
+<section id="q2" class="level2">
+<h2 class="anchored" data-anchor-id="q2">Q2</h2>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Returning to the rare diseases example, suppose you go to the doctor and after having your ears cleaned you notice that your symptoms persist. Even worse, you have a new symptom: vertigo. The doctor proposes another possible explanation, labyrinthitis, which is a viral infection of the inner ear in which 98 percent of cases involve vertigo. However, hearing loss and tinnitus are less common in this disease; hearing loss occurs only 30 percent of the time and tinnitus occurs only 28 percent of the time. Vertigo is also a possible symptom of vestibular schwannoma, but occurs in only 49 percent of cases. In the general population, 35 people per million contract labyrinthitis annually. What is the posterior odds when you compare the hypothesis that you have labyrinthitis against the hypothesis that you have vestibular schwannoma?</p>
+</div>
+</div>
+</div>
+<p>If you had vestibular schwannoma (<span class="math inline">\(H_\text{VS}\)</span>), the probability of experiencing hearing loss, tinnitus, and vertigo would be <span class="math display">\[P(\text{symptoms} \mid \text{VS}) = 0.94 \times 0.83 \times 0.49 = 0.38.\]</span></p>
+<p>If you had labyrinthitis (<span class="math inline">\(H_\text{L}\)</span>), the probability of experiencing all three symptoms simultaneously would be <span class="math display">\[P(\text{symptoms} \mid \text{L}) = 0.30 \times 0.28 \times 0.98 = 0.08.\]</span></p>
+<p>The bayes factor for the ratio of labyrinthitis to vestibular schwannoma is then <span class="math display">\[B_{\text{L} / \text{VS}} = \frac{0.08}{0.38} = 0.21,\]</span> indicating that vestibular schwannoma is about 5 times as likely given your currently symptoms, <strong>if</strong> both diseases were equally likely. Not good!</p>
+<p>However, if we compute the prior odds of labyrinthitis relative to vestibular schwannoma, we get <span class="math display">\[O(\text{L}) = \frac{35/1000000}{11/1000000} = 3.18.\]</span></p>
+<p>Thus, the posterior odds of labyrinthitis relative to vestibular schwannoma is <span class="math display">\[3.18 \times 0.21 = 0.67,\]</span> so given our data and the prevalence of both conditions, so unfortunately it seems that vestibular schwannoma is a slightly better explanation than labyrinthitis, but the evidence is not extremely strong either way.</p>
+<!-- END OF FILE -->
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1722454869000" data-listing-file-modified-sort="1722454869643" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="549">
-<div class="thumbnail">
-<p><a href="./bsfw/cp16/index.html" class="no-external"></a></p><a href="./bsfw/cp16/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp16/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp16/index.html" class="no-external">Chapter 16: Introduction to the Bayes factor and posterior odds</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp16/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp16/index.html" class="no-external">Recall that from Bayes’ theorem, <span class="math display">\[P(H \mid D) \propto P(H) \times P(D\mid H).\]</span> If we want to compare the relative likelihood of two events, we do not need the normalizing…<span class="math inline"></span><span class="math display"></span><span class="math display"></span><em></em><span class="math display"></span><em></em><span class="math inline"></span><span class="math inline"></span><span class="math display"></span></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp16/index.html" class="no-external">
-<div class="listing-date">
-Jul 31, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1722399714000" data-listing-file-modified-sort="1722399714717" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1697">
-<div class="thumbnail">
-<p><a href="./bsfw/cp15/index.html" class="no-external"></a></p><a href="./bsfw/cp15/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp15\index_files\figure-html\q1 sim-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp15/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp15/index.html" class="no-external">Chapter 15: From Parameter Estimation to Hypothesis Testing</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp15/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp15/index.html" class="no-external">Suppose a director of marketing with many years of experience tells you he believes very strongly that the variant without images (B) won’t perform any differently than the…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp15/index.html" class="no-external">
-<div class="listing-date">
-Jul 31, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1722310069000" data-listing-file-modified-sort="1722310069861" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="958">
-<div class="thumbnail">
-<p><a href="./bsfw/cp14/index.html" class="no-external"></a></p><a href="./bsfw/cp14/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp14\index_files\figure-html\q1 prior plot-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp14/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp14/index.html" class="no-external">Chapter 14: Parameter Estimation with Prior Probabilities</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp14/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp14/index.html" class="no-external">Suppose you’re playing air hockey with some friends and flip a coin to see who starts with the puck. After playing 12 times, you realize that the friend who brings the coin…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp14/index.html" class="no-external">
-<div class="listing-date">
-Jul 29, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1722197024000" data-listing-file-modified-sort="1722197024177" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="521">
-<div class="thumbnail">
-<p><a href="./bsfw/cp13/index.html" class="no-external"></a></p><a href="./bsfw/cp13/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp13\index_files\figure-html\Q1 CDF plot-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp13/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp13/index.html" class="no-external">Chapter 13: The Tools of Parameter Estimation</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp13/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp13/index.html" class="no-external">Using the code example for plotting the PDF on page 127, plot the CDF and quantile functions.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp13/index.html" class="no-external">
-<div class="listing-date">
-Jul 28, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1722186851000" data-listing-file-modified-sort="1722186851773" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="674">
-<div class="thumbnail">
-<p><a href="./bsfw/cp12/index.html" class="no-external"></a></p><a href="./bsfw/cp12/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp12/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp12/index.html" class="no-external">Chapter 12: The Normal Distribution</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp12/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp12/index.html" class="no-external">This chapter introduces the normal distribution. There’s not much else to say about it.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp12/index.html" class="no-external">
-<div class="listing-date">
-Jul 28, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1722142909000" data-listing-file-modified-sort="1722142909838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
-<div class="thumbnail">
-<p><a href="./bsfw/cp11/index.html" class="no-external"></a></p><a href="./bsfw/cp11/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp11/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp11/index.html" class="no-external">Chapter 11: Measuring the Spread of Our Data</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp11/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp11/index.html" class="no-external">This chapter defines the mean absolute deviation (MAD), variance, and standard deviation of a set of numbers.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp11/index.html" class="no-external">
-<div class="listing-date">
-Jul 28, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1722130112000" data-listing-file-modified-sort="1722130112354" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="394">
-<div class="thumbnail">
-<p><a href="./bsfw/cp10/index.html" class="no-external"></a></p><a href="./bsfw/cp10/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp10/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp10/index.html" class="no-external">Chapter 10: Introduction to Averaging and Parameter Estimation</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp10/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp10/index.html" class="no-external">This chapter covers the basics of parameter estimation, particularly focusing on how to compute unweighted and weighted averages (resulting in the formula for the discrete…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp10/index.html" class="no-external">
-<div class="listing-date">
-Jul 27, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1721420164000" data-listing-file-modified-sort="1721420164636" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="789">
-<div class="thumbnail">
-<p><a href="./bsfw/cp09/index.html" class="no-external"></a></p><a href="./bsfw/cp09/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp09\index_files\figure-html\unnamed-chunk-6-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp09/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp09/index.html" class="no-external">Chapter 9: Bayesian Priors and Working with Probability Distributions</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp09/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp09/index.html" class="no-external">This chapter introduces the concept of a prior probability distribution, rather than a single point prior (which is also, technically, a prior distribution, but it is the…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp09/index.html" class="no-external">
-<div class="listing-date">
-Jul 19, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1670734800000" data-listing-file-modified-sort="1670776294250" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1562">
-<div class="thumbnail">
-<p><a href="./bsfw/cp06/index.html" class="no-external"></a></p><a href="./bsfw/cp06/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp06/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp06/index.html" class="no-external">Chapter 6: Conditional Probability</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp06/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp06/index.html" class="no-external">This chapter introduces the concept of <strong>conditional probability</strong>, which, in my opinion, is one of the least intuitive parts of probability. I didn’t take a lot of notes here…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp06/index.html" class="no-external">
-<div class="listing-date">
-Dec 11, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1670648400000" data-listing-file-modified-sort="1670776437824" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1083">
-<div class="thumbnail">
-<p><a href="./bsfw/cp05/index.html" class="no-external"></a></p><a href="./bsfw/cp05/index.html" class="no-external">
-<p class="card-img-top"><img src="bsfw\cp05\index_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./bsfw/cp05/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp05/index.html" class="no-external">Chapter 5: the Beta Distribution</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp05/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp05/index.html" class="no-external">I actually took notes this time! I already know a pretty good amount about the beta distribution, but I’ve never used it like this before.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp05/index.html" class="no-external">
-<div class="listing-date">
-Dec 10, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1670648400000" data-listing-file-modified-sort="1722140725317" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1036">
-<div class="thumbnail">
-<p><a href="./bsfw/cp04/index.html" class="no-external"></a></p><a href="./bsfw/cp04/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp04/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp04/index.html" class="no-external">Chapter 4: Creating a Binomial Probability Distribution</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp04/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp04/index.html" class="no-external">My original intention was also to post all of the notes I took while reading through this book. But we’re still in stuff that I felt pretty comfortable with (because I’ve…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp04/index.html" class="no-external">
-<div class="listing-date">
-Dec 10, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1721414032236" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="507">
-<div class="thumbnail">
-<p><a href="./bsfw/cp08/index.html" class="no-external"></a></p><a href="./bsfw/cp08/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp08/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp08/index.html" class="no-external">Chapter 8: Priors, posteriors, and likelihoods of Bayes’ Theorem</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp08/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp08/index.html" class="no-external">This chapter is mostly about Bayes’ factors without saying that it’s about Bayes factors, but it also discusses what happens when prior beliefs change (in a particularly…<em></em></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp08/index.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="12" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1671284105379" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="526">
-<div class="thumbnail">
-<p><a href="./bsfw/cp07/index.html" class="no-external"></a></p><a href="./bsfw/cp07/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp07/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp07/index.html" class="no-external">Chapter 7: Bayes’s Theorem with LEGO</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp07/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp07/index.html" class="no-external">Again, no notes. Mostly because this chapter is super short. Just for good measure, I’ll do the mathematician thing and say. Recall Bayes’ Theorem:</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp07/index.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1722140739114" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="450">
-<div class="thumbnail">
-<p><a href="./bsfw/cp03/index.html" class="no-external"></a></p><a href="./bsfw/cp03/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp03/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp03/index.html" class="no-external">Chapter 3: The Logic of Uncertainty</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp03/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp03/index.html" class="no-external">What is the probability of rolling a 20 three times in a row on a 20-sided die?</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp03/index.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="14" data-listing-date-sort="1670389200000" data-listing-file-modified-sort="1722140715369" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="403">
-<div class="thumbnail">
-<p><a href="./bsfw/cp02/index.html" class="no-external"></a></p><a href="./bsfw/cp02/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp02/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp02/index.html" class="no-external">Chapter 2: Measuring Uncertainty</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp02/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp02/index.html" class="no-external">What is the probability of rolling two six-sided dice and getting a value greater than 7?</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp02/index.html" class="no-external">
-<div class="listing-date">
-Dec 7, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="15" data-listing-date-sort="1670302800000" data-listing-file-modified-sort="1722140706171" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="355">
-<div class="thumbnail">
-<p><a href="./bsfw/cp01/index.html" class="no-external"></a></p><a href="./bsfw/cp01/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./bsfw/cp01/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./bsfw/cp01/index.html" class="no-external">Chapter 1: Bayesian Thinking and Everyday Reasoning</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./bsfw/cp01/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./bsfw/cp01/index.html" class="no-external">I already have a math degree where I focused on stats, so I kind of rushed through this chapter.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./bsfw/cp01/index.html" class="no-external">
-<div class="listing-date">
-Dec 6, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

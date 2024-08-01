@@ -1,0 +1,104 @@
+---
+title: "Chapter 17: Bayesian Reasoning in the Twilight Zone"
+draft: false
+code-fold: true
+---
+
+```{r setup}
+options("scipen" = 9999, "digits" = 4)
+```
+
+## Q1
+
+::: {.callout-note appearance="simple"}
+
+Every time you and your friend get together to watch movies, you flip a coin to
+determine who gets to choose the movie. Your friend always picks heads, and
+every Friday for 10 weeks, the coin lands on heads. You develop a hypothesis
+that the coin has two heads sides, rather than both a heads side and a tails
+side. Set up a Bayes factor for the hypothesis that the coin is a trick coin
+over the hypothesis that the coin is fair. What does this ratio alone suggest
+about whether or not your friend is cheating you?
+
+:::
+
+Let $H_1$ be the hypothesis that our friend's coin has heads on both sides
+and let $H_2$ be the hypothesis that our friend's coin is fair. If $H_1$
+were true, then the probability of every flip being heads would be $1$ no
+matter how many flips we do. However, under $H_2$, the probability of every
+coin being heads would be
+$$P(D \mid H_2) = 0.5^{10} = \frac{1}{1024}.$$
+
+So our bayes factor is then
+$$B = \frac{1}{1 / 1024} = 1024.$$
+
+If we believed that both scenarios were equally likely, we would have incredibly
+strong evidence that our friend were cheating.
+
+## Q2
+
+::: {.callout-note appearance="simple"}
+
+Now imagine three cases: that your friend is a bit of a prankster, that your
+friend is honest most of the time but can occasionally be sneaky, and that your
+friend is very trustworthy. In each case, estimate some prior odds ratios for
+your hypothesis and compute the posterior odds.
+
+:::
+
+For the first case, that our friend is a bit of a prankster, we'll say our
+posterior odds of being tricked are somewhat high, maybe $0.8$ -- that is,
+out of every 5 times we interact with our friend, we expect one prank. The
+posterior odds would then be
+$$0.8 \times 1024 = 819.2,$$
+and we would still be quite sure that our friend was tricking us.
+
+If our friend is honest most of the time, say we believe that our prior odds of
+being tricked are $1/100$. Then our posterior odds would be
+$$0.01 \times 1024 = 10.24,$$
+so we should at least be amenable to the idea that our friend is tricking us,
+although the evidence is not quite conclusive.
+
+Finally, if our friend is really trustworthy, let's say our prior odds are
+$1/10000$. Then we would get a posterior odds of
+$$0.0001 \times 1024 = 0.1024,$$
+and we would actually be somewhat confident that our friend is not cheating
+(note that this corresponds to a Bayes factor of about $10$ for the relative
+odds of a fair coin).
+
+## Q3
+
+::: {.callout-note appearance="simple"}
+
+Suppose you trust this friend deeply. Make the prior odds of them cheating
+$1/10000$. How many times would the coin have to land on heads before you feel
+unsure about their innocence--say a posterior odds of 1?
+
+:::
+
+We need to solve the equation
+$$1 \leq \frac{1}{10000}\frac{1}{0.5^x}$$
+for $x$, which yields
+$$x \approx 14.$$
+
+So we would need to see 14 heads in a row before we would entertain the notion
+that our friend is cheating.
+
+## Q4
+
+::: {.callout-note appearance="simple"}
+
+Another friend of yours also hangs out with this same friend and, after only
+four weeks of the coin landing on heads, feels certain you're both being
+cheated. This confidence implies a posterior odds of about 100. What value would
+you assign to this other friend's prior belief that the first friend is a
+cheater?
+
+:::
+
+We can solve for the prior odds in the equation
+$$100 = O(H_1)\times \frac{1}{0.5^4},$$
+which gives
+$$O(H_1) = 6.25.$$
+
+<!-- END OF FILE -->

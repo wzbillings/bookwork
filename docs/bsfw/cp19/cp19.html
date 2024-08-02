@@ -9,7 +9,7 @@
 <meta name="author" content="Zane Billings">
 <meta name="dcterms.date" content="2024-08-01">
 
-<title>Chapter 17: Bayesian Reasoning in the Twilight Zone – Book Solutions and Notes</title>
+<title>Chapter 19: From Hypothesis Testing to Parameter Estimation – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -182,7 +182,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Chapter 17: Bayesian Reasoning in the Twilight Zone</h1>
+      <h1 class="title">Chapter 19: From Hypothesis Testing to Parameter Estimation</h1>
                       </div>
   </div>
     
@@ -232,13 +232,40 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Every time you and your friend get together to watch movies, you flip a coin to determine who gets to choose the movie. Your friend always picks heads, and every Friday for 10 weeks, the coin lands on heads. You develop a hypothesis that the coin has two heads sides, rather than both a heads side and a tails side. Set up a Bayes factor for the hypothesis that the coin is a trick coin over the hypothesis that the coin is fair. What does this ratio alone suggest about whether or not your friend is cheating you?</p>
+<p>Our Bayes factor assumed that we were looking at <span class="math inline">\(H_1: P(\text{prize} = 0.5)\)</span>. THis allowed us to derive a version of the beta distribution with an alpha of 1 and a beta of 1. Would it matter if we chose a different probability for <span class="math inline">\(H_1\)</span>? Assume <span class="math inline">\(H_1: P(\text{prize} = 0.24)\)</span>, then see if the resulting distribution, once normalized to sum to 1, is any different from the original hypothesis.</p>
 </div>
 </div>
 </div>
-<p>Let <span class="math inline">\(H_1\)</span> be the hypothesis that our friend’s coin has heads on both sides and let <span class="math inline">\(H_2\)</span> be the hypothesis that our friend’s coin is fair. If <span class="math inline">\(H_1\)</span> were true, then the probability of every flip being heads would be <span class="math inline">\(1\)</span> no matter how many flips we do. However, under <span class="math inline">\(H_2\)</span>, the probability of every coin being heads would be <span class="math display">\[P(D \mid H_2) = 0.5^{10} = \frac{1}{1024}.\]</span></p>
-<p>So our bayes factor is then <span class="math display">\[B = \frac{1}{1 / 1024} = 1024.\]</span></p>
-<p>If we believed that both scenarios were equally likely, we would have incredibly strong evidence that our friend were cheating.</p>
+<p>OK, so what we need to do is calculate the new distribution and the old distribution so we can compare them.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hypotheses <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>numerator <span class="ot">&lt;-</span> hypotheses <span class="sc">^</span> <span class="dv">24</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> hypotheses) <span class="sc">^</span> <span class="dv">76</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>bf_0<span class="fl">.50</span> <span class="ot">&lt;-</span> numerator <span class="sc">/</span> (<span class="fl">0.50</span> <span class="sc">^</span> <span class="dv">24</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.50</span>) <span class="sc">^</span> <span class="dv">76</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>bf_0<span class="fl">.24</span> <span class="ot">&lt;-</span> numerator <span class="sc">/</span> (<span class="fl">0.24</span> <span class="sc">^</span> <span class="dv">24</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.24</span>) <span class="sc">^</span> <span class="dv">76</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Now normalize the distributions</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>bf_0<span class="fl">.50</span>_norm <span class="ot">&lt;-</span> bf_0<span class="fl">.50</span> <span class="sc">/</span> <span class="fu">sum</span>(bf_0<span class="fl">.50</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>bf_0<span class="fl">.24</span>_norm <span class="ot">&lt;-</span> bf_0<span class="fl">.24</span> <span class="sc">/</span> <span class="fu">sum</span>(bf_0<span class="fl">.24</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    bf_0<span class="fl">.24</span>_norm, bf_0<span class="fl">.50</span>_norm,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">"Normalized Bayes factors when assumed probability = 0.24"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">"Normalized Bayes factors when assumed probability = 0.50"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pch =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">1.1</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cp19_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You can see that the points are exactly correlated, i.e., the normalized distributions are exactly the same.</p>
 </section>
 <section id="q2" class="level2">
 <h2 class="anchored" data-anchor-id="q2">Q2</h2>
@@ -248,13 +275,39 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Now imagine three cases: that your friend is a bit of a prankster, that your friend is honest most of the time but can occasionally be sneaky, and that your friend is very trustworthy. In each case, estimate some prior odds ratios for your hypothesis and compute the posterior odds.</p>
+<p>Write a prior for the distribution in which each hypothesis is 1.05 times more likely than the previous hypothesis (assume our <code>dx</code> remains the same).</p>
 </div>
 </div>
 </div>
-<p>For the first case, that our friend is a bit of a prankster, we’ll say our posterior odds of being tricked are somewhat high, maybe <span class="math inline">\(0.8\)</span> – that is, out of every 5 times we interact with our friend, we expect one prank. The posterior odds would then be <span class="math display">\[0.8 \times 1024 = 819.2,\]</span> and we would still be quite sure that our friend was tricking us.</p>
-<p>If our friend is honest most of the time, say we believe that our prior odds of being tricked are <span class="math inline">\(1/100\)</span>. Then our posterior odds would be <span class="math display">\[0.01 \times 1024 = 10.24,\]</span> so we should at least be amenable to the idea that our friend is tricking us, although the evidence is not quite conclusive.</p>
-<p>Finally, if our friend is really trustworthy, let’s say our prior odds are <span class="math inline">\(1/10000\)</span>. Then we would get a posterior odds of <span class="math display">\[0.0001 \times 1024 = 0.1024,\]</span> and we would actually be somewhat confident that our friend is not cheating (note that this corresponds to a Bayes factor of about <span class="math inline">\(10\)</span> for the relative odds of a fair coin).</p>
+<p>First we’ll create the prior.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(hypotheses)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fl">1.05</span> <span class="sc">^</span> (<span class="dv">0</span><span class="sc">:</span>(n<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To obtain the posterior distribution, we multiply the priors by their corresponding Bayes factors and normalize.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>post_raw <span class="ot">&lt;-</span> prior <span class="sc">*</span> bf_0<span class="fl">.50</span>_norm</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> post_raw <span class="sc">/</span> <span class="fu">sum</span>(post_raw)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    hypotheses, post, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">"Hypothesized prize probability"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">"Normalized posterior density of result"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cp19_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that the best estimate is still around <span class="math inline">\(0.24\)</span>. Even though the extreme values have higher prior likelihood, the evidence is strong enough to ignore them.</p>
 </section>
 <section id="q3" class="level2">
 <h2 class="anchored" data-anchor-id="q3">Q3</h2>
@@ -264,26 +317,23 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Suppose you trust this friend deeply. Make the prior odds of them cheating <span class="math inline">\(1/10000\)</span>. How many times would the coin have to land on heads before you feel unsure about their innocence–say a posterior odds of 1?</p>
+<p>Suppose you observed another duck game that included 34 ducks with prizes and 66 ducks without prizes. How would you set up a test to answer “What is the probability that you have a better chance of winning a prize in this game than in the game we used in our example?”</p>
 </div>
 </div>
 </div>
-<p>We need to solve the equation <span class="math display">\[1 \leq \frac{1}{10000}\frac{1}{0.5^x}\]</span> for <span class="math inline">\(x\)</span>, which yields <span class="math display">\[x \approx 14.\]</span></p>
-<p>So we would need to see 14 heads in a row before we would entertain the notion that our friend is cheating.</p>
-</section>
-<section id="q4" class="level2">
-<h2 class="anchored" data-anchor-id="q4">Q4</h2>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<p>If we assume a <span class="math inline">\(\text{Beta}(1, 1)\)</span> prior for both probabilities, then the posterior distribution for the probability of a prize in the first game is <span class="math inline">\(\text{Beta}(25, 77)\)</span> and the posterior distribution for the probability of a prize in the second game is <span class="math inline">\(\text{Beta}(35, 67)\)</span>. We can conduct a Monte Carlo simulation with, say, <span class="math inline">\(100,000\)</span> draws from both distributions as we did previously.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">132</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="fl">1e5</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>game_1_sim <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(n_sims, <span class="dv">25</span>, <span class="dv">77</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>game_2_sim <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(n_sims, <span class="dv">35</span>, <span class="dv">67</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">mean</span>(game_2_sim <span class="sc">&gt;</span> game_1_sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div class="callout-body-container">
-<p>Another friend of yours also hangs out with this same friend and, after only four weeks of the coin landing on heads, feels certain you’re both being cheated. This confidence implies a posterior odds of about 100. What value would you assign to this other friend’s prior belief that the first friend is a cheater?</p>
-</div>
-</div>
-</div>
-<p>We can solve for the prior odds in the equation <span class="math display">\[100 = O(H_1)\times \frac{1}{0.5^4},\]</span> which gives <span class="math display">\[O(H_1) = 6.25.\]</span></p>
+<p>From this simple simulation, the probability that we have a better chance of winning a prize was about <span class="math inline">\(93.9\%\)</span>.</p>
+<p>Apparently the solutions in the book wanted us to use arbitrary priors and use a numerical algorithm to generate samples, but for a problem this simple I doubt we will get different results unless we change the priors a lot.</p>
 <!-- END OF FILE -->
 
 

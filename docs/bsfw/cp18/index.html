@@ -9,7 +9,7 @@
 <meta name="author" content="Zane Billings">
 <meta name="dcterms.date" content="2024-08-01">
 
-<title>Chapter 17: Bayesian Reasoning in the Twilight Zone – Book Solutions and Notes</title>
+<title>Chapter 18: When Data Doesn’t Convince You – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -182,7 +182,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Chapter 17: Bayesian Reasoning in the Twilight Zone</h1>
+      <h1 class="title">Chapter 18: When Data Doesn’t Convince You</h1>
                       </div>
   </div>
     
@@ -232,13 +232,16 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Every time you and your friend get together to watch movies, you flip a coin to determine who gets to choose the movie. Your friend always picks heads, and every Friday for 10 weeks, the coin lands on heads. You develop a hypothesis that the coin has two heads sides, rather than both a heads side and a tails side. Set up a Bayes factor for the hypothesis that the coin is a trick coin over the hypothesis that the coin is fair. What does this ratio alone suggest about whether or not your friend is cheating you?</p>
+<p>When two hypothesis explain the data equally well, one way to change our minds is to see if we can attack the prior probability. What are some factors that might increase your prior belief in your friend’s psychic powers?</p>
 </div>
 </div>
 </div>
-<p>Let <span class="math inline">\(H_1\)</span> be the hypothesis that our friend’s coin has heads on both sides and let <span class="math inline">\(H_2\)</span> be the hypothesis that our friend’s coin is fair. If <span class="math inline">\(H_1\)</span> were true, then the probability of every flip being heads would be <span class="math inline">\(1\)</span> no matter how many flips we do. However, under <span class="math inline">\(H_2\)</span>, the probability of every coin being heads would be <span class="math display">\[P(D \mid H_2) = 0.5^{10} = \frac{1}{1024}.\]</span></p>
-<p>So our bayes factor is then <span class="math display">\[B = \frac{1}{1 / 1024} = 1024.\]</span></p>
-<p>If we believed that both scenarios were equally likely, we would have incredibly strong evidence that our friend were cheating.</p>
+<ol type="1">
+<li>We reality shift to a world where psychic powers exist, because they don’t in this world.</li>
+<li>I go to the gas station with my friend and they buy a single lottery ticket for the exact number that wins the jackpot later that night.</li>
+<li>My friend bends a spoon or lifts an object with their mind.</li>
+<li>My friend’s psychic powers transfer to other dice or cards instead of just guessing the result of a six sided die roll.</li>
+</ol>
 </section>
 <section id="q2" class="level2">
 <h2 class="anchored" data-anchor-id="q2">Q2</h2>
@@ -248,42 +251,14 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Now imagine three cases: that your friend is a bit of a prankster, that your friend is honest most of the time but can occasionally be sneaky, and that your friend is very trustworthy. In each case, estimate some prior odds ratios for your hypothesis and compute the posterior odds.</p>
+<p>An experiment claims that when people hear the word <em>Florida</em> they think of the elderly and this has an impact on their walking speed. To test this, we have two groups of 15 students walk across a room: one group hears the word <em>Florida</em> and done does not. Assume $H_1 = $ the groups don’t move at different speeds and $H_2 = $ the Florida group is slower because of hearing the word <em>Florida</em>.</p>
+<p>The experiment shows that the Bayes factor for <span class="math inline">\(H_2\)</span> over <span class="math inline">\(H_1\)</span> is 19. Suppose someone is unconvinced by this epxeriment because <span class="math inline">\(H_2\)</span> had a lower prior odds? What prior odds would explain someone being unconvinced by this experiment and what would the BF need to be to bring the posterior odds to 50 for this unconvinced person?</p>
+<p>Now suppose the prior odds do not change the skeptic’s mind. Think of an alternate <span class="math inline">\(H_3\)</span> that explains the observation that the Florida group is slower. Remember if <span class="math inline">\(H_2\)</span> and <span class="math inline">\(H_3\)</span> both explain the data equally well, only prior odds in facor of <span class="math inline">\(H_3\)</span> would lead someone to claim <span class="math inline">\(H_3\)</span> is true over <span class="math inline">\(H_2\)</span>, so we need to rethink the experiment so that these odds are decreased. Come up with an experiment that could change the prior odds in <span class="math inline">\(H_3\)</span> over <span class="math inline">\(H_2\)</span>.</p>
 </div>
 </div>
 </div>
-<p>For the first case, that our friend is a bit of a prankster, we’ll say our posterior odds of being tricked are somewhat high, maybe <span class="math inline">\(0.8\)</span> – that is, out of every 5 times we interact with our friend, we expect one prank. The posterior odds would then be <span class="math display">\[0.8 \times 1024 = 819.2,\]</span> and we would still be quite sure that our friend was tricking us.</p>
-<p>If our friend is honest most of the time, say we believe that our prior odds of being tricked are <span class="math inline">\(1/100\)</span>. Then our posterior odds would be <span class="math display">\[0.01 \times 1024 = 10.24,\]</span> so we should at least be amenable to the idea that our friend is tricking us, although the evidence is not quite conclusive.</p>
-<p>Finally, if our friend is really trustworthy, let’s say our prior odds are <span class="math inline">\(1/10000\)</span>. Then we would get a posterior odds of <span class="math display">\[0.0001 \times 1024 = 0.1024,\]</span> and we would actually be somewhat confident that our friend is not cheating (note that this corresponds to a Bayes factor of about <span class="math inline">\(10\)</span> for the relative odds of a fair coin).</p>
-</section>
-<section id="q3" class="level2">
-<h2 class="anchored" data-anchor-id="q3">Q3</h2>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>Suppose you trust this friend deeply. Make the prior odds of them cheating <span class="math inline">\(1/10000\)</span>. How many times would the coin have to land on heads before you feel unsure about their innocence–say a posterior odds of 1?</p>
-</div>
-</div>
-</div>
-<p>We need to solve the equation <span class="math display">\[1 \leq \frac{1}{10000}\frac{1}{0.5^x}\]</span> for <span class="math inline">\(x\)</span>, which yields <span class="math display">\[x \approx 14.\]</span></p>
-<p>So we would need to see 14 heads in a row before we would entertain the notion that our friend is cheating.</p>
-</section>
-<section id="q4" class="level2">
-<h2 class="anchored" data-anchor-id="q4">Q4</h2>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>Another friend of yours also hangs out with this same friend and, after only four weeks of the coin landing on heads, feels certain you’re both being cheated. This confidence implies a posterior odds of about 100. What value would you assign to this other friend’s prior belief that the first friend is a cheater?</p>
-</div>
-</div>
-</div>
-<p>We can solve for the prior odds in the equation <span class="math display">\[100 = O(H_1)\times \frac{1}{0.5^4},\]</span> which gives <span class="math display">\[O(H_1) = 6.25.\]</span></p>
+<p>If someone were unconvinced by this experiment, we can assume that their posterior odds are, say, three or less. Then their prior odds would need to be <span class="math inline">\(3/19\)</span> or less. If they are totally unconvinced, say their posterior odds are <span class="math inline">\(1\)</span> or less, then the prior odds would need to be <span class="math inline">\(1/19\)</span> or lower to cancel out the Bayes factor entirely. If someone’s prior odds were <span class="math inline">\(1/19\)</span>, in order for their posterior odds to be <span class="math inline">\(50\)</span>, the bayes factor would need to be <span class="math inline">\(19 \times 50 = 950\)</span>. If their prior odds were <span class="math inline">\(3/19\)</span>, the bayes factor would only need to be <span class="math inline">\(\lceil 950 / 3 \rceil = 317.\)</span></p>
+<p>One alternative hypothesis, which we’ll call <span class="math inline">\(H_3\)</span>, could be that the two groups of students were measured at different times: the slower group was measured in the morning. We could fix the experiment by ensuring that both groups of students were measured at the same time, or by getting multiple groups of students to repeat the experiments at the same time (adding replicates to our experiment). It could also be possible (say <span class="math inline">\(H_4\)</span>) that the slower group just contained all slower students. We could fix this by randomizing students into groups and by replicating the experiment multiple times. It seems like replicating the experiment might help no matter what.</p>
 <!-- END OF FILE -->
 
 

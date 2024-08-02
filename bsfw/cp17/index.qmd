@@ -47,7 +47,7 @@ your hypothesis and compute the posterior odds.
 :::
 
 For the first case, that our friend is a bit of a prankster, we'll say our
-posterior odds of being tricked are somewhat high, maybe $0.8$ -- that is,
+posterior odds of being tricked are somewhat high, maybe $4/5$ -- that is,
 out of every 5 times we interact with our friend, we expect one prank. The
 posterior odds would then be
 $$0.8 \times 1024 = 819.2,$$

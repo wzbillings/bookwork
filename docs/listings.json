@@ -19,7 +19,7 @@
   {
     "listing": "/bsfw.html",
     "items": [
-      "/bsfw/cp19/cp19.html",
+      "/bsfw/cp19/index.html",
       "/bsfw/cp18/index.html",
       "/bsfw/cp17/index.html",
       "/bsfw/cp16/index.html",
@@ -41,9 +41,16 @@
     ]
   },
   {
+    "listing": "/arm.html",
+    "items": [
+      "/arm/cp2/index.html"
+    ]
+  },
+  {
     "listing": "/index.html",
     "items": [
       "/sr.html",
+      "/arm.html",
       "/bsfw.html"
     ]
   }

@@ -1,0 +1,22 @@
+---
+title: "Data Analysis Using Regression and Multilevel/Hierarchical Modeling"
+listing:
+  contents: arm
+  sort:
+    - "date desc"
+    - "title desc"
+  type: default
+  categories: false
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+categories:
+  - Statistics
+  - Multilevel modeling
+image: "static/arm.jpg"
+---
+
+Notes and solutions for "Data Analysis Using Regression and
+Multilevel/Hierarchical Modeling" by Andrew Gelman and Jennifer Hill, Cambridge
+University Press, 2007.

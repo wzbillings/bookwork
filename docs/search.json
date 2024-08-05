@@ -427,6 +427,48 @@
     "text": "Q3\n\n\n\n\n\n\nThe Yankees are playing the Red Sox. You’re a diehard Sox fan and bet your friend they’ll win the game. You’ll pay your friend $30 if the Sox lose and your friend will have to pay you only $5 if the Sox win. What is the probability you have intuitively assigned to the belief that the Red Sox will win?\n\n\n\nTo solve this problem, we just use the formula that relates the odds to the probability of an event.\n\\[\\begin{align*}\n\\frac{P(x)}{P(\\lnot x)} &= \\frac{30}{5} \\\\\n\\frac{P(x)}{1 - P(x)} &= \\frac{30}{5} \\\\\nP(x) &= \\frac{30}{5} \\left( 1 - P(x) \\right) \\\\\nP(x) &= \\frac{30}{5} - \\frac{30}{5} P(x) \\\\\nP(x) + \\frac{30}{5} P(x) &= \\frac{30}{5} \\\\\n\\frac{35}{5} P(x) &= \\frac{30}{5} \\\\\n7 \\cdot P(x) &= 6 \\\\\nP(x) &= \\frac{6}{7}.\n\\end{align*}\\]"
   },
   {
+    "objectID": "arm.html",
+    "href": "arm.html",
+    "title": "Data Analysis Using Regression and Multilevel/Hierarchical Modeling",
+    "section": "",
+    "text": "Notes and solutions for “Data Analysis Using Regression and Multilevel/Hierarchical Modeling” by Andrew Gelman and Jennifer Hill, Cambridge University Press, 2007.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nChapter 2: Concepts and methods from basic probability and statistics\n\n\n\n\n\n\n\n\n\n\n\nZane Billings\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "arm/cp2/index.html",
+    "href": "arm/cp2/index.html",
+    "title": "Chapter 2: Concepts and methods from basic probability and statistics",
+    "section": "",
+    "text": "Well, since I finished Bayesian Statistics the Fun Way and I’m still in the middle of Statistical Rethinking, it’s time to start a new book, and this one seemed like a good choice. I use multilevel models so often that learning them a bit more formally will probably be useful. I expect the first part of this book to be pretty fast."
+  },
+  {
+    "objectID": "arm/cp2/index.html#q1",
+    "href": "arm/cp2/index.html#q1",
+    "title": "Chapter 2: Concepts and methods from basic probability and statistics",
+    "section": "Q1",
+    "text": "Q1\n\n\n\n\n\n\nA test is graded from 0 to 50, with an average score of 35 and a standard deviation of 10. For comparison to other tests, it would be convenient to rescale to a mean of 100 and standard deviation of 15.\n\nHow can the scores be linearly transformed to have this new mean and standard deviation?\nThere is another linear transformation that also rescales the scores to have mean 100 and standard deviation 15. What is it, and why would you not want to use it for this purpose?\n\n\n\n\nIn order to rescale to a new mean and standard deviation, the easiest way for me to do this conceptually is to convert to z-scores, then untransform and that will give us the correct linear transformation. Letting \\(x\\) represent the data vector of test scores, we get \\[\n\\left(\\frac{x - 35}{10}\\right) \\times 15 + 100 = 47.5 + 1.5x.\n\\]\nNotably, the \\(bx\\) part of the transformation transforms the standard deviation to \\(\\left| b \\right|\\sigma_x\\), which implies that the transformation \\(-bx\\) will also give the correct standard deviation. Noting that \\(-1.5x\\) would have a mean of \\(-1.5 \\times 35 = -52.5\\), so the appropriate linear transformation which then sets the mean to 100 would be \\[\n152.5 - 1.5x.\n\\] We do not want to multiply by a negative number in our linear transformation because it will invert the order statistics of the new distribution. That is, calling our first transformation \\(g_1(\\cdot)\\) and the second transformation \\(g_2(\\cdot)\\), if \\(x_1 &lt; x_2\\) we would get that \\(g_1(x_1) &lt; g_1(x_2)\\) but \\(g_2(x_1) &gt; g_2(x_2)\\). For example:\n\\[\n\\begin{aligned}\ng_1(10) = 62.5 ,&\\quad  g_1(15) = 70; \\\\\ng_2(10) = 137.5 ,&\\quad g_2(15) = 130.\n\\end{aligned}\n\\] This is not desirable because it would be very confusing.\n\n\n\n\n\n\nThe girls data contains the proportions of girl births in Vienna for each month in 1908 and 1909 (out of an average of 3900 births per month). von Mises (1957) used these proportions to claim that the sex ratios are less variable than would be expected by chance.\n\nCompute the standard deviation of these proportions and compare to the standard deviation that would be expected if the sexes of babies were independently distributed with a constant probability over the 24-month period.\nThe actual and theoretical standard deviations from (a) differ, of course. Is this difference statistically significant?\n\n\n\n\nFirst we need to load the data – the girls dataset does not seem to exist in the downloable data folder, so luckily it’s easy to type in ourselves. I just typed it into a text file.\n\ngirls &lt;- readLines(here::here(\"arm\", \"data\", \"girls.txt\")) |&gt;\n    as.numeric()\n\n# Calculate the expected standard deviation -- note that we know the number\n# of births was 3900 for each month from the way the proportions are calculated.\nex_sd &lt;- sqrt(mean(girls) * (1 - mean(girls)) / 3900)\n\n# Calculate the observed SD\nobserved_sd &lt;- sd(girls)\n\nThe standard deviation we calculate from the data is 0.0064 while the expected standard deviation is 0.008.\nThese are, of course, not identical, but we can use a chi-square test to determine whether the difference is statistically significant. The test statistic \\[(n-1)\\frac{s^2}{\\sigma^2}\\] follows a chi-square distribution with \\(n-1\\) degrees of freedom where \\(s^2\\) is the observed sample variance and \\(\\sigma^2\\) is the hypothesized population variance. Notably, here, \\(n\\) refers to the number of measurements, i.e., \\(24\\), not the \\(3900\\) individuals used for calculating the proportions. We’ll use the standard \\(\\alpha = 0.05\\) and conduct a two-tailed test.\n\ntest_stat &lt;- (23) * (observed_sd^2) / (ex_sd^2)\n\nrr_upper &lt;- qchisq(0.975, 23)\nrr_lower &lt;- qchisq(0.025, 23)\n\nThe rejection region for the test is \\((0, 11.69) \\cup (38.08, \\infty)\\). The test statistic is \\(14.75\\) which lies outside of the rejection region, and so we do not have enough evidence to reject the null hypothesis at the \\(0.05\\) significance level. The difference between the observed and expected variance is not statistically significant."
+  },
+  {
+    "objectID": "arm/cp2/index.html#q3",
+    "href": "arm/cp2/index.html#q3",
+    "title": "Chapter 2: Concepts and methods from basic probability and statistics",
+    "section": "Q3",
+    "text": "Q3\n\n\n\n\n\n\nDemonstration of the Central Limit Theorem: let \\(x = x_1 + \\cdots + x_20,\\) the sum of 20 independent \\(\\text{Uniform}(0, 1)\\) random variables. Create 1000 simulations of \\(x\\) and plot their histogram. One the histogram, overlay a graph of the normal density function. COmment on any differences between the histogram and the curve.\n\n\n\nThe plot below shows the simulation results.\n\nset.seed(370)\nq3_sim &lt;- replicate(1e3, sum(runif(20, 0, 1)))\nhist(\n    q3_sim,\n    breaks = seq(floor(min(q3_sim)), ceiling(max(q3_sim)), 0.25),\n    freq = FALSE\n)\n\n# Calculate the normal curve and plot it\nxs &lt;- seq(floor(min(q3_sim)), ceiling(max(q3_sim)), 0.05)\nys &lt;- dnorm(xs, mean(q3_sim), sd(q3_sim))\nlines(xs, ys, lwd = 2)\n\n\n\n\n\n\n\n\nThe normal density curve is the normal distribution implied by the observed mean and variance of the simulated data. While the histogram matches the density curve fairly well, there are a few regions close to the mean which are sparser than we would expect – likely because we just haven’t done enough simulations to see the distribution in full detail."
+  },
+  {
+    "objectID": "arm/cp2/index.html#q4",
+    "href": "arm/cp2/index.html#q4",
+    "title": "Chapter 2: Concepts and methods from basic probability and statistics",
+    "section": "Q4",
+    "text": "Q4\n\n\n\n\n\n\nDistribution of averages and differences: the heights of men in the United States are approximately normally distributed with mean 69.1 inches and standard deviation 2.9 inches. The heights of women are approximately normally distributed with mean 63.7 inches and standard deviation 2.7 inches. Let \\(x\\) be the average height of 100 randomly sampled men, and \\(y\\) be the average of 100 randomly sampled women. Create 1000 simulations of \\(x-y\\) and plot their histogram. Using the simulations, compute the mean and standard deviation of the distribution of \\(x-y\\) and compare to their exact values.\n\n\n\nThe exact values of the mean and standard deviation of \\(x-y\\) are \\(5.4\\) and \\(0.4\\) respectively (mentioned earlier in the chapter). We can do the simulation as follows.\n\nset.seed(371)\nq4_sim &lt;- replicate(\n    1e3,\n    mean(rnorm(100, 69.1, 2.9)) - mean(rnorm(100, 63.7, 2.7))\n)\nq4_mean &lt;- mean(q4_sim)\nq4_sd &lt;- sd(q4_sim)\nhist(q4_sim, breaks = seq(4, 7, 0.1), freq = FALSE)\n\n\n\n\n\n\n\n\nThe observed mean from the simulation is \\(5.3988\\) and the observed SD is \\(0.3963\\). The simulation results are basically the same as the theoretical values."
+  },
+  {
+    "objectID": "arm/cp2/index.html#q5",
+    "href": "arm/cp2/index.html#q5",
+    "title": "Chapter 2: Concepts and methods from basic probability and statistics",
+    "section": "Q5",
+    "text": "Q5\n\n\n\n\n\n\nCorrelated random variables: suppose that the heights of husbands and wives have a correlation of 0.3. Let \\(x\\) and \\(y\\) be the heights of a married couple chosen at random. What are the mean and standard deviation of the average height, \\((x + y)/2\\)?\n\n\n\nLet \\(\\mu_x\\) and \\(\\sigma_x\\) be the mean and standard deviation of \\(X\\) respectively, and let \\(\\mu_y\\) and \\(\\sigma_y\\) be the mean and standard deviation of \\(Y\\) respectively. Then, the mean and standard deviation of \\(x+y\\) are \\[\n\\mu_x + \\mu_y \\quad \\text{and} \\quad \\sqrt{\\sigma^2_x + \\sigma^2_y - 2\\rho\\sigma_x\\sigma_y}\n\\] respectively. Now, the mean of \\(X/2\\) is \\(\\mu_x/2\\) and similar for the mean of \\(Y/2\\). The standard deviation of \\(X/2\\) is \\(\\sigma_x / 2,\\) and similar for the standard deviation of \\(Y/2\\). So then, using the numbers from the previous question text, we get that the mean of \\((x+y)/2\\) is \\[\n\\frac{1}{2}(\\mu_x + \\mu_y) = \\frac{1}{2}(69.1 + 63.7) = 66.4,\n\\] and the standard deviation is \\[\n\\frac{1}{2}\\sqrt{(2.9)^2 + (2.7)^2 + 2(0.3)(2.9)(2.7)} = 2.26.\n\\]\nWe can also test these theoretical averages against an empirical simulation using the mvtnorm package.\n\nset.seed(372)\nmu &lt;- c(69.1, 63.7)\nsigma &lt;- matrix(c(2.9 ^ 2, 0.3 * 2.9 * 2.7, 0.3 * 2.9 * 2.7, 2.7 ^ 2), ncol = 2)\nsim_q5 &lt;- mvtnorm::rmvnorm(1000, mu, sigma)\nsim_avgs &lt;- rowMeans(sim_q5)\nmean(sim_avgs)\n\n[1] 66.37027\n\nsd(sim_avgs)\n\n[1] 2.266538"
+  },
+  {
     "objectID": "bsfw/cp01/index.html",
     "href": "bsfw/cp01/index.html",
     "title": "Chapter 1: Bayesian Thinking and Everyday Reasoning",
@@ -679,29 +721,29 @@
     "text": "Q4\n\n\n\n\n\n\nAnother friend of yours also hangs out with this same friend and, after only four weeks of the coin landing on heads, feels certain you’re both being cheated. This confidence implies a posterior odds of about 100. What value would you assign to this other friend’s prior belief that the first friend is a cheater?\n\n\n\nWe can solve for the prior odds in the equation \\[100 = O(H_1)\\times \\frac{1}{0.5^4},\\] which gives \\[O(H_1) = 6.25.\\]"
   },
   {
-    "objectID": "bsfw/cp19/cp19.html",
-    "href": "bsfw/cp19/cp19.html",
+    "objectID": "bsfw/cp19/index.html",
+    "href": "bsfw/cp19/index.html",
     "title": "Chapter 19: From Hypothesis Testing to Parameter Estimation",
     "section": "",
     "text": "Code\noptions(\"scipen\" = 9999, \"digits\" = 4)"
   },
   {
-    "objectID": "bsfw/cp19/cp19.html#q1",
-    "href": "bsfw/cp19/cp19.html#q1",
+    "objectID": "bsfw/cp19/index.html#q1",
+    "href": "bsfw/cp19/index.html#q1",
     "title": "Chapter 19: From Hypothesis Testing to Parameter Estimation",
     "section": "Q1",
     "text": "Q1\n\n\n\n\n\n\nOur Bayes factor assumed that we were looking at \\(H_1: P(\\text{prize} = 0.5)\\). THis allowed us to derive a version of the beta distribution with an alpha of 1 and a beta of 1. Would it matter if we chose a different probability for \\(H_1\\)? Assume \\(H_1: P(\\text{prize} = 0.24)\\), then see if the resulting distribution, once normalized to sum to 1, is any different from the original hypothesis.\n\n\n\nOK, so what we need to do is calculate the new distribution and the old distribution so we can compare them.\n\n\nCode\nhypotheses &lt;- seq(0, 1, by = 0.01)\nnumerator &lt;- hypotheses ^ 24 * (1 - hypotheses) ^ 76\nbf_0.50 &lt;- numerator / (0.50 ^ 24 * (1 - 0.50) ^ 76)\nbf_0.24 &lt;- numerator / (0.24 ^ 24 * (1 - 0.24) ^ 76)\n\n# Now normalize the distributions\nbf_0.50_norm &lt;- bf_0.50 / sum(bf_0.50)\nbf_0.24_norm &lt;- bf_0.24 / sum(bf_0.24)\n\nplot(\n    bf_0.24_norm, bf_0.50_norm,\n    xlab = \"Normalized Bayes factors when assumed probability = 0.24\",\n    ylab = \"Normalized Bayes factors when assumed probability = 0.50\",\n    pch = 3, cex = 1.1\n)\nabline(a = 0, b = 1, lty = 2, col = \"gray\")\n\n\n\n\n\n\n\n\n\nYou can see that the points are exactly correlated, i.e., the normalized distributions are exactly the same."
   },
   {
-    "objectID": "bsfw/cp19/cp19.html#q2",
-    "href": "bsfw/cp19/cp19.html#q2",
+    "objectID": "bsfw/cp19/index.html#q2",
+    "href": "bsfw/cp19/index.html#q2",
     "title": "Chapter 19: From Hypothesis Testing to Parameter Estimation",
     "section": "Q2",
     "text": "Q2\n\n\n\n\n\n\nWrite a prior for the distribution in which each hypothesis is 1.05 times more likely than the previous hypothesis (assume our dx remains the same).\n\n\n\nFirst we’ll create the prior.\n\n\nCode\nn &lt;- length(hypotheses)\nprior &lt;- 1.05 ^ (0:(n-1))\n\n\nTo obtain the posterior distribution, we multiply the priors by their corresponding Bayes factors and normalize.\n\n\nCode\npost_raw &lt;- prior * bf_0.50_norm\npost &lt;- post_raw / sum(post_raw)\nplot(\n    hypotheses, post, lwd = 3, type = \"l\",\n    xlab = \"Hypothesized prize probability\",\n    ylab = \"Normalized posterior density of result\"\n)\n\n\n\n\n\n\n\n\n\nWe can see that the best estimate is still around \\(0.24\\). Even though the extreme values have higher prior likelihood, the evidence is strong enough to ignore them."
   },
   {
-    "objectID": "bsfw/cp19/cp19.html#q3",
-    "href": "bsfw/cp19/cp19.html#q3",
+    "objectID": "bsfw/cp19/index.html#q3",
+    "href": "bsfw/cp19/index.html#q3",
     "title": "Chapter 19: From Hypothesis Testing to Parameter Estimation",
     "section": "Q3",
     "text": "Q3\n\n\n\n\n\n\nSuppose you observed another duck game that included 34 ducks with prizes and 66 ducks without prizes. How would you set up a test to answer “What is the probability that you have a better chance of winning a prize in this game than in the game we used in our example?”\n\n\n\nIf we assume a \\(\\text{Beta}(1, 1)\\) prior for both probabilities, then the posterior distribution for the probability of a prize in the first game is \\(\\text{Beta}(25, 77)\\) and the posterior distribution for the probability of a prize in the second game is \\(\\text{Beta}(35, 67)\\). We can conduct a Monte Carlo simulation with, say, \\(100,000\\) draws from both distributions as we did previously.\n\n\nCode\nset.seed(132)\nn_sims &lt;- 1e5\ngame_1_sim &lt;- rbeta(n_sims, 25, 77)\ngame_2_sim &lt;- rbeta(n_sims, 35, 67)\nprob &lt;- mean(game_2_sim &gt; game_1_sim)\n\n\nFrom this simple simulation, the probability that we have a better chance of winning a prize was about \\(93.9\\%\\).\nApparently the solutions in the book wanted us to use arbitrary priors and use a numerical algorithm to generate samples, but for a problem this simple I doubt we will get different results unless we change the priors a lot."
@@ -711,7 +753,7 @@
     "href": "index.html",
     "title": "Bookwork Blog",
     "section": "",
-    "text": "This is my blog for storing notes and work from books that I read, so I could consolidate them all into one web page.\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nStatistical Rethinking\n\n\n\nStatistics\n\n\nBayesian\n\n\nCausal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian Statistics the Fun Way\n\n\n\nStatistics\n\n\nBayesian\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "This is my blog for storing notes and work from books that I read, so I could consolidate them all into one web page.\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nStatistical Rethinking\n\n\n\nStatistics\n\n\nBayesian\n\n\nCausal\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nData Analysis Using Regression and Multilevel/Hierarchical Modeling\n\n\n\nStatistics\n\n\nMultilevel modeling\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian Statistics the Fun Way\n\n\n\nStatistics\n\n\nBayesian\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "sr/cp1.html",

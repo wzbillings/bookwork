@@ -4,6 +4,7 @@ listing:
   contents:
     - "sr.qmd"
     - "bsfw.qmd"
+    - "arm.qmd"
   sort: "title desc"
   type: grid
   categories: true

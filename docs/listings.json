@@ -43,6 +43,7 @@
   {
     "listing": "/arm.html",
     "items": [
+      "/arm/cp3/index.html",
       "/arm/cp2/index.html"
     ]
   },

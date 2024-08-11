@@ -2,5 +2,7 @@
 *.js linguist-vendored
 docs/* linguist-vendored
 _freeze/* linguist-vendored
+arm/book-codes/* linguist-vendored
+static/* linguist-vendored
 renv/* linguist-vendored
 *.bib linguist-vendored

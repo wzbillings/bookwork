@@ -13,9 +13,6 @@ library(dagitty)
 This chapter covers Markov Chain Monte Carlo, Gibbs sampling, Hamiltonian
 Monte Carlo, and the HMC implementation in `rethinking`.
 
-## Chapter notes
-
-
 
 ## Exercises
 
@@ -52,5 +49,221 @@ samples.
 ### 9E5
 
 If the chains are mixing correctly, $\hat{R}$ should approach 1.
+
+### 9E6
+
+A good trace plot should show constant movement of each chain in the model, and
+the chains should cross each other constantly. This indicates that all chains
+are exploring the posterior distribution without getting stuck, and they are
+mixing well. A bad trace plot would have chains which are separated from each
+other, indicating that they are all exploring different areas of the posterior
+distribution without mixing; or some chains could get stuck near particular
+parameter values, indicating that chain is failing to correctly explore.
+
+### 9E7
+
+A good trace rank plot will look similar to a good trace plot, but we will
+be able to see whether the chains are mixing more easily because each chain
+will be constantly change ranks at the next sampling iteration.
+
+### 9M1
+
+First we need to restimate the terrain ruggedness model using a uniform prior
+distribution for the `sigma` parameter.
+
+```{r 9m1.1}
+data("rugged")
+d <- rugged
+d$log_gdp <- log(d$rgdppc_2000)
+dd <- subset(
+	d,
+	subset = complete.cases(rgdppc_2000),
+	select = c(log_gdp, rugged, cont_africa)
+)
+dd$log_gdp_std <- dd$log_gdp / mean(dd$log_gdp)
+dd$rugged_std <- dd$rugged / max(dd$rugged)
+dd$cid <- ifelse(dd$cont_africa == 1, 1, 2)
+
+m_9m1 <- rethinking::ulam(
+	flist = alist(
+		log_gdp_std ~ dnorm(mu, sigma),
+		mu <- a[cid] + b[cid] * (rugged_std - 0.215),
+		a[cid] ~ dnorm(1, 0.1),
+		b[cid] ~ dnorm(0, 0.3),
+		sigma ~ dunif(0, 1)
+	),
+	data = dd,
+	chains = 1
+)
+
+rethinking::precis(m_9m1, depth = 2)
+```
+
+The mean and credible intervals for all the parameters are very similar,
+although the ESS is lower, indicating that sampling was less efficient using a
+uniform prior. However, since we collected enough samples and we have enough
+data, the prior does not have a strong influence on estimating our parameters.
+Notably, the estimated value of sigma in the previous model was within the
+constraints of the new prior we used, so even though a uniform prior imposes
+constraints on the possible values of sigma, we didn't actually run into those
+boundaries in practice. If our sigma value were larger than one, we would
+expect this new posterior to look different.
+
+### 9M2
+
+Now we'll put the prior for `sigma` back to exponential but we'll change the
+prior the slopes.
+
+```{r 9m2.1}
+m_9m2 <- rethinking::ulam(
+	flist = alist(
+		log_gdp_std ~ dnorm(mu, sigma),
+		mu <- a[cid] + b[cid] * (rugged_std - 0.215),
+		a[cid] ~ dnorm(1, 0.1),
+		b[cid] ~ dexp(0.3),
+		sigma ~ dexp(1)
+	),
+	data = dd,
+	chains = 1
+)
+
+rethinking::precis(m_9m2, depth = 2)
+```
+
+Now, of course, the estimated slopes have changed a bit. Because of the
+exponential prior we specified, the slopes that we estimate MUST be positive.
+In the previous model, `b[2]` was negative and now it can't be. Notably, our
+ESS has decreased further from the original model as well.
+
+### 9M3
+
+We'll rerun the terrain ruggedness model with the original prior for multiple
+different numbers of warm-up samples. Although this will take a bit to run
+because of the compilation step, I'll go do something else while it's running
+so it's not too annoying.
+
+```{r 9m3.1}
+fit_9m3 <- function(warmup) {
+	model <- rethinking::ulam(
+		flist = alist(
+			log_gdp_std ~ dnorm(mu, sigma),
+			mu <- a[cid] + b[cid] * (rugged_std - 0.215),
+			a[cid] ~ dnorm(1, 0.1),
+			b[cid] ~ dnorm(0, 0.3),
+			sigma ~ dexp(1)
+		),
+		data = dd,
+		chains = 1,
+		warmup = warmup,
+		iter = 500 + warmup
+	)
+	
+	return(model)
+}
+
+get_ess <- function(ulam_fit) {
+	prc <- rethinking::precis(ulam_fit, depth = Inf)
+	res <- prc$ess_bulk
+	names(res) <- rownames(prc)
+	return(res)
+}
+
+wu_iters <- c(25, 50, 100, 250, 500)
+res <- purrr::map(
+	.x = wu_iters,
+	.f = \(w) w |>
+		fit_9m3() |>
+		get_ess()
+)
+
+res_df <- do.call(rbind, res)
+plot_colors <- RColorBrewer::brewer.pal(5, "Dark2")
+plot(
+	NULL, NULL,
+	xlim = c(25, 500),
+	ylim = c(0, 1000),
+	xlab = "Number of warmup samples",
+	ylab = "Bulk ESS"
+)
+for (i in 1:nrow(res_df)) {
+	lines(
+		wu_iters,
+		res_df[, i],
+		col = plot_colors[[i]],
+		lwd = 1.25
+	)
+	points(
+		wu_iters,
+		res_df[, i],
+		col = plot_colors[[i]],
+		pch = i,
+		cex = 1.1
+	)
+}
+legend(
+	x = "bottomright",
+	legend = colnames(res_df),
+	col = plot_colors,
+	pch = 1:5,
+	cex = 1.05,
+	lwd = 1.25,
+	ncol = 3,
+	title = "Parameter"
+)
+	
+
+```
+
+Based on this quick experiment, it appears that around 250 warmup samples is
+enough to get consistent ESS for all parameters in the model. However, for a
+more complicated model we would likely need more warmup iterations.
+
+### 9H1
+
+First we'll run the model specified by the book.
+
+```{r 9H1.1}
+mp <- rethinking::ulam(
+	alist(
+		a ~ dnorm(0, 1),
+		b ~ dcauchy(0, 1)
+	),
+	data = list(y = 1),
+	chains = 1
+)
+```
+
+Now we'll look at the precis.
+
+```{r 9H1.2}
+rethinking::precis(mp)
+```
+
+And the trace plots.
+
+```{r 9H1.3}
+rethinking::traceplot(mp)
+```
+
+We can see that the traceplot and summary for the parameter `a` are normal,
+but the parameter `b` has an inflated variance, lower ESS, and kind of crazy
+looking traceplot. This is because the normal distribution is typically very
+well-behaved, but the Cauchy distribution is often problematic. The Cauchy
+distribution has no expected value and very thick tails, so we can see that
+when the HMC sampler is exploring the density of parameter `b`, it sometimes
+goes into regions of the distribution which are quite far from zero, because
+they are, in general, much likelier than the corresponding regions for the
+parameter `a`. That means that we would need more samples and more data
+to accurately sample a Cauchy parameter than a Normal parameter.
+
+These properties of the Cauchy distribution are partially why Stan developer
+Michael Betancourt recommends not using Cauchy priors at all, despite their
+popularity for a period of time.
+
+### 9H2
+
+
+
+
 
 <!-- END OF FILE -->

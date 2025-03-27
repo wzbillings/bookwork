@@ -8,6 +8,7 @@ draft: true
 #| warning: false
 library(rethinking)
 library(dagitty)
+library(cmdstanr)
 ```
 
 This chapter covers Markov Chain Monte Carlo, Gibbs sampling, Hamiltonian
@@ -262,8 +263,143 @@ popularity for a period of time.
 
 ### 9H2
 
+For this problem, we'll refit models `m5.1`, `m5.2`, and `m5.3` from the chapter 5 divorce rate example. First we need to set up the data. Note that we can't use McElreath's code *exactly* anymore because Stan now complains about dots in the variable names of `d` if we include all the variables from `WaffleDivorce` in the `ulam()` data list.
 
+```{r}
+data("WaffleDivorce")
+d <- list()
+d$D <- rethinking::standardize(WaffleDivorce$Divorce)
+d$M <- rethinking::standardize(WaffleDivorce$Marriage)
+d$A <- rethinking::standardize(WaffleDivorce$MedianAgeMarriage)
+```
 
+Now we'll refit the three models using `ulam()`.
+
+```{r}
+m5.1 <- rethinking::ulam(
+	alist(
+		D ~ dnorm(mu, sigma),
+		mu <- a + bA * A,
+		a ~ dnorm(0, 0.2),
+		bA ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = d,
+	log_lik = TRUE
+)
+
+m5.2 <- rethinking::ulam(
+	alist(
+		D ~ dnorm(mu, sigma),
+		mu <- a + bM * M,
+		a ~ dnorm(0, 0.2),
+		bM ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = d,
+	log_lik = TRUE
+)
+
+m5.3 <- rethinking::ulam(
+	alist(
+		D ~ dnorm(mu, sigma),
+		mu <- a + bM * M + bA * A,
+		a ~ dnorm(0, 0.2),
+		bM ~ dnorm(0, 0.5),
+		bA ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = d,
+	log_lik = TRUE
+)
+```
+
+Now we'll compare the models using PSIS.
+
+```{r}
+rethinking::compare(
+	m5.1, m5.2, m5.3,
+	sort = "PSIS",
+	func = PSIS
+)
+```
+
+Notably, McElreath's PSIS output is formatted so that *lower PSIS is better*, which is the opposite of the ELPD metric used by the posterior and loo developers. Keeping this in mind, we see that the two models containing age at marriage both beat the model with only the marriage rate. These two models perform similarly, with a low standard error for the difference in their PSIS criterion. Notably, the difference between the best model and the worst model also has a very low ratio of the difference to the standard error, so even these two models are not *very* different.
+
+### 9H3
+
+First, we need to use the code from Chapter 6 to simulate some leg length data.
+
+```{r}
+N_leg <- 100L
+set.seed(909)
+d_leg <- tibble::tibble(
+	height = rnorm(N_leg, 10, 2),
+	leg_prop = runif(N_leg, 0.4, 0.5),
+	leg_left = leg_prop * height + rnorm(N_leg, 0, 0.02),
+	leg_right = leg_prop * height + rnorm(N_leg, 0, 0.02)
+)
+
+head(d_leg)
+```
+
+Now we'll refit the first model and fit the new model with the constrained prior, this time using `ulam()` for both fits.
+
+```{r}
+m5.8s <- rethinking::ulam(
+	alist(
+		height ~ dnorm(mu, sigma),
+		mu <- a + bl * leg_left + br * leg_right,
+		a ~ dnorm(10, 100),
+		bl ~ dnorm(2, 10),
+		br ~ dnorm(2, 10),
+		sigma ~ dexp(1)
+	),
+	data = d_leg,
+	chains = 4L,
+	cores = 4L,
+	start = list(a = 10, bl = 0, br = 0.1, sigma = 1),
+	log_lik = TRUE
+)
+
+m5.8s2 <- rethinking::ulam(
+	alist(
+		height ~ dnorm(mu, sigma),
+		mu <- a + bl * leg_left + br * leg_right,
+		a ~ dnorm(10, 100),
+		bl ~ dnorm(2, 10),
+		br ~ dnorm(2, 10),
+		sigma ~ dexp(1)
+	),
+	data = d_leg,
+	chains = 4L,
+	cores = 4L,
+	constraints = list(br = "lower=0"),
+	start = list(a = 10, bl = 0, br = 0.1, sigma = 1),
+	log_lik = TRUE
+)
+```
+
+OK, we get some diagnostic warnings from Stan about both of these models, but for now we'll ignore those since the book doesn't mention anything about it. (It makes sense because these models are kind of poorly parametrized anyway, which is the point of these models.) But now we need to compare the posterior distributions for the parameters in both models, so we'll just plot both.
+
+```{r}
+plot(rethinking::coeftab(m5.8s, m5.8s2))
+```
+
+The models are not all that different, the `br` parameter was already positive so adding the lower bound did not completely flip the sign of this parameter. However, since we assumed a higher prior likelihood of a positive coefficient, the `br` value was higher for the second model. Since the `br` and `bl` parameters are so strongly correlated, this forces the `bl` parameter to be smaller than it was before, to basically make up for the difference. The two parameters are nearly perfectly correlated so if we force one to shift upwards, the other has to shift downwards.
+
+### 9H4
+
+Now we need to compare the two models with PSIS.
+
+```{r}
+rethinking::compare(
+	m5.8s, m5.8s2,
+	sort = "PSIS", func = PSIS
+)
+```
+
+The original model has more effective parameters, slightly. But the difference is not really notable. However, the model that we imposed a constrained prior on has a lower effective parameter size, because we've excluded an entire region from being traversed by the sampler for a specific parameter, so we are more confident in that parameter.
 
 
 <!-- END OF FILE -->

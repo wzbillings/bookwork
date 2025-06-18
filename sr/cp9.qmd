@@ -1,6 +1,5 @@
 ---
-title: "Chapter 9: "
-draft: true
+title: "SR Chapter 9: Markov Chain Monte Carlo"
 ---
 
 ```{r setup, include = TRUE}
@@ -265,7 +264,7 @@ popularity for a period of time.
 
 For this problem, we'll refit models `m5.1`, `m5.2`, and `m5.3` from the chapter 5 divorce rate example. First we need to set up the data. Note that we can't use McElreath's code *exactly* anymore because Stan now complains about dots in the variable names of `d` if we include all the variables from `WaffleDivorce` in the `ulam()` data list.
 
-```{r}
+```{r waffledivorce setup}
 data("WaffleDivorce")
 d <- list()
 d$D <- rethinking::standardize(WaffleDivorce$Divorce)
@@ -275,7 +274,7 @@ d$A <- rethinking::standardize(WaffleDivorce$MedianAgeMarriage)
 
 Now we'll refit the three models using `ulam()`.
 
-```{r}
+```{r m5.1 to m5.3}
 m5.1 <- rethinking::ulam(
 	alist(
 		D ~ dnorm(mu, sigma),
@@ -316,7 +315,7 @@ m5.3 <- rethinking::ulam(
 
 Now we'll compare the models using PSIS.
 
-```{r}
+```{r m5.x compare}
 rethinking::compare(
 	m5.1, m5.2, m5.3,
 	sort = "PSIS",
@@ -330,7 +329,7 @@ Notably, McElreath's PSIS output is formatted so that *lower PSIS is better*, wh
 
 First, we need to use the code from Chapter 6 to simulate some leg length data.
 
-```{r}
+```{r 9h3 setup}
 N_leg <- 100L
 set.seed(909)
 d_leg <- tibble::tibble(
@@ -345,7 +344,7 @@ head(d_leg)
 
 Now we'll refit the first model and fit the new model with the constrained prior, this time using `ulam()` for both fits.
 
-```{r}
+```{r 9h3 models}
 m5.8s <- rethinking::ulam(
 	alist(
 		height ~ dnorm(mu, sigma),
@@ -382,7 +381,7 @@ m5.8s2 <- rethinking::ulam(
 
 OK, we get some diagnostic warnings from Stan about both of these models, but for now we'll ignore those since the book doesn't mention anything about it. (It makes sense because these models are kind of poorly parametrized anyway, which is the point of these models.) But now we need to compare the posterior distributions for the parameters in both models, so we'll just plot both.
 
-```{r}
+```{r 9h3 compare}
 plot(rethinking::coeftab(m5.8s, m5.8s2))
 ```
 
@@ -392,7 +391,7 @@ The models are not all that different, the `br` parameter was already positive s
 
 Now we need to compare the two models with PSIS.
 
-```{r}
+```{r 9h4 compare}
 rethinking::compare(
 	m5.8s, m5.8s2,
 	sort = "PSIS", func = PSIS
@@ -401,5 +400,223 @@ rethinking::compare(
 
 The original model has more effective parameters, slightly. But the difference is not really notable. However, the model that we imposed a constrained prior on has a lower effective parameter size, because we've excluded an entire region from being traversed by the sampler for a specific parameter, so we are more confident in that parameter.
 
+### 9H5
+
+For this problem, we'll modify the Metropolis algorithm code from the chapter to handle the case that the island populations have a different distribution than the island numbers.
+
+```{r 9h5 code}
+# First generate the 10 island populations
+set.seed(375)
+populations <- floor(runif(10, 1, 100))
+
+# Now set up the num_weeks, positions and current variables, nothing
+# changes in this part
+num_weeks <- 1e5
+positions <- rep(0, num_weeks)
+current <- 10
+
+# Most of the loop stays the same, we generate the proposal the same way
+for (i in 1:num_weeks) {
+	## Record current position
+	positions[i] <- current
+	
+	## Generate proposal
+	proposal <- current + sample(c(-1, 1), size = 1)
+	
+	## Make sure he loops around the archipelago
+	if (proposal < 1) proposal <- 10
+	if (proposal > 10) proposal <- 1
+	
+	## Next calculate the probability of moving based on the relative
+	## populations, which are not equal to the positions
+	prob_move <- populations[proposal] / populations[current]
+	current <- ifelse(runif(1) < prob_move, proposal, current)
+}
+```
+
+We only had to make a small adjustment to the code. Let's check to make sure we're spending time proportional to the island populations.
+
+```{r 9h5 plots}
+layout(matrix(c(1, 2), nrow = 1))
+
+k <- 1000
+plot(
+	1:k, positions[1:k], type = "l",
+	xlab = "Week",
+	ylab = "Island"
+)
+
+plot(
+	prop.table(table(positions)),
+	xlab = "Island",
+	ylab = "Relative frequency of time on island"
+)
+
+points(
+	x = 1:10,
+	y = populations / sum(populations),
+	col = "red",
+	pch = "-",
+	cex = 3
+)
+
+legend(
+	"topright",
+	col = "red", pch = "-",
+	legend = "Island population / total population"
+)
+
+layout(1)
+```
+
+The left plot shows that we're bouncing randomly between the islands, sometimes going back and forth between the same two, occasionally moving many times in a row, and occasionally staying on the same island. The right plot shows that we're getting the right approximation -- the amount of time we spend on each island is roughly the same as that island's proportion of the total population. For reference I'll print all of the island populations below.
+
+```{r 9h5 pops}
+populations
+```
+
+### 9H6
+
+For this exercise we'll modify the Metropolis algorithm code from the chapter to write our own MCMC example for the globe tossing data and model. Following McElreath's sketch from the beginning of section 9.2, we have that
+
+- The "islands" are the possible values of the parameter $p$, the proportion of the globe that is water;
+- The "population sizes" are the probabilities of each value of $p$ after we observed the globe tossing values; and
+- The "weeks" are not interpretable as time values but are the samples we take from the posterior distribution of $p$.
+
+From chapter 2, we have 6 water samples and 3 land samples. We'll set our initial value therefore as the MLE for the proportion of water, $6 / 9 \approx 0.67$.
+
+```{r 9h6 code}
+# Initialization
+set.seed(376)
+num_samples <- 1e5
+p_samples <- rep(0, num_weeks)
+current <- 0.67
+
+# Most of the loop stays the same, we generate the proposal the same way
+for (i in 1:num_samples) {
+	## Record current position
+	p_samples[i] <- current
+	
+	## Generate proposal -- there are multiple ways to do this, but we'll
+	## just generate a new value that's within a certain distance of p. Then
+	## if p is outside the bounds [0, 1], we'll set it to the boundary.
+	proposal <- current + runif(1, -0.25, 0.25)
+	if (proposal < 0) proposal <- 0
+	if (proposal > 1) proposal <- 1
+	
+	## Next calculate the likelihood of the current and proposed values
+	proposal_p <- dbinom(6, 9, proposal)
+	current_p <- dbinom(6, 9, current)
+	
+	## Move?
+	prob_move <- proposal_p / current_p
+	current <- ifelse(runif(1) < prob_move, proposal, current)
+}
+```
+
+Now we can look at the estimated density of the posterior distribution of $p$ that we've sampled from.
+
+```{r 9h6 plots}
+p_dens <- density(p_samples)
+p_mode <- p_dens$x[which.max(p_dens$y)]
+plot(
+	p_dens, main = "",
+	lwd = 2
+)
+abline(v = p_mode, lty = 2, col = "red", lwd = 1.5)
+text(paste0("MAP = ", round(p_mode, 3)), x = p_mode - 0.05, y = 1.0)
+```
+
+The maximum *a posteriori* estimate from our sampled values is `r round(p_mode, 3)`, which is quite close to the true estimated value somewhere near $0.73$. Having more data samples would improve this a lot; adding more MCMC samples probably wouldn't. But let's look at the trace plot just to make sure.
+
+```{r 9h6 plot results}
+k <- num_samples / 10
+plot(x = 1:k, y = p_samples[1:k], type = "l", xlab = "draw", ylab = "p")
+```
+
+We can see that the chain moves up and down randomly (for these draws, which are the first `r k`). So it seems that our estimator didn't get stuck anywhere and we can probably trust it.
+
+### 9H7
+
+Now we want to write our own HMC algorithm for the globe tossing data. We need to write functions for the likelihood and gradient. We know that the likelihood is
+
+$$L(W \mid p, n) = \left({n}\atop{W}\right) p^W (1-p)^{n-W},$$
+and thus the log likelihood is
+$$\ell(W \mid p, n) = \log\left({n}\atop{W}\right) + W\log p + (n-w)\log(1-p).$$
+
+Now we need to get the derivative of the log-likelihood, which is
+$$
+\frac{d\ell}{dp} = \frac{w-np}{p(1-p)}.
+$$
+
+Let's implement both of these in R, ignoring the fact that the log-likelihood can already be obtained as `dbinom(..., log = TRUE)`.
+
+```{r 9h7 functions}
+U <- function(p, W = 6, n = 9) {
+	U <- log(choose(n, W)) + W * log(p) + (n - W) * log(1 - p)
+	return(-U)
+}
+
+U_gradient <- function(p, W = 6, n = 9) {
+	G <- (W - n * p) / (p * (1 - p))
+	return(-G)
+}
+```
+
+I checked these against `dbinom(...)` and a simple central difference differentiation scheme to make sure they were giving the same answers as the built-in function. Note that the difference between the derivatives gets larger as $h$ increases as we expect, but for suitably small $h$ there is no difference between our method and the numerical derivative for the function that we know is correct.
+
+```{r 9h6 functions test}
+test_p <- c(0.05, 0.25, 0.5, 0.75, 0.95)
+
+our_U <- U(test_p)
+r_U <- dbinom(6, 9, test_p, TRUE) * -1
+all.equal(our_U, r_U)
+
+h <- 0.00001
+r_dU <- (dbinom(6, 9, test_p + h, TRUE) - dbinom(6, 9, test_p - h, TRUE)) / (2*h)
+our_dU <- U_gradient(test_p) * -1
+all.equal(our_dU, r_dU)
+```
+
+Now that we have the functio and the gradient programmed, we can implement the actual HMC routune.
+
+```{r 9h7 run HMC}
+set.seed(377)
+Q <- list()
+Q$q <- c(0.67)
+pr <- 0.3
+step <- 0.03
+L <- 11
+n_samples <- 1e3
+Q_samples <- numeric(n_samples)
+time <- 1:n_samples
+path_col <- rethinking::col.alpha("black", 0.5)
+for (i in 1:n_samples) {
+	# Do the samples and save the output
+	Q <- rethinking::HMC2(U, U_gradient, step, L, Q$q)
+	Q_samples[i] <- Q$q
+}
+```
+
+I wanted to figure out how to make a plot like Figure 9.5 on page 272, but the code and plotting stuff wasn't explained enough for me to do it in a reasonable time, so we'll just look at the trace plot and density like usual. Note that I tried running more samples, but I kept getting weird internal errors for `HMC2` so I don't think it's terribly robust, and the number of samples that you can succesfully complete probably is dependent on the starting seed.
+
+```{r 9h7 plots}
+layout(matrix(c(1, 2), nrow = 1))
+plot(
+	time, Q_samples, type = "l",
+	xlab = "Draw", ylab = "p"
+)
+
+dens_hmc <- density(Q_samples)
+hmc_mode <- dens_hmc$x[which.max(dens_hmc$y)]
+plot(
+	dens_hmc, main = "",
+	lwd = 2
+)
+abline(v = hmc_mode, lty = 2, col = "red", lwd = 1.5)
+text(paste0("MAP = ", round(p_mode, 3)), x = p_mode - 0.075, y = 1.0)
+```
+
+For this example, we got that the MAP after `r n_samples` samples was `r round(hmc_mode, 3)` which is similar to the truth and similar to our Metropolis MCMC result.
 
 <!-- END OF FILE -->

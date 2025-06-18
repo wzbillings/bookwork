@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.54">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,12 +70,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-f3c2ea88cadbcfb37ba28ffa2c97cfc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-ae2d0dcda2edce4ab590422bb373b64f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -465,11 +465,43 @@ residual sd = 0.90, R-Squared = 0.97</code></pre>
 <li>Give the equation of the regression line and the residual standard deviation of the regression.</li>
 </ol>
 </blockquote>
-<p>From the second bullet point, we can get that</p>
-<p><span class="math display">\[\hat{\beta} = \frac{0.8\%}{0.1\%} = 8.\]</span></p>
-<p>Then, using the information from the first bullet point we get that</p>
+<p>We know that the regression line is of the form</p>
 <p><span class="math display">\[
-\$30,000 = \hat{\alpha} + 8 \times 66 \implies \hat{\alpha} = \$30,000 - 8 \times 66 = \$29,472.
+\begin{aligned}
+\log y &amp;= \hat{\alpha} + \hat{\beta} \log x \\
+y &amp;= e^{\hat{\alpha} + \hat{\beta} \log x} \\
+y &amp;= e^{\hat{\alpha}}x^{\hat{\beta}}.
+\end{aligned}
+\]</span></p>
+<p>From the second bullet point, we get that</p>
+<p><span class="math display">\[1.008y = e^{\hat{\alpha}}(1.01x)^{\hat{\beta}}.\]</span></p>
+<p>Dividing by the original equation, we get that <span class="math display">\[
+\frac{1.008y}{y} = \frac{e^{\hat{\alpha}}(1.01x)^{\hat{\beta}}}{e^{\hat{\alpha}}(x)^{\hat{\beta}}} = \left( \frac{1.01x}{x} \right)^{\hat{\beta}} \implies 1.008 = 1.01^{\hat{\beta}}.
+\]</span></p>
+<p>Solving, we get that <span class="math display">\[\hat{\beta} = \frac{\log 1.008}{\log 1.01} \approx 0.8.\]</span></p>
+<p>Note that we could have just used this approximation in the first place – the percent change will be approximately close to <span class="math inline">\(\hat{\beta}\)</span> for small percent changes. Anyways, now we can solve for <span class="math inline">\(\hat{\alpha}\)</span> using the information from the first bullet point:</p>
+<p><span class="math display">\[
+30000 = e^{\hat{\alpha}}\times66^{0.8} \implies \hat{\alpha} = \log\left(\frac{30000}{66^{0.8}}\right) \approx 6.96.
+\]</span></p>
+<p>So our regression line is approximately <span class="math display">\[
+y = e^{6.96}x^{0.8}.
+\]</span></p>
+<p>To get the value of <span class="math inline">\(\hat{\sigma}\)</span>, we need to use the information from the third bullet point. We get that <span class="math inline">\(95\%\)</span> of outcomes are within a factor of <span class="math inline">\(1.1\)</span>, which implies that for <span class="math inline">\(95\%\)</span> of people, their log predicted outcome is <span class="math inline">\(\log(1.1)\)</span> away from their true value. Since we assume anormal distribution, that means that <span class="math inline">\(95\%\)</span> of people have predicted outcomes within approximately <span class="math inline">\(2\hat{\sigma}\)</span> of their true outcomes, so we get that <span class="math display">\[
+\hat{\sigma} \approx \frac{\log 1.1}{2} \approx 0.048.
+\]</span></p>
+<blockquote class="blockquote">
+<ol start="2" type="a">
+<li>Suppose the standard deviation of log heights is <span class="math inline">\(5\%\)</span> in this population. What, then, is the <span class="math inline">\(R^2\)</span> of the regression model described here?</li>
+</ol>
+</blockquote>
+<p>I’m not really sure how to get the standard deviation from the description “the standard deviation is <span class="math inline">\(5\%\)</span> in this population.” Five percent of what? Of the mean? We don’t have that. It also says “the standard deviation of heights.” So if we knew the correlation coefficient, we could use that to get the standard deviation of the earnings. But there’s nothing really tractable here because we’re missing too much information. So I think we have to assume that the standard deviation of the log earnings is <span class="math inline">\(0.05\)</span>.</p>
+<p>Once we make that assumption, the <span class="math inline">\(R^2\)</span> is calculated as follows.</p>
+<p><span class="math display">\[
+\begin{aligned}
+R^2 &amp;= 1 - \frac{\hat{\sigma}^2}{s_y^2} \\
+&amp;= 1 - \frac{0.048^2}{0.05^2} \\
+&amp;\approx 0.08.
+\end{aligned}
 \]</span></p>
 <!-- END OF FILE -->
 
@@ -704,8 +736,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -816,7 +846,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

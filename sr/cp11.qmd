@@ -1,0 +1,48 @@
+---
+title: "Chapter 11: God Spiked the Integers"
+format: html
+---
+
+This chapter covers common models for count data: bernoulli models, aggregated binomial models, Poisson and gamma-Poisson models, and multinomial/categorical models.
+
+## Exercises
+
+### 11E1
+
+If an event has probability 0.35, then the log-odds of the event are
+$$\mathrm{logit}\ 0.35 = \log \frac{0.35}{1 - 0.35} \approx -0.62.$$
+
+### 11E2
+
+If an event has log-odds 3.2, the probability of the event is
+$$\mathrm{logit}^{-1}\ 3.2 = \frac{\exp 3.2}{1 + \exp3.2} \approx 0.96$$
+
+### 11E3
+
+If the coefficient in a logistic regression has value 1.7, this implies that the log-odds of the outcome increase by 1.7 for every one-unit change in the predictor associated with that coefficient; or that the odds of the outcome are multiplied by $\exp 1.7 \approx 5.47$ for every one-unit change in the predictor.
+
+### 11E4
+
+Poisson regressions require the use of an offset when different outcome observations are associated with different exposure times; or in other words, when you want to model rates instead of counts (of course when we model counts without an offset, we are also modeling rates but all the denominators are constant). For example, if you monitor the number of positive influenza diagnostic tests at multiple clinics, you need to use an offset that models the total number of flu tests performed at each clinic, or at least the total number of visitors. (We could also model this as a binomial outcome, but that is true for a lot of Poisson problems.)
+
+### 11M1
+
+When we reorganize data from the disaggregated to the aggregated binomial form, the likelihood changes because we also account for the number of potential ways to get the same aggregate outcome. The disaggregated model only considers the outcome for the specific order of event occurrences that we observed, while the aggregated model gives the likelihood for any sample with the same number of cases, which could have potentially arisen in many ways.
+
+That means we should use the aggregated binomial form only when we truly know that any samples with the same number of cases is identical -- for example, if our experimental units are individuals and we know which individuals experienced an outcome, these data would be disaggregate because we could potentially have other information that explains differences between individuals.
+
+### 11M2
+
+If a coefficient in a Poisson regression has value 1.7, assuming the typical log link function, that implies that a one unit change in the associated predictor leads to a $\exp 1.7 \approx 5.47$-fold change in the outcome; or an equivalent $5.47$-fold change in the rate of outcome occurrence.
+
+### 11M3
+
+The logit link is typically appropriate for a binomial GLM because we apply a linear model to the parameter $p$, which is a probability. The logit link is a function that maps $(0, 1) \to \mathbb{R}$, and all probabilities have to be in the interval $[0, 1]$. So the logit link ensures that the real-valued linear predictor is mapped to the allowed domain of the parameter $p$.
+
+### 11M4
+
+The log link is typically appropriate for a Poisson GLM because we apply a linear model to the only parametr $\lambda$, which only has support on $(0, \infty)$. The log link function maps the input from $(0, \infty) \to \mathbb{R}$, so $\log \lambda$ and the linear predictor have the same allowed values.
+
+### 11M5
+
+Using a logit link for the mean of a Poisson GLM would imply that $\lambda \in (0, 1)$ is a necessary constraint for the problem. When $\lambda < 1$, the highest probility value for the Poisson distribution is 0, so we would want to do this on data where we know that $0$ is the most common outcome, but larger numbers can happen.

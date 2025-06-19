@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Zane Billings">
+<meta name="dcterms.date" content="2025-06-19">
 
-<title>Statistical Rethinking – Book Solutions and Notes</title>
+<title>Chapter 10: Big Entropy and the Generalized Linear Model – Book Solutions and Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,26 +25,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f3c2ea88cadbcfb37ba28ffa2c97cfc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-ae2d0dcda2edce4ab590422bb373b64f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-f3c2ea88cadbcfb37ba28ffa2c97cfc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ae2d0dcda2edce4ab590422bb373b64f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,77 +70,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Book Solutions and Notes</span>
     </a>
   </div>
@@ -176,440 +118,52 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Statistical Rethinking</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">Statistics</div>
-                <div class="quarto-category">Bayesian</div>
-                <div class="quarto-category">Causal</div>
-              </div>
-                  </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Chapter 10: Big Entropy and the Generalized Linear Model</h1>
+                      </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Zane Billings </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2025-06-19</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<p>Notes and solutions for “Statistical Rethinking”, 2nd edition, by Richard McElreath, 2020, CRC Press.</p>
+<p>This was a short chapter with no exercises. Here’s my main takeaways.</p>
+<ul>
+<li>Entropy, which we previously covered, and the KL divergence (cross-entropy) are approximations for counting the number of ways a particular result can be achieved, relative to another distribution for the KL divergence.</li>
+<li>Choosing likelihood functions based on maximum entropy often produces sensible choices, such as choosing Gaussian for a continuous variable with a finite variance; or Binomial for a dichotomous variable where the probability of success is consistent in time.</li>
+</ul>
 
 
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1750358801000" data-listing-file-modified-sort="1750358801827" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="82">
-<div class="thumbnail">
-<p><a href="./sr/cp10.html" class="no-external"></a></p><a href="./sr/cp10.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./sr/cp10.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp10.html" class="no-external">Chapter 10: Big Entropy and the Generalized Linear Model</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp10.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp10.html" class="no-external">This was a short chapter with no exercises. Here’s my main takeaways.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp10.html" class="no-external">
-<div class="listing-date">
-Jun 19, 2025
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1750210335000" data-listing-file-modified-sort="1750210335557" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2761">
-<div class="thumbnail">
-<p><a href="./sr/cp9.html" class="no-external"></a></p><a href="./sr/cp9.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp9_files\figure-html\9m3.1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp9.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp9.html" class="no-external">SR Chapter 9: Markov Chain Monte Carlo</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp9.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp9.html" class="no-external">This chapter covers Markov Chain Monte Carlo, Gibbs sampling, Hamiltonian Monte Carlo, and the HMC implementation in <code>rethinking</code>.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp9.html" class="no-external">
-<div class="listing-date">
-Jun 17, 2025
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1706072400000" data-listing-file-modified-sort="1722202883767" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="25" data-listing-word-count-sort="4866">
-<div class="thumbnail">
-<p><a href="./sr/cp8.html" class="no-external"></a></p><a href="./sr/cp8.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp8_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp8.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp8.html" class="no-external">Chapter 8: Conditional Manatees</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp8.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp8.html" class="no-external">This chapter is a brief introduction to the concept of conditional inference, focusing on the specific concept of linear interaction in models.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp8.html" class="no-external">
-<div class="listing-date">
-Jan 24, 2024
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1699070400000" data-listing-file-modified-sort="1722199512317" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3854">
-<div class="thumbnail">
-<p><a href="./sr/cp7.html" class="no-external"></a></p><a href="./sr/cp7.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp7_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp7.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp7.html" class="no-external">Chapter 7: Ulysses’ Compass</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp7.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp7.html" class="no-external">Predictive accuracy is the main focus of this chapter. The titular metaphor “Ulysses’ compass” refers to the mythological hero Ulysses navigating the path between the two…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp7.html" class="no-external">
-<div class="listing-date">
-Nov 4, 2023
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1684296000000" data-listing-file-modified-sort="1722202059454" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3110">
-<div class="thumbnail">
-<p><a href="./sr/cp6.html" class="no-external"></a></p><a href="./sr/cp6.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp6_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp6.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp6.html" class="no-external">Chapter 6: The Haunted DAG and the Causal Terror</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp6.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp6.html" class="no-external">This chapter discusses three common pitfalls that can lead our statistical models to misbehave and make our causal interpretations difficult or incorrect. The three major…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp6.html" class="no-external">
-<div class="listing-date">
-May 17, 2023
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1675659600000" data-listing-file-modified-sort="1722199340321" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1296">
-<div class="thumbnail">
-<p><a href="./sr/week4.html" class="no-external"></a></p><a href="./sr/week4.html" class="no-external">
-<p class="card-img-top"><img src="sr\week4_files\figure-html\unnamed-chunk-3-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/week4.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/week4.html" class="no-external">2023 Homework, week 4</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/week4.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/week4.html" class="no-external">This homework covers the material from Lectures 7 and 8, and the content from book Chapters 7, 8, and 9. The questions are reproduced almost identically from Richard…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/week4.html" class="no-external">
-<div class="listing-date">
-Feb 6, 2023
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1674795600000" data-listing-file-modified-sort="1722199315058" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1120">
-<div class="thumbnail">
-<p><a href="./sr/week3.html" class="no-external"></a></p><a href="./sr/week3.html" class="no-external">
-<p class="card-img-top"><img src="sr\week3_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/week3.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/week3.html" class="no-external">2023 Homework, week 3</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/week3.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/week3.html" class="no-external">This homework covers the material from Lectures 5 and 6, and the content from book Chapters 5 and 6. The questions are reproduced almost identically from Richard McElreath’s…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/week3.html" class="no-external">
-<div class="listing-date">
-Jan 27, 2023
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1674795600000" data-listing-file-modified-sort="1722199306817" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3532">
-<div class="thumbnail">
-<p><a href="./sr/week2.html" class="no-external"></a></p><a href="./sr/week2.html" class="no-external">
-<p class="card-img-top"><img src="sr\week2_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/week2.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/week2.html" class="no-external">2023 Homework, week 2</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/week2.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/week2.html" class="no-external">This homework covers the material from Lectures 3 and 4, and the content from book Chapter 4. The questions are reproduced almost identically from Richard McElreath’s…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/week2.html" class="no-external">
-<div class="listing-date">
-Jan 27, 2023
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1673931600000" data-listing-file-modified-sort="1722199276469" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="955">
-<div class="thumbnail">
-<p><a href="./sr/week1.html" class="no-external"></a></p><a href="./sr/week1.html" class="no-external">
-<p class="card-img-top"><img src="sr\week1_files\figure-html\unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/week1.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/week1.html" class="no-external">2023 Homework, week 1</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/week1.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/week1.html" class="no-external">This homework covers the material from Lectures 1 and 2, and the content from book Chapters 1, 2, and 3. The questions are reproduced almost identically from Richard…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/week1.html" class="no-external">
-<div class="listing-date">
-Jan 17, 2023
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1670562000000" data-listing-file-modified-sort="1722199442331" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="33" data-listing-word-count-sort="6596">
-<div class="thumbnail">
-<p><a href="./sr/cp4.html" class="no-external"></a></p><a href="./sr/cp4.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp4_files\figure-html\4M1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp4.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp4.html" class="no-external">Chapter 4: Geocentric Models</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp4.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp4.html" class="no-external">This chapter discusses basic Bayesian model fitting with grid and quadratic approximations. The title, “geocentric models,” refers to models that make good predictions, but…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp4.html" class="no-external">
-<div class="listing-date">
-Dec 9, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1661227200000" data-listing-file-modified-sort="1722199415834" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1617">
-<div class="thumbnail">
-<p><a href="./sr/cp3.html" class="no-external"></a></p><a href="./sr/cp3.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp3_files\figure-html\unnamed-chunk-16-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp3.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp3.html" class="no-external">Chapter 3: Sampling the Imaginary</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp3.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp3.html" class="no-external">This chapter discusses the basics of sampling – instead of directly approximate the density of the posterior distribution, we can draw samples from it. This seems silly for…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp3.html" class="no-external">
-<div class="listing-date">
-Aug 23, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1658462400000" data-listing-file-modified-sort="1722199389339" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2278">
-<div class="thumbnail">
-<p><a href="./sr/cp2.html" class="no-external"></a></p><a href="./sr/cp2.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp2_files\figure-html\MCMC example-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp2.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp2.html" class="no-external">Chapter 2: Small Worlds and Large Worlds</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp2.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp2.html" class="no-external">In this chapter, the basics of Bayesian probability models and updating are described using a motivating example where the percent coverage of water on Earth is estimated by…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp2.html" class="no-external">
-<div class="listing-date">
-Jul 22, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="12" data-listing-date-sort="1655870400000" data-listing-file-modified-sort="1722201835031" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="19" data-listing-word-count-sort="3688">
-<div class="thumbnail">
-<p><a href="./sr/cp5.html" class="no-external"></a></p><a href="./sr/cp5.html" class="no-external">
-<p class="card-img-top"><img src="sr\cp5_files\figure-html\5m4 data cleaning-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./sr/cp5.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp5.html" class="no-external">Chapter 5: The Many Variables and the Spurious Waffles</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp5.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp5.html" class="no-external">This chapter discusses the “causal salad” issue that is really prevelant in epidemiology (and other sciences) right now. When you “adjust” for variables in models, what are…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp5.html" class="no-external">
-<div class="listing-date">
-Jun 22, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-listing-date-sort="1655870400000" data-listing-file-modified-sort="1722199365166" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="249">
-<div class="thumbnail">
-<p><a href="./sr/cp1.html" class="no-external"></a></p><a href="./sr/cp1.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./sr/cp1.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./sr/cp1.html" class="no-external">Chapter 1: The Golem of Prague</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./sr/cp1.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./sr/cp1.html" class="no-external">This chapter covers McElreath’s perspectives on statistical modeling and causal inference, and gives a description of how the book will address issues with current…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./sr/cp1.html" class="no-external">
-<div class="listing-date">
-Jun 22, 2022
-</div>
-<div class="listing-author">
-Zane Billings
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

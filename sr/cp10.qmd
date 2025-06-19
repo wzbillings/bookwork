@@ -1,0 +1,9 @@
+---
+title: "Chapter 10: Big Entropy and the Generalized Linear Model"
+format: html
+---
+
+This was a short chapter with no exercises. Here's my main takeaways.
+
+- Entropy, which we previously covered, and the KL divergence (cross-entropy) are approximations for counting the number of ways a particular result can be achieved, relative to another distribution for the KL divergence.
+- Choosing likelihood functions based on maximum entropy often produces sensible choices, such as choosing Gaussian for a continuous variable with a finite variance; or Binomial for a dichotomous variable where the probability of success is consistent in time.

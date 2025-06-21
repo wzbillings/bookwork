@@ -487,7 +487,7 @@ m11.5 <- rethinking::ulam(
 
 Now we'll compare the models using PSIS.
 
-```{r}
+```{r 11h1 comparisons}
 rethinking::compare(
 	m11.1, m11.3, m11.4,
 	sort = "PSIS", func = PSIS
@@ -498,7 +498,7 @@ From the PSIS comparison, we can see that `m11.4`, which includes actor effects 
 
 I also fit my own new model, `m11.5`, which only includes an actor effect and not a treatment effect. Let's compare that to the full model, `m11.4`.
 
-```{r}
+```{r 11h1 comp 2}
 rethinking::compare(
 	m11.4, m11.5,
 	sort = "PSIS", func = PSIS
@@ -507,7 +507,7 @@ rethinking::compare(
 
 The two models are essentially indistinguishable by PSIS, which sort of implies that knowing the treatment group doesn't give us any predictive power. I wonder if this would be different if we split the treatment group up into its two constituent effects.
 
-```{r}
+```{r 11h1 treatment splitting}
 dat_list$condition <- d$condition + 1
 dat_list$prosoc_left <- d$prosoc_left + 1
 m11.6 <- rethinking::ulam(
@@ -545,7 +545,7 @@ While all four of the models are basically indistinguishable in terms of PSIS, t
 
 For this problem, we'll model salmon pirating attempts by bald eagles in Washington state. First we need to set up the data.
 
-```{r}
+```{r 11h2 data}
 data(eagles, package = "MASS")
 eagle_data <- list(
 	y = eagles$y,
@@ -558,7 +558,7 @@ eagle_data <- list(
 
 (A) First we'll build a model that considers the three different predictors independently in an aggregated binomial framework. We want to fit this model with both quap and ulam and see if there are any major differences.
 
-```{r}
+```{r 11h2a models}
 m11h2_a <- rethinking::ulam(
 	alist(
 		y ~ dbinom(n, p),
@@ -592,13 +592,13 @@ We can see that the `quap` estimates are identical, so we'll use the `quap` esti
 
 (B) Now we need to intercept the estimates. We can first take a look at the coefficients.
 
-```{r}
+```{r 11h2b precis}
 rethinking::precis(m11h2_a_quap)
 ```
 
 Wee see that the effects of $P$ and $A$ both seem to have their entire probability density at positive values, while the coefficient for $V$ has a negative effect. However, these coefficients don't tell us that much -- we can exponentiate them to get some odds ratios, though.
 
-```{r}
+```{r 11h2 b precis 2}
 rethinking::precis(m11h2_a_quap, pars = c("bp", "ba", "bv")) |>
 	unclass() |>
 	as.data.frame() |>
@@ -609,7 +609,7 @@ rethinking::precis(m11h2_a_quap, pars = c("bp", "ba", "bv")) |>
 
 This gives us a bit more understandable estimate of the effect, but we really want to look at the predicted probabilities and success counts to really understand what is going on.
 
-```{r}
+```{r 11h2 b plot1}
 #| code-fold: true
 #| code-show: "Plotting and prediction code"
 
@@ -676,9 +676,20 @@ In general, trying to understand three categorical effects simultaneously is a b
 
 We can also plot this in a different way using a traditional interaction plot.
 
-```{r}
+```{r 11h2b interaction plot}
 #| code-fold: true
 #| code-show: "Interaction plot code (long)"
+
+edp <- eagles |>
+	dplyr::mutate(
+		pred_prob_mean = pred_prob_mean,
+		pred_prob_lwr = pred_prob_pi[1, ],
+		pred_prob_upr = pred_prob_pi[2, ],
+		pred_count_mean = pred_count_mean,
+		pred_count_lwr = pred_count_pi[1, ],
+		pred_count_upr = pred_count_pi[2, ]
+	)
+
 layout(matrix(1:4, nrow = 2, byrow = TRUE))
 # Set up plotting layout: one plot per level of V
 V_levels <- unique(edp$V)
@@ -763,7 +774,7 @@ In a real analysis, we should also look at the marginal effects of each predicto
 
 (C) Next we'll fit a model with an iteraction between pirate size and age, and compare the models with WAIC. Just for fun, I also decided to compare the models with all two-way interactions, and a model that also has a three-way interaction. But first we'll answer the actual question.
 
-```{r}
+```{r 11h2c models}
 m11h2_c <- rethinking::quap(
 	alist(
 		y ~ dbinom(n, p),
@@ -814,7 +825,7 @@ m11h2_e <- rethinking::quap(
 
 So like I said, first we'll answer the actual question.
 
-```{r}
+```{r 11h2c comp 1}
 rethinking::compare(m11h2_a_quap, m11h2_c)
 ```
 
@@ -822,7 +833,7 @@ The two models are basically equivalent in WAIC, indicating that pirate age and 
 
 If we compare all of the models with interaction terms, we can see that in general none of the interaction terms make the model do better than the original model with no interactions. I wonder if this is mostly because we have small counts of some combinations -- in general, we were much less likely to observe small birds acting as pirates in the first place, and we were less likely to observe successes across all of the small pirate groups.
 
-```{r}
+```{r 11h2c comp 2}
 rethinking::compare(m11h2_a_quap, m11h2_c, m11h2_d, m11h2_e)
 ```
 
@@ -830,7 +841,7 @@ rethinking::compare(m11h2_a_quap, m11h2_c, m11h2_d, m11h2_e)
 
 For this problem, we'll build a model of salamander density, so we better start by cleaning up the salamander data. I kept getting really shitty models until I realized I needed to standardize the predictors because the scale is so different from the count scale of the outcome. But once I did that, I got models that worked alright.
 
-```{r}
+```{r 11h3 data}
 data("salamanders", package = "rethinking")
 s_dat <- list(
 	n = salamanders$SALAMAN,
@@ -841,7 +852,7 @@ s_dat <- list(
 
 First we'll build a model relating salamander density to percent cover using a Poisson model. Again we need to compare quap and ulam.
 
-```{r}
+```{r 11h3 modelsa}
 m_11h3_a <- rethinking::ulam(
 	alist(
 		n ~ dpois(lambda),
@@ -870,26 +881,19 @@ rethinking::coeftab(m_11h3_a, m_11h3_quap) |> rethinking::coeftab_plot()
 
 Yet again, the two models are exactly the same. Based on my other readings, quadratic/laplace approximation tends to work really well for GLMs, especially simple GLMs. So hopefully we can either stop comparing these or do an example where there's actually a difference. Anyways, let's take a quick look at the coefficients from the HMC model.
 
-```{r}
+```{r m11h3_a precis}
 rethinking::precis(m_11h3_a)
 ```
 
 We can see that the rate ratio is $1.92 \ (1.60, 2.29)$, which means that for every one standard deviation increase in ground cover of a site, we expect the count of salamanders to be multiplied by $1.92$. Let's go ahead and plot the count predictions though, so we can understand what's going on.
 
-```{r}
+```{r 11h3a plots}
 gc_seq <- seq(0, 100, 0.01)
 gc_seq_scaled <- (gc_seq - attr(s_dat$gc, "scaled:center")) /
 	attr(s_dat$gc, "scaled:scale")
 preds <- rethinking::link(m_11h3_a, data = data.frame(gc = gc_seq_scaled))
 pred_mean <- apply(preds, 2, mean)
 pred_pi <- apply(preds, 2, rethinking::PI)
-
-gc_seq2 <- seq(0, 100, 1)
-gc_seq_scaled2 <- (gc_seq2 - attr(s_dat$gc, "scaled:center")) /
-	attr(s_dat$gc, "scaled:scale")
-preds2 <- rethinking::sim(m_11h3_a, data = data.frame(gc = gc_seq_scaled2))
-pred_mean2 <- apply(preds2, 2, mean)
-pred_pi2 <- apply(preds2, 2, rethinking::PI)
 
 plot(
 	salamanders$PCTCOVER, s_dat$n,
@@ -906,27 +910,15 @@ lines(
 	pred_mean,
 	lwd = 2
 )
-points(
-	gc_seq2, pred_mean2
-)
-arrows(
-	x0 = gc_seq2,
-	x = gc_seq2,
-	y = pred_pi2[1, ],
-	y0 = pred_pi2[2, ],
-	length = 0,
-	angle = 90,
-	code = 3
-)
 ```
 
-In this plot, the blue lines show the actual data, the solid line and ribbon show the estimated mean with its $89\%$ credible interval, and the circles show the estimated count prediction ($y$, not $\lambda$) and its $89\%$ credible interval for each integer valued ground cover percentage.
+In this plot, the blue lines show the actual data, the solid line and ribbon show the estimated mean with its $89\%$ credible interval.
 
 We can see that the model makes generally decent predictions for the low value of ground cover, but the linear model we assumed doesn't really make sense at the higher values of ground cover, where there is a big range of captured salamanders for very similar values of ground cover. Honestly, there aren't really any models that only depend on ground cover that will do a good job explaining that -- either those high ground covers just have high variability of salamander counts, or there's another factor that can help us distinguish why sites with the same ground cover percentage are so variable.
 
 (B) Speaking of that, we want to add the forest age to our model. We'll fit a model that has both predictors independently and a model that has a linear interaction.
 
-```{r}
+```{r 11h3b model}
 m_11h3_b <- rethinking::ulam(
 	alist(
 		n ~ dpois(lambda),
@@ -960,7 +952,7 @@ rethinking::coeftab(m_11h3_a, m_11h3_b, m_11h3_c) |>
 
 The estimates for the intercept and the coefficient for ground cover move around a bit, but the estimates for the effect of forest age and the interaction term don't seem to do all that much, or at least the effect is quite variable. Let's look at the PSIS estimates to see if either of these models help our predictive power.
 
-```{r}
+```{r 11h3b comp}
 rethinking::compare(
 	m_11h3_a, m_11h3_b, m_11h3_c,
 	sort = "PSIS", func = PSIS
@@ -969,7 +961,7 @@ rethinking::compare(
 
 Some of the $k$ values are high, so we have a few influential points. But I don't think we need to look at those, because we can see the three models are essentially identical, with the model with only ground cover coming in slightly on top, though the SEs are extremely large copared to the dPSIS. Now let's try to figure out why the forest age isn't helping our model. If we look at the relationship between the two covariates, we see that it does seemingly have the potential to help with the problem I mentioned before.
 
-```{r}
+```{r 11h3b plot1}
 plot(
 	salamanders$PCTCOVER,
 	salamanders$FORESTAGE,
@@ -980,7 +972,7 @@ plot(
 
 For the sites with very high ground cover, they still have a range of different forest age values. So that suggests that forest age might be helpful at trying to understand why these sites with similar ground cover have such high variability in salamander counts.
 
-```{r}
+```{r 11h3bc plot2}
 plot(
 	salamanders$FORESTAGE,
 	salamanders$SALAMAN,
@@ -991,7 +983,7 @@ plot(
 
 But we can see there isn't much of a relationship between forest age and salamander count, so the forest age just isn't that useful for predicting how many salamanders we'll find, or at least all of the variability in salamander counts that's explained by forest age is already explained by ground cover. We can fit a model with just the forest age to test how predictive forest age is by itself.
 
-```{r}
+```{r 11h3b model d}
 m_11h3_d <- rethinking::ulam(
 	alist(
 		n ~ dpois(lambda),
@@ -1013,7 +1005,7 @@ So in isolation, the forest age *is* predictive. But it doesn't seem to tell us 
 
 In this question, we want to model the total and direct causal effects of gender of applicant on receiving scientific funding in an NWO grant application.
 
-```{r}
+```{r 11h4 data}
 data("NWOGrants", package = "rethinking")
 nwo <- list(
 	d = factor(NWOGrants$discipline) |> forcats::fct_inorder() |> as.integer(),
@@ -1025,7 +1017,7 @@ nwo <- list(
 
 We want to consider discipline as a mediator of the effect of gender on application awards. There are no other confounders in the dataset, so for now we'll assume we don't have any, but we'll have to touch on this in our causal interpretations. So to estimate the total and direct causal effects of gender we should estimate two models. One where gender is the only predictor, and one where gender and discipline are both in the model.
 
-```{r}
+```{r 11h4 model 1}
 m_11h4_1 <- rethinking::ulam(
 	alist(
 		y ~ dbinom(n, p),
@@ -1051,13 +1043,13 @@ m_11h4_2 <- rethinking::ulam(
 
 First we'll look at the total causal effect, from the model that only includes an effect for gender. When we take a look at the coefficients, we can see that we're pretty confident in a small negative effect of gender on application probability. Specifically, the OR estimate is $0.81$, indicating that women have $0.8$ times the odds of getting a grant awarded than a man overall.
 
-```{r}
+```{r 11h4 precis 1}
 rethinking::precis(m_11h4_1, depth = 2)
 ```
 
 What we really want to do is estimate the change between a man and a woman applying for the same grant, regardless of discipline, so we need to get predictions for that and subtract.
 
-```{r}
+```{r 11h4 post 1}
 post <- rethinking::link(m_11h4_1, data = data.frame(g = c(0, 1)))
 # Contrast for men (1) - women (2)
 contr_post <- post[,1] - post[,2]
@@ -1073,13 +1065,13 @@ So we can see that the total causal effect of gender on application status acros
 
 Now let's look at the direct causal effect of gender when we also control for discipline as a mediator. First let's look at the coefficients. For this model, I included an effect of being female, and an index-coded effect of discipline. I also left out the overall intercept since it's not identifiable with an intercept effect for each discipline.
 
-```{r}
+```{r m11h4 precis 2}
 rethinking::precis(m_11h4_2, depth = 2)
 ```
 
-After accounting for the discipline in our model, we get that the OR for gender is $0.74$, slightly lower than our previous model, but well within the credibility limits of the previous estimate. Let's get an estimate of how much gender affects award rate in each discipline, and we can also average those to get a marginal effect across disciplines.
+After accounting for the discipline in our model, we get that the OR for gender is $0.74$, slightly lower than our previous model, but well within the credibility limits of the previous estimate. Let's get an estimate of how much gender affects award rate in each discipline.
 
-```{r}
+```{r 11h4 plot not int}
 pred_data <- expand.grid(g = c(0, 1), d = 1:9)
 post <- rethinking::link(
 	m_11h4_2,
@@ -1098,52 +1090,68 @@ tidy_post <-
 		t(post) |> `colnames<-`(1:nrow(post))
 	) |>
 	tidyr::pivot_longer(-c(g, d), names_to = "draw", values_to = "sample") |>
-	tidyr::pivot_wider(names_from = g, values_from = sample) |>
-	dplyr::left_join(dpt_lookups, by = "d") |>
-	dplyr::select(-d)
-
-tidy_post_overal <- dplyr::mutate(tidy_post, discipline = "Overall")
-
-clean_preds <-
-	tidy_post |>
-	dplyr::bind_rows(tidy_post_overal) |>
 	dplyr::summarize(
-		mean = mean(`0` - `1`) * 100,
-		lwr = quantile(`0` - `1`, probs = 0.055) * 100,
-		upr = quantile(`0` - `1`, probs = 0.945) * 100,
-		.by = discipline
-	)
+		ggdist::mean_qi(sample, .width = 0.89),
+		.by = c(g, d)
+	) |>
+	dplyr::left_join(dpt_lookups, by = "d") |>
+	dplyr::select(-d) |>
+	dplyr::mutate(g = factor(ifelse(g == 0, "Man", "Woman")))
 
 labs <- c("Chem S.", "Phys S.", "Phys", "Hum", "Tech", "Int", "Earth S.",
-					"Soc S.", "Med S.", "Overall")
+					"Soc S.", "Med S.")
 
+k <- 0.1
 plot(
-	x = 1:10,
-	y = clean_preds$mean,
+	x = 1:9 - k,
+	y = subset(tidy_post, g == "Man")$y,
 	xlab = "Discipline",
 	xaxt = "n",
-	ylab = "Difference in award % for men vs. women",
-	ylim = c(0, 10)
+	ylab = "Chance of award acceptance",
+	ylim = c(0, 0.5),
+	xlim = c(1 - k, 9 + k),
+	col = "dodgerblue"
 )
 arrows(
-	x0 = 1:10,
-	x = 1:10,
-	y0 = clean_preds$lwr,
-	y = clean_preds$upr,
-	length = 0.15,
+	x0 = 1:9 - k,
+	x = 1:9 - k,
+	y0 = subset(tidy_post, g == "Man")$ymin,
+	y = subset(tidy_post, g == "Man")$ymax,
+	length = 0.05,
 	angle = 90,
-	code = 3
+	code = 3,
+	col = "dodgerblue"
 )
-axis(1, at = 1:10, labels = labs)
+points(
+	x = 1:9 + k,
+	y = subset(tidy_post, g == "Woman")$y,
+	col = "darkorange"
+)
+arrows(
+	x0 = 1:9 + k,
+	x = 1:9 + k,
+	y0 = subset(tidy_post, g == "Woman")$ymin,
+	y = subset(tidy_post, g == "Woman")$ymax,
+	length = 0.05,
+	angle = 90,
+	code = 3,
+	col = "darkorange"
+)
+axis(1, at = 1:9, labels = labs)
+legend(
+	"topright",
+	lty = 1, pch = 1, col = c("dodgerblue", "darkorange"),
+	legend = c("Men", "Women")
+)
 ```
 
-If we average across all disciplies, after accounting for the different baseline application rates between genders in each, we get an difference of $4.75\% \ (2.11\%, 7.81\%)$, which is larger than the total causal effect.
+If we average across all disciplies, after accounting for the different baseline application rates between genders in each, we can see that woman were still less likely to get awards, with a difference of about 3\% to 5\% per discipline.
 
 This is different from the conclusion that McElreath got, but I don't really think I did anything wrong so I'm not sure I'm inclined to change anything. My model sampled more efficiently than the one in the solutions manual and doesn't have the extra unnecessary parameter, so I'm tempted to conclude that I can trust my results, especially since I'm looking at the posterior predictions on the link scale.
 
 I wasn't sure what was causing this discrepancy other than McElreath's sampling issues, so I double checked the relationship between the proportion of female applicants and awards accepted per department.
 
-```{r}
+```{r 11h4 pred plot}
 c1 <- 
 	NWOGrants |>
 	dplyr::summarise(
@@ -1168,9 +1176,9 @@ plot(
 )
 ```
 
-We can see that, on average, more women do apply to less-funded categories. But my results suggest that even after taking that into account, a man was $5\%$ more likely to receive an award than a woman. Maybe if we fit a model with an interaction it will reveal more.
+We can see that, on average, more women do apply to less-funded categories. But my results suggest that even after taking that into account, a man was $5\%$ more likely to receive an award than a woman. Maybe if we fit a model with an interaction it will reveal more -- our current model doesn't allow for some disciplines to be better for woman than men, it only allows one overall effect for gender.
 
-```{r}
+```{r 11h4 int model 1}
 m_11h4_3 <- rethinking::ulam(
 	alist(
 		y ~ dbinom(n, p),
@@ -1186,54 +1194,375 @@ m_11h4_3 <- rethinking::ulam(
 rethinking::precis(m_11h4_3, depth = 2)
 ```
 
-Still no real sampling issues, probably cause I dummy coded the effect of $g$ so we don't have an extra intercept term. It's tempting to conclude that the effect of $bg$ is larger now, but we can see that some of the $k$ terms will cancel this out in specific disciplines. So we better go ahead and get the posterior predictions.
+Still no real sampling issues, probably cause I dummy coded the effect of $g$ so we don't have an extra intercept term. It's tempting to conclude that the effect of $bg$ is larger now, but we can see that some of the $k$ terms will cancel this out in specific disciplines -- except all the $k$ terms have pretty huge uncertainties. I had the same basic results with this model as the previous one (not shown for brevity), cause I think it forces the overall effect of gender to be negative still. So instead I decided to fit a more flexible model that allows each combination of gender and discipline to have its own estimated log-odds.
 
-```{r}
-post <- rethinking::link(
-	m_11h4_3,
-	data = pred_data
+```{r 11h4 int model 2}
+nwo$g2 <- nwo$g + 1
+m_11h4_4 <- rethinking::ulam(
+	alist(
+		y ~ dbinom(n, p),
+		logit(p) <- a[d, g2],
+		matrix[d, g2]:a ~ dnorm(0, 0.25)
+	),
+	data = nwo,
+	cores = 4, chains = 4
 )
+
+rethinking::precis(m_11h4_4, depth = 3)
+```
+
+This model requires using the little ulam matrix trick, but it sampled really well and while we still have some very high uncertainties, they seem to be better overall from what I can glean from this table.
+
+```{r 11h4 int model plots}
+post <- rethinking::link(m_11h4_4)
+
+p_women_order <-
+	NWOGrants |>
+	dplyr::select(-awards) |>
+	tidyr::pivot_wider(names_from = gender, values_from = applications) |>
+	dplyr::summarize(p = f / (m + f), .by = discipline) |>
+	dplyr::arrange(-p) |>
+	dplyr::pull(discipline) |>
+	as.character()
 
 tidy_post <-
 	cbind(
-		pred_data,
+		NWOGrants,
 		t(post) |> `colnames<-`(1:nrow(post))
 	) |>
-	tidyr::pivot_longer(-c(g, d), names_to = "draw", values_to = "sample") |>
-	tidyr::pivot_wider(names_from = g, values_from = sample) |>
-	dplyr::left_join(dpt_lookups, by = "d") |>
-	dplyr::select(-d)
-
-tidy_post_overal <- dplyr::mutate(tidy_post, discipline = "Overall")
-
-clean_preds <-
-	tidy_post |>
-	dplyr::bind_rows(tidy_post_overal) |>
+	dplyr::select(-awards, -applications) |>
+	tidyr::pivot_longer(
+		-c(gender, discipline), names_to = "draw", values_to = "sample"
+	) |>
 	dplyr::summarize(
-		mean = mean(`0` - `1`) * 100,
-		lwr = quantile(`0` - `1`, probs = 0.055) * 100,
-		upr = quantile(`0` - `1`, probs = 0.945) * 100,
-		.by = discipline
+		ggdist::mean_qi(sample, .width = 0.89),
+		.by = c(gender, discipline)
+	) |>
+	dplyr::mutate(
+		discipline = factor(discipline, levels = p_women_order)
 	)
 
 plot(
-	x = 1:10,
-	y = clean_preds$mean,
+	x = 1:9 - k,
+	y = subset(tidy_post, gender == "m")$y,
 	xlab = "Discipline",
 	xaxt = "n",
-	ylab = "Difference in award % for men vs. women",
-	ylim = c(0, 10)
+	ylab = "Chance of award acceptance",
+	ylim = c(0, 0.6),
+	xlim = c(1 - k, 9 + k),
+	col = "dodgerblue"
 )
 arrows(
-	x0 = 1:10,
-	x = 1:10,
-	y0 = clean_preds$lwr,
-	y = clean_preds$upr,
-	length = 0.15,
+	x0 = 1:9 - k,
+	x = 1:9 - k,
+	y0 = subset(tidy_post, gender == "m")$ymin,
+	y = subset(tidy_post, gender == "m")$ymax,
+	length = 0.05,
 	angle = 90,
-	code = 3
+	code = 3,
+	col = "dodgerblue"
 )
-axis(1, at = 1:10, labels = labs)
+points(
+	x = 1:9 + k,
+	y = subset(tidy_post, gender == "f")$y,
+	col = "darkorange"
+)
+arrows(
+	x0 = 1:9 + k,
+	x = 1:9 + k,
+	y0 = subset(tidy_post, gender == "f")$ymin,
+	y = subset(tidy_post, gender == "f")$ymax,
+	length = 0.05,
+	angle = 90,
+	code = 3,
+	col = "darkorange"
+)
+axis(1, at = 1:9, labels = substr(p_women_order, 1, 12))
+legend(
+	"topright",
+	lty = 1, pch = 1, col = c("dodgerblue", "darkorange"),
+	legend = c("Men", "Women")
+)
 ```
 
-At this point I got tired of trying to figure out what was going on, cause I'm pretty sure my code is broken somewhere and idk where.
+Now we can see what we actually expect from looking at the raw data, so it appears that correctly coding the interaction term makes a big difference. Now there are some disciplines where women appear to be more likely to get awards, while men are less likely to get awards. I ordered the categories by women being most likely to apply (women constituted the highest proportion of medical sciences applications and the lowest proportion of physics applications). So while it doesn't seem like there is a systematic bias against women in the overall award process, I wonder if this reflects structural biases against women in certain disciplines, especially since physics and math are generally considered to be more male-dominated.
+
+After I finished this, I reread the question and realized I was supposed to draw the dag so here it is.
+
+```{r 11h4 dag}
+p11h4_dag <-dagitty::dagitty(
+	"dag {
+		A <- G -> D -> A
+	}"
+)
+
+dagitty::coordinates(p11h4_dag) <- list(
+	x = c(G = 1, D = 2, A = 3),
+	y = c(G = 2, D = 1, A = 2)
+)
+
+plot(p11h4_dag)
+```
+
+### 11H5
+
+We'll call the unobserved confound for the NWOGrants example $U$ and we'll first add it to our DAG. This confounder influences the mediator $D$ and the outcome $A$.
+
+```{r 11h5 dag}
+p11h5_dag <-dagitty::dagitty(
+	"dag {
+		A <- G -> D -> A
+		A <- U -> D
+	}"
+)
+
+dagitty::coordinates(p11h5_dag) <- list(
+	x = c(G = 1, D = 2, A = 2, U = 1),
+	y = c(G = 2, D = 1, A = 2, U = 1)
+)
+
+plot(p11h5_dag)
+```
+
+Now when we condition on discipline, we open a backdoor path from $G \to U \to A$, which means that our causal effect estimate will be biased. We must condition on $U$ to obtain an unbiased causal estimate, but we haven't observed $U$ so obtaining the unbiased estimate is impossible under this DAG. I didn't need to simulate data because the answer here follows from the backdoor criterion rules discussed in chapters 5 and 6.
+
+### 11H6
+
+In this problem we'll do some analysis of the primate data. We want to analyze the variables `social_learning`, `research_effort`, and `brain`, and since we haven't dealt with missing data in this course yet, we'll only deal with complete cases in those three variables. I'll call them, respectively, $L$, $R$, and $B$.
+
+```{r 11h6 data}
+data("Primates301", package = "rethinking")
+
+P <-
+	Primates301 |>
+	dplyr::transmute(
+		name = as.character(name),
+		L = social_learning,
+		R = research_effort,
+		R_l = log(R),
+		B = brain,
+		B_l = log(brain)
+	) |>
+	tidyr::drop_na() |>
+	as.list()
+
+# Can't pass names to stan but we might want to keep track of them
+names_p <- P$name
+P$name <- NULL
+```
+
+(A) First we'll model the number of observations of $S$, social learning, for each species, as a function for the log brain size, $B$. Let's also fit a model with just an intercept to compare, since I think that's usually a good idea.
+
+```{r m1 11h6}
+m_11h6_1 <- rethinking::ulam(
+	alist(
+		L ~ dpois(lambda),
+		log(lambda) <- a,
+		a ~ dnorm(3, 0.5)
+	),
+	data = P,
+	chains = 4, cores = 4,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_11h6_1)
+```
+
+The model didn't sample fantastically but it sampled OK, the rhat is fine even though we have lower ESS than samples by a decent amount. But hopefully adding the predictor of interest will help.
+
+```{r m2 11h6}
+m_11h6_2 <- rethinking::ulam(
+	alist(
+		L ~ dpois(lambda),
+		log(lambda) <- a + bB * B_l,
+		a ~ dnorm(3, 0.5),
+		bB ~ dnorm(0, 0.2)
+	),
+	data = P,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_11h6_2)
+```
+
+Adding the predictor didn't seem to help the sampling, I had to run some more samples than the default to get rhat values of 1. But that's not so bad. We get a fairly tight posterior CI for the parameter `bB`, the effect of log brain size on the rate of mentions of social learning in literature. We can quickly make sure this is better than the intercept only model, even though it seems obvious that it is.
+
+```{r 11h6 comp 1}
+rethinking::compare(m_11h6_1, m_11h6_2, sort = "PSIS", func = PSIS)
+```
+
+There are some influential points in the data, which makes sense cause there's a lot of 0's in the $L$ variable and not too many primates with the highest brain sizes. But our model with the brain size predictor in it is MUCH better than the intercept-only model, which is great. I think we should take a quick look at these different variables though. I'll log $R$ and $B$ before plotting them, but we can't take the log of $L$ because it has zeroes in it.
+
+```{r 11h6 predictor plot}
+data.frame(L = P$L, "log R" = log(P$R), "log B" = log(P$B)) |>
+	GGally::ggpairs() +
+	ggplot2::theme_minimal(base_size = 18)
+```
+
+Yeah, it is no surprise that there are influential points once we see the distribution of $L$, we can tell which ones are influential. It seems that the primates with the most social learning mentions also have high $R$ and $B$ values.
+
+Anyways, we should finish interpreting the model we fit with the log brain size. Let's go ahead and plot the predictions.
+
+```{r 11h6 a posterior}
+B_seq <- seq(1, 600, 10)
+B_seq_log <- log(B_seq)
+
+post <- rethinking::link(m_11h6_2, data = data.frame(B_l = B_seq_log))
+post_mean <- apply(post, 2, mean)
+post_pi <- apply(post, 2, rethinking::PI)
+
+plot(
+	P$B_l, P$L,
+	xlab = "Brain mass (cc^3)",
+	ylab = "Social learning mentions",
+	xaxt = "n"
+)
+lines(
+	B_seq_log,
+	post_mean,
+	lwd = 2
+)
+rethinking::shade(
+	post_pi,
+	B_seq_log
+)
+axis_vals <- c(1, 2.5, 5, 10, 25, 50, 100, 250, 500)
+axis(1, at = log(axis_vals), axis_vals)
+
+```
+
+The credible interval for the predictions are quite tight, and the predictions are dominated by the primates with zero or very few social learning mentions, which are predicted quite well by the model. We slightly overpredict the number of social learning mentions for primates with around 100 - 250 cc3 brain mass, and slightly underpredict some outliers. The primates with the highest brain mass values are hard to predict and we do a bad job there.
+
+(B) Since some primates are studied much more often, we also want to account for this in our model, using the variable $R$ (and particularly $\log R$), since this should account for part of the mentions of social learning in the literature. Let's go ahead and fit a model that just has these two independent predictors.
+
+```{r 11h6b model}
+m_11h6_3 <- rethinking::ulam(
+	alist(
+		L ~ dpois(lambda),
+		log(lambda) <- a + bB * B_l + bR * R_l,
+		a ~ dnorm(3, 0.5),
+		bB ~ dnorm(0, 0.2),
+		bR ~ dnorm(0, 0.2)
+	),
+	data = P,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_11h6_3)
+```
+
+First let's compare this model to the previous model without the effect of $R$, although judging by the coefficient estimates, both predictors are important.
+
+```{r 11h6b coeftab}
+rethinking::coeftab(m_11h6_2, m_11h6_3) |>
+	rethinking::coeftab_plot()
+```
+
+We can see that the effect of $B$ is much reduced in model 3, which also contains the effect of $R$, which itself has a strong positive effect. That indicates that once we know how much research effort has been put into studying a primate, knowing its brain size doesn't influence the number of social learning mentions quite as much, but it's still important.
+
+(C) Now we'll draw a DAG for this problem. We know that $B$ and $R$ both affect $S$, but the question of interest is whether there is any relationship between $B$ and $R$. I think that species with higher brain sizes are probably studied more, because we expect to see more social learning activities in those species -- they're more interesting to scientists because they display more complex behaviors. So that would mean that we have a path $B \to R$ in addition to the paths $B \to S$ and $R \to S$, and $R$ mediates the effect of $B$ on $S$. Let's draw that dag.
+
+```{r m11h6 dag}
+p11h6_dag <-dagitty::dagitty(
+	"dag {
+		B -> S
+		R -> S
+		B -> R
+	}"
+)
+
+dagitty::coordinates(p11h6_dag) <- list(
+	x = c(B = 1, R = 1.5, S = 2),
+	y = c(B = 2, R = 1, S = 2)
+)
+
+plot(p11h6_dag)
+```
+
+Our analysis also supports this DAG (of course there are many other DAGs that would be supported by the same results). We saw an effect of $B$ on $S$, but then in a model with both $B$ and $R$, we saw that $R$ had an effect on $S$, and $B$ still had an effect on $S$ but a less strong effect. I think one more justification for this model would be to fit a model with $R$ and $S$ only, and the model with both covariates should be better than any of the other models.
+
+```{r 11h6 model 4}
+m_11h6_4 <- rethinking::ulam(
+	alist(
+		L ~ dpois(lambda),
+		log(lambda) <- a + bR * R_l,
+		a ~ dnorm(3, 0.5),
+		bR ~ dnorm(0, 0.2)
+	),
+	data = P,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_11h6_4)
+```
+
+We can see that there's still a strong effect of $R$, but let's compare the coefficents from the other two models.
+
+```{r 11h6 comp 2}
+rethinking::coeftab(m_11h6_2, m_11h6_3, m_11h6_4) |>
+	rethinking::coeftab_plot()
+```
+
+Yes, we can see that the effect of $R$ is slightly stronger in this model than it is in the model with both $B$ and $R$. This suggests that part of the effect of $R$ in the $R$-only model is actually the causal effect of $B$ passing through $R$. So this also makes sense if mediation is the true causal story here. Finally, let's do a quick PSIS comparison.
+
+```{r 11h6 comp 3}
+rethinking::compare(
+	m_11h6_2, m_11h6_3, m_11h6_4,
+	sort = "PSIS", func = PSIS
+)
+```
+
+From our PSIS model, it seems that $R$ is much more important than $B$ for predicting $S$, which makes sense to me since $S$ is the number of literature mentions. The model with both covariates is slightly better, but not in any appreciable sense given the standard errors. Finally, I think it makes sense to fit a model to test whether the mediation effect is really necessary -- we can built a two stage model where $B$ acts on $R$, and $R$ alone acts on $S$.
+
+```{r model 5 11h6}
+m_11h6_5 <- rethinking::ulam(
+	alist(
+		L ~ dpois(lambda),
+		log(lambda) <- a + bR * R_l,
+		R_l ~ dpois(gamma),
+		log(gamma) <- q + zB * B_l,
+		a ~ dnorm(3, 0.5),
+		q ~ dnorm(3, 0.5),
+		bR ~ dnorm(0, 0.2),
+		zB ~ dnorm(0, 0.2)
+	),
+	data = P,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_11h6_5)
+```
+
+I was somewhat worried that this model would not be identifiable since Poisson distributions can collapse together, but it seems to actually have sampled pretty well. Here we can see that there's a weak effect of $B$ on $R$, but a stronger effect of $R$ on $S$, and we're fairly confident in both of these effects. So to some extent, brain size does contribute to research effort, but it can't be the only factor in chosing which species are studied. If we look back at our plot, there is a general trend between log $R$ and log $B$, but a lot of spread, so this result seems to make sense. Let's see if we can fit a model that has effects of $B$ in both places.
+
+```{r model 6 11h6}
+m_11h6_6 <- rethinking::ulam(
+	alist(
+		L ~ dpois(lambda),
+		log(lambda) <- a + bR * R_l + bB * B_l,
+		R_l ~ dpois(gamma),
+		log(gamma) <- q + zB * B_l,
+		a ~ dnorm(3, 0.5),
+		q ~ dnorm(3, 0.5),
+		bR ~ dnorm(0, 0.2),
+		bB ~ dnorm(0, 0.2),
+		zB ~ dnorm(0, 0.2)
+	),
+	data = P,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_11h6_6)
+```
+
+Yes, here we can actually seem to distinguish between the effect of $B$ on $R$ (the parameter `zB`, which is fairly small) and the effect of $B$ on $S$ (the parameter `bB` which is larger). That's interesting and I think it does seem to support our mediation hypothesis.

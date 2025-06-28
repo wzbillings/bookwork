@@ -111,3 +111,720 @@ $$
 P(y \mid \pi, n, p) = \pi + \bigg((1- \pi) \times (1-p)^n\bigg)
 $$
 if $y=0$ because a zero could be either from the zero-generating process or from the binomial part.
+
+### 12H1
+
+In this question we'll examine the data for hurricane severity based on names.
+
+```{r}
+data("Hurricanes", package = "rethinking")
+dh <- list(
+	d = Hurricanes$deaths,
+	f = Hurricanes$femininity
+)
+```
+
+First we'll fit a Poisson model that attempts to predict hurricane deaths based on the femininity score of the name.
+
+```{r}
+m_12h1 <- rethinking::ulam(
+	alist(
+		d ~ dpois(lambda),
+		log(lambda) <- a + b * f,
+		a ~ dnorm(3, 0.5),
+		b ~ dnorm(0, 0.5)
+	),
+	data = dh,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500
+)
+
+rethinking::precis(m_12h1)
+```
+
+We can see a positive effect of femininity on hurricane deaths from the $b$ coefficient in the model. Now we want to get the predictions for each storm and check which storms are predicted well and which are predicted poorly.
+
+```{r}
+link_12h1 <- rethinking::sim(m_12h1)
+mean_12h1 <- colMeans(link_12h1)
+pi_12h1 <- apply(link_12h1, 2, rethinking::PI)
+
+layout(matrix(1:2, nrow = 1))
+plot(
+	NULL, NULL,
+	xlim = c(1, nrow(Hurricanes)),
+	ylim = range(Hurricanes$deaths),
+	xlab = "Storm",
+	ylab = "Deaths",
+	axes = FALSE
+)
+axis(
+	1, at = 1:nrow(Hurricanes), labels = Hurricanes$name,
+	las = 2, cex.axis = 0.5
+)
+axis(2, at = seq(0, 250, 50))
+arrows(
+	x = 1:nrow(Hurricanes),
+	x0 = 1:nrow(Hurricanes),
+	y = pi_12h1[1, ],
+	y0 = pi_12h1[2, ],
+	lwd = 2,
+	length = 0
+)
+points(
+	x = 1:nrow(Hurricanes),
+	y = mean_12h1
+)
+points(
+	x = 1:nrow(Hurricanes),
+	y = Hurricanes$deaths,
+	col = rethinking::rangi2,
+	pch = 4,
+	lwd = 1.25
+)
+
+# femininity plot
+f_seq <- seq(1, 11, 0.01)
+link_12h1_fem <- rethinking::sim(
+	m_12h1,
+	data = data.frame(f = f_seq)
+)
+mean_12h1_fem <- colMeans(link_12h1_fem)
+pi_12h1_fem <- apply(link_12h1_fem, 2, rethinking::PI)
+plot(
+	Hurricanes$femininity,
+	Hurricanes$deaths,
+	xlab = "Femininity of storm name",
+	ylab = "Deaths",
+	axes = FALSE,
+	xlim = c(1, 11),
+	ylim = range(Hurricanes$deaths)
+)
+axis(
+	1, at = seq(1, 11, 1)
+)
+axis(2, at = seq(0, 250, 50))
+shade(pi_12h1_fem, f_seq)
+lines(f_seq, mean_12h1_fem, lwd = 1.5)
+```
+
+In the left plot plot, the circle and line shows the mean and 89% credible interval for the predicted number of deaths from a given hurricane. The blue x shows the observed number of deaths. We can see that almost all of the predictions are quite bad -- it looks like the predictions are driven upwards by a few intense storms, but that makes the predictions of the least deadly storms bad as well. So other than a few storms with intermediate deaths, our predictions are pretty bad.
+
+In the right plot, we can see that the predicted deaths by femininity score have a small credible itnerval, but almost all of the actual observed data points lie outside of the model prediction interval.
+
+### 12H2
+
+Since we saw more variability than the Poisson model expected, we'll also fit a gamma-Poisson model for deaths predicted by name femininity.
+
+```{r}
+m_12h2 <- rethinking::ulam(
+	alist(
+		d ~ dgampois(lambda, phi),
+		log(lambda) <- a + b * f,
+		a ~ dnorm(3, 0.5),
+		b ~ dnorm(0, 0.5),
+		phi ~ dexp(1)
+	),
+	data = dh,
+	chains = 4, cores = 4
+)
+
+rethinking::precis(m_12h2)
+```
+
+In this model, we can see the model is no longer confident in the association between femininity and deaths, because the credible interval for $b$ is now much wider and the SD is much closer to the mean. We also see that the estimated $\phi$ is less than one, fairly small, which indicates that our data are overdispersed. Let's plot the predictions again.
+
+```{r}
+link_12h2 <- rethinking::sim(m_12h2)
+mean_12h2 <- colMeans(link_12h2)
+pi_12h2 <- apply(link_12h2, 2, rethinking::PI)
+
+layout(matrix(1:2, nrow = 1))
+plot(
+	NULL, NULL,
+	xlim = c(1, nrow(Hurricanes)),
+	ylim = range(Hurricanes$deaths),
+	xlab = "Storm",
+	ylab = "Deaths",
+	axes = FALSE
+)
+axis(
+	1, at = 1:nrow(Hurricanes), labels = Hurricanes$name,
+	las = 2, cex.axis = 0.5
+)
+axis(2, at = seq(0, 250, 50))
+arrows(
+	x = 1:nrow(Hurricanes),
+	x0 = 1:nrow(Hurricanes),
+	y = pi_12h2[1, ],
+	y0 = pi_12h2[2, ],
+	lwd = 2,
+	length = 0
+)
+points(
+	x = 1:nrow(Hurricanes),
+	y = mean_12h2
+)
+points(
+	x = 1:nrow(Hurricanes),
+	y = Hurricanes$deaths,
+	col = rethinking::rangi2,
+	pch = 4,
+	lwd = 1.25
+)
+
+# femininity plot
+f_seq <- seq(1, 11, 0.01)
+link_12h2_fem <- rethinking::sim(
+	m_12h2,
+	data = data.frame(f = f_seq)
+)
+mean_12h2_fem <- colMeans(link_12h2_fem)
+pi_12h2_fem <- apply(link_12h2_fem, 2, rethinking::PI)
+plot(
+	Hurricanes$femininity,
+	Hurricanes$deaths,
+	xlab = "Femininity of storm name",
+	ylab = "Deaths",
+	axes = FALSE,
+	xlim = c(1, 11),
+	ylim = range(Hurricanes$deaths)
+)
+axis(
+	1, at = seq(1, 11, 1)
+)
+axis(2, at = seq(0, 250, 50))
+shade(pi_12h2_fem, f_seq)
+lines(f_seq, mean_12h2_fem, lwd = 1.5)
+```
+
+In this model, we can see that the variance of our predictions is much larger, and we can thus capture many more of the storms that our previous model failed to predict. In this model, the variance we estimated in the deaths per hurricane dominates any potential effect of name femininity and it seems that variance is the more important aspect here. There are still a few very extreme storms that we fail to predict with our prediction intervals, though.
+
+### 12H3
+
+Now we'll include `damage_norm` and `min_pressure` in our model, two meterological variables that can predict the potential of a hurricane to cause damage. We'll allow both of them to interact with femininity to see if hurricanes with feminine names are actually what is important. I'll fit two models: one with the interactions, and one that doesn't have any of the femininity terms in it. Probably it would be better to build every combination of interaction/non-interaction models with all 3 possible combinations of the meterological variables but I am not going to do that for now.
+
+Note that I had to standardize the three variables to get consistent Stan initializations here.
+
+```{r}
+dh2 <- dh
+dh2$f  <- standardize(Hurricanes$femininity)
+dh2$dn <- standardize(Hurricanes$damage_norm)
+dh2$mp <- standardize(Hurricanes$min_pressure)
+```
+
+
+First we'll fit the model with all the interactions.
+
+```{r}
+m_12h3_a <- rethinking::ulam(
+	alist(
+		d ~ dgampois(lambda, phi),
+		log(lambda) <- a + bf * f + bd * dn + bp * mp +
+			gfd * f * dn + gfp * f * mp,
+		a ~ dnorm(3, 0.5),
+		bf ~ dnorm(0, 0.5),
+		bd ~ dnorm(0, 0.5),
+		bp ~ dnorm(0, 0.5),
+		gfd ~ dnorm(0, 0.25),
+		gfp ~ dnorm(0, 0.25),
+		phi ~ dexp(1)
+	),
+	data = dh2,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h3_a)
+```
+
+And now we'll fit the model without femininity.
+
+```{r}
+m_12h3_b <- rethinking::ulam(
+	alist(
+		d ~ dgampois(lambda, phi),
+		log(lambda) <- a + bd * dn + bp * mp,
+		a ~ dnorm(3, 0.5),
+		bd ~ dnorm(0, 0.5),
+		bp ~ dnorm(0, 0.5),
+		phi ~ dexp(1)
+	),
+	data = dh2,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h3_b)
+```
+
+Let's compare the two models.
+
+```{r}
+rethinking::compare(m_12h3_a, m_12h3_b, sort = "PSIS", func = PSIS)
+```
+
+Looks like the model with femininity in it doesn't make noticeably better predictions than the model without femininity, although we have some very high Pareto $k$ values, so this might be determined by some influential points. 
+
+Let's make some counterfactual predictions like Richard suggests. Interpreting all three of our predictor variables at the same time can be quite difficult, but I'll choose a medium, high, and low level of both meterological variables, and a high/low value of femininity.
+
+Based on our previous plots, we can see that $5$ is a good cutoff between two groups of names based on femininity. So we'll use a femininity of $2$ for masculine hurricane names, and a femininity of $9$ for feminine hurricane names. Then we'll choose our cutoffs for the (standardized) meterological variables as Q1, Q2, and Q3.
+
+```{r}
+(dn_cutoffs <- quantile(dh2$dn, probs = c(0.25, 0.5, 0.75)))
+(mp_cutoffs <- quantile(dh2$mp, probs = c(0.25, 0.5, 0.75)))
+```
+
+Now we can get our predictions from the model with interactions.
+
+```{r}
+pred_data_f <- expand.grid(
+	f = c(9),
+	dn = unname(dn_cutoffs),
+	mp = unname(mp_cutoffs)
+)
+
+pred_data_m <- expand.grid(
+	f = c(2),
+	dn = unname(dn_cutoffs),
+	mp = unname(mp_cutoffs)
+)
+
+preds_12h3_f <- rethinking::sim(m_12h3_a, data = pred_data_f)
+preds_12h3_m <- rethinking::sim(m_12h3_a, data = pred_data_m)
+contr_12h3 <- preds_12h3_m - preds_12h3_f
+contr_12h3_mean <- colMeans(contr_12h3)
+contr_12h3_pi <- apply(contr_12h3, 2, rethinking::PI)
+
+tibble::tibble(
+	"damage_norm" = c("L", "M", "H", "L", "M", "H", "L", "M", "H"),
+	"min_pressure" = c("L", "L", "L", "M", "M", "M", "H", "H", "H"),
+	"contrast (M - F)" = paste0(
+		formatC(contr_12h3_mean, digits = 2, format = "f"), " (",
+		formatC(contr_12h3_pi[1, ], digits = 0, format = "f"), ", ",
+		formatC(contr_12h3_pi[2, ], digits = 0, format = "f"), ")"
+	)
+)
+```
+
+We can see that regardless of the combination of `damage_norm` and `min_pressure`, the difference in predicted deaths between masculine named and feminine named hurricanes has a huge range of predicted values, both negative and positive. So it really seems that there is no difference based on the hurricane names once we take the actual meterological variables into account -- perhaps some hurricanes with feminine names were just coincidentally also more intense hurricanes.
+
+### 12H4
+
+OK, so for this problem we'll compare the previous model with no femininity term to a model that's the same but with `damage_norm` on the log scale.
+
+```{r}
+dh2$log_dn <- standardize(log(Hurricanes$damage_norm))
+m_12h4 <- rethinking::ulam(
+	alist(
+		d ~ dgampois(lambda, phi),
+		log(lambda) <- a + bd * log_dn + bp * mp,
+		a ~ dnorm(3, 0.5),
+		bd ~ dnorm(0, 0.5),
+		bp ~ dnorm(0, 0.5),
+		phi ~ dexp(1)
+	),
+	data = dh2,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h4)
+```
+
+Now let's compare the two models.
+
+```{r}
+rethinking::compare(m_12h3_b, m_12h4, sort = "PSIS", func = PSIS)
+```
+
+The two models are similar, but it looks like the log model is narrowly better than the model with damage_norm on the natural scale. The PSIS criteria are more than one standard error different, but less than two standard errors different, so it's probably worth using the log scale predictor instead but it doesn't seem to make a HUGE difference. We should also notice that the Pareto $k$ values are, in general, a little bit better for the log-scale predictor model. Now let's look at the implied predictions.
+
+```{r}
+mp_seq <- c(900, 925, 950, 975, 1000)
+mp_seq_std <- (mp_seq - attr(dh2$mp, "scaled:center")) /
+	attr(dh2$mp, "scaled:scale")
+cols <- blues9[c(5, 6, 7, 8, 9)]
+
+dn_seq_nat <- seq(1, 75001, 2500)
+dn_seq_nat_std <- (dn_seq_nat - attr(dh2$dn, "scaled:center")) /
+	attr(dh2$dn, "scaled:scale")
+pred_data_nat <- expand.grid(
+	mp = mp_seq_std,
+	dn = dn_seq_nat_std
+)
+
+m_12h3_b_sim <- rethinking::link(m_12h3_b, data = pred_data_nat)
+m_12h3_b_mean <- colMeans(m_12h3_b_sim)
+m_12h3_b_pi <- apply(m_12h3_b_sim, 2, rethinking::PI)
+
+dn_seq_log <- seq(0, 11.5, 0.5)
+dn_seq_log_std <- (dn_seq_log - attr(dh2$log_dn, "scaled:center")) /
+	attr(dh2$log_dn, "scaled:scale")
+pred_data_log <- expand.grid(
+	mp = mp_seq_std,
+	log_dn = dn_seq_log_std
+)
+
+m_12h4_sim <- rethinking::link(m_12h4, data = pred_data_log)
+m_12h4_mean <- colMeans(m_12h4_sim)
+m_12h4_pi <- apply(m_12h4_sim, 2, rethinking::PI)
+
+# Natural scale predictor plot
+plot(
+	log(Hurricanes$damage_norm),
+	Hurricanes$deaths,
+	xlab = "Normalized damage estimate ($)",
+	ylab = "Deaths",
+	axes = FALSE,
+	xlim = c(0, 12),
+	ylim = range(Hurricanes$deaths),
+	main = "Damage as natural scale predictor"
+)
+axis(
+	1,
+	at = log(c(1, 10, 100, 1000, 10000, 100000)),
+	labels = c(1, 10, 100, 1000, 10000, "100000")
+)
+axis(2, at = seq(0, 250, 50))
+
+for (i in 1:length(mp_seq)) {
+	plot_ind <- which(pred_data_nat$mp == mp_seq_std[i])
+	plot_x <- pred_data_nat$dn[plot_ind] * attr(dh2$dn, "scaled:scale") +
+		attr(dh2$dn, "scaled:center")
+	rethinking::shade(
+		m_12h3_b_pi[,plot_ind], log(plot_x),
+		col = rethinking::col.alpha(cols[i], alpha = 0.15)
+	)
+	lines(log(plot_x), m_12h3_b_mean[plot_ind], col = cols[i], lwd = 1.5)
+}
+
+legend(
+	x = 0,
+	y = 250,
+	col = cols,
+	lty = 1,
+	lwd = 1.5,
+	title = "Min. pressure",
+	legend = mp_seq
+)
+
+# Log scale predictor plot
+plot(
+	log(Hurricanes$damage_norm),
+	Hurricanes$deaths,
+	xlab = "Normalized damage estimate ($)",
+	ylab = "Deaths",
+	axes = FALSE,
+	xlim = c(0, 12),
+	ylim = range(Hurricanes$deaths),
+	main = "Damage as log scale predictor"
+)
+axis(
+	1,
+	at = log(c(1, 10, 100, 1000, 10000, 100000)),
+	labels = c(1, 10, 100, 1000, 10000, "100000")
+)
+axis(2, at = seq(0, 250, 50))
+
+for (i in 1:length(mp_seq)) {
+	plot_ind <- which(pred_data_log$mp == mp_seq_std[i])
+	plot_x <- pred_data_log$log_dn[plot_ind] * attr(dh2$log_dn, "scaled:scale") +
+		attr(dh2$log_dn, "scaled:center")
+	rethinking::shade(
+		m_12h4_pi[,plot_ind], plot_x,
+		col = rethinking::col.alpha(cols[i], alpha = 0.15)
+	)
+	lines(plot_x, m_12h4_mean[plot_ind], col = cols[i], lwd = 1.5)
+}
+```
+
+From the predictions, we can see that using normalized damage estimate as a log scale predictor is, in general, more sensible -- while the natural scale predictor has a sharp upward asymptote which allows it to get closer to some of the more extreme points, it predicts many deaths that are orders of magnitude above what we observed in the actual data. The log-scale predictor products more reasonable predictions, even at high levels of damage. The log-scale predictor also doesn't lead to unnatural predictions when we consider the minimum pressure at the same time -- it allows for a low number of deaths regardless of what the pressure is, whereas the natural scale predictor forces a high number of deaths at low minimum pressures even when the damage is small.
+
+So, overall, we should prefer the log-scale predictor.
+
+### 12H5
+
+Now we'll go to the trolley data.
+
+```{r}
+data("Trolley", package = "rethinking")
+dt <- list(
+	G = Trolley$male,
+	A = Trolley$action,
+	C = Trolley$contact,
+	I = Trolley$intention,
+	R = Trolley$response
+)
+```
+
+We'll build the same model that we ended up choosing to describe the interaction between intention and other variables in the chapter. But we'll also build three models with gender: one where gender only affects the intercept, one where the effect of contact changes with gender, and one that has an addition three-way gender/contact/interaction term.
+
+First, the model `m12.5` from the chapter. This model took about 25 minutes (1484.1 seconds) to run for me with these settings.
+
+```{r}
+m_12h5_a <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- bA * A + bC * C + BI * I,
+		BI <- bI + bIA * A + bIC * C,
+		c(bA, bI, bC, bIA, bIC) ~ dnorm(0, 0.5),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dt,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h5_a, depth = 2)
+```
+
+Next a model with an effect of gender (coded as an indicator variable for being male). This one also took about 25 minutes (1615.9 seconds).
+
+```{r}
+m_12h5_b <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- bG * G + bA * A + bC * C + BI * I,
+		BI <- bI + bIA * A + bIC * C,
+		c(bG, bA, bI, bC, bIA, bIC) ~ dnorm(0, 0.5),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dt,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h5_b, depth = 2)
+```
+
+Next a model with an effect of gender and an interaction between gender and contact. This one took a bit less than 30 minutes (1718.5 seconds).
+
+```{r}
+m_12h5_c <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- bG * G + bA * A + BC * C + BI * I,
+		BC <- bC + bCG * G,
+		BI <- bI + bIA * A + bIC * C,
+		c(bG, bA, bI, bC, bIA, bIC, bCG) ~ dnorm(0, 0.5),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dt,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h5_c, depth = 2)
+```
+
+Finally, a model with an effect of gender, an interaction between gender and contact, and a three-way interaction between gender, contact, and interaction. This model took about 35 mins (2041.2 seconds).
+
+```{r}
+m_12h5_d <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- bG * G + bA * A + BC * C + BI * I,
+		BC <- bC + bCG * G,
+		BI <- bI + bIA * A + bIC * C + bIG * G + bIGC * G * C,
+		c(bG, bA, bI, bC, bIA, bIC, bCG, bIG, bIGC) ~ dnorm(0, 0.5),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dt,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h5_d, depth = 2)
+```
+
+First let's compare all of the models with WAIC, cause for some reason I get an error when I try to do PSIS here.
+
+```{r}
+rethinking::compare(
+	m_12h5_a, m_12h5_b, m_12h5_c, m_12h5_d
+)
+```
+
+Well, once we include gender as a main effect the models are all exactly the same, indicating that either the interaction doesn't help us predict anything, or we don't have enough data to get a compelling estiamte of the interaction.
+
+So there are some differences between men and women, but the idea that these differences are caused by a difference in response to contact is not supported by the data. Since these models took a long time and the interactions didn't seem to do anything, I don't feel terribly motivated to do anything else for this problem, even though I know PSIS isn't the best justification for this, we should actually compute contrasts and see what happens. But I don't really want to do that.
+
+### 12H6
+
+Now (for some reason before we go back to work on the Trolley data again) we'll take a look at some national parks fishing data.
+
+```{r}
+data(Fish, package = "rethinking")
+dat_fish <- list(
+	F = Fish$fish_caught,
+	B = Fish$livebait,
+	C = Fish$camper,
+	P = Fish$persons,
+	K = Fish$child,
+	H = Fish$hours
+)
+```
+
+We want to fit a zero-inflated model of the number of fish caught by a visitor who came to the park. Since the individuals visited the park for different amounts of time, we need to model the rate of fish per hour instead of just the total number of fish caught per person.
+
+We have a few different explanatory variables as well -- we should definitely include whether someone used live bait as a predictor in our model. Honestly, I think (non-casually, without drawing a DAG to deal with confounders, since I'm feeling lazy on this problem) we should probably include most of the available predictors -- people with live bait probably catch more fish, people with campers I think are more likely to have fishing experience, so we'll include that, and groups with kids are less likely to fish since kids get bored during fishing. And of course groups with more adults that fish will probably catch more fish, although I think it's possible that groups with more adults are also less likely to fish in general, because fishing is very often a solo activity. So for now, I'll throw all four covariates in both the exposure and the mean model, and hopefully Richard won't chastise me too much in the solutions manual.
+
+Since I don't want the model to take a long time to sample, I'm including number of adults and number of kids as linear effects in the model, although in a real analysis we would want to consider this as an ordered categorical predictor also.
+
+```{r}
+dat_fish$log_hours <- log(dat_fish$H)
+m_12h6 <- rethinking::ulam(
+	alist(
+		F ~ dzipois(p, lambda),
+		logit(p) <- a_p + bB_p * B + bC_p * C + bP_p * P + bK_p * K,
+		log(lambda) <- a_l + bB_l * B + bC_l * C + bP_l * P + bK_l * K + log_hours,
+		a_p ~ dnorm(0, 1.5),
+		c(bB_p, bC_p, bP_p, bK_p) ~ dnorm(0, 0.5),
+		a_l ~ dnorm(3, 0.5),
+		c(bB_l, bC_l, bP_l, bK_l) ~ dnorm(0, 1)
+	),
+	data = dat_fish,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	# we don't need this here but I didn't want to have to rerun
+	# if I ended up needing it
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h6)
+```
+
+We can see from the results that interestingly the only variable that appears to strongly affect the probability that someone went fishing is $P$, the number of adults in the group. If there are more adults present, the group was less likely to fish. It's possible that $K$, the number of children present, also had an effect on the probability of fishing, although our model doesn't completely rule out this variable having no effect or a small negative effect.
+
+In terms of affecting the number of fish caught (per hour spent in the park) assuming someone went fishing, all four variables are important, as we might expect. More kids and more adults in the group both increase the number of fish caught, because there are more chances to catch fish, even if kids are generally a little bit worse at fishing (although not that much, judging from the effects we observed). If someone brought a camper they caught less fish, presumably because they were spending time doing non-fishing activities, and if they used live bait they tended to catch more fish as we would expect.
+
+The last thing I'll do for this problem is quickly check the posterior predictions.
+
+```{r}
+graphics.off()
+layout(matrix(1:6, nrow = 2, byrow = TRUE))
+rethinking::postcheck(m_12h6, window = 42)
+```
+
+Although the plots are kind of small, we can see that many predictions appear to be pretty accurate. However, there are a few people who caught more fish than we expected, and a few who caught less fish than we expected, so maybe a zero-inflated gamma-Poisson model would be more appropriate.
+
+### 12H7
+
+If age affects college education status (older people are more likely to have higher education statuses, because young people couldn't have attained the same ones by then), and age also affects response to Trolley problems, then age would be a confounder on the effect of college education status on Trolly problem ratings. The DAG would look like this.
+
+```{r}
+graphics.off()
+layout(1)
+m12h7_dag <- dagitty::dagitty(
+	"dag {
+		E <- A -> R <- E
+	}"
+)
+
+dagitty::coordinates(m12h7_dag) <- list(
+	x = c(A = 1, E = 3, R = 2),
+	y = c(A = 1, E = 1, R = 2)
+)
+
+plot(m12h7_dag)
+```
+
+To evaluate the effect of education on the response, now we need to control for age at the same time. It's possible that there could be an interaction between age and education as well, but we'll ignore that for this problem. So, we'll build a model that treats age as a continuous, linear effect -- that probably isn't ideal, we probably want a spline or something, but we'll ignore that for now since we already have to deal with an ordered categorical predictor which can make the model a bit slow.
+
+```{r}
+edu_levels <- c(6, 1, 8, 4, 7, 2, 5, 3)
+dt2 <- list(
+	R = Trolley$response,
+	A = Trolley$age,
+	E = as.integer(edu_levels[Trolley$edu]),
+	action = Trolley$action,
+	intention = Trolley$intention,
+	contact = Trolley$contact,
+	alpha = rep(2, 7)
+)
+
+m_12h7 <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, kappa),
+		phi <- bE * sum(delta_j[1:E]) + bA * A + b_ac * action + b_co * contact +
+			BI * intention,
+		BI <- bI + bIAc * action + bIC * contact,
+		kappa ~ dnorm(0, 1.5),
+		c(bE, bA, b_ac, b_co, bI, bIAc, bIC) ~ dnorm(0, 0.5),
+		vector[8]: delta_j <<- append_row(0, delta),
+		simplex[7]: delta ~ dirichlet(alpha)
+	),
+	data = dt2,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	# we don't need this here but I didn't want to have to rerun
+	# if I ended up needing it
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h7, depth = 2)
+```
+
+I'm glad I didn't make this model any more complicated in terms of age, because it already took like an hour (3759.0 seconds) to sample.
+
+Because education ($E$) is a mediator on the path between $A$ and $E$, this is the only model we need to fit to estimate the causal effect of $E$ on $R$ when age ($A$) is a confounder. There is no indirect effect under this causal model, only the direct effect.
+
+Anyways, from the results we can see that the effect of education is overall positive while the effect of age looks like it is quite small. However, I did include age on its natural scale (maybe a bad idea), which has a large range so it's definitely possible that the effect of age is strong, but hard to compare to the other parameters which are mostly scale-free. But either way we can see that controlling for age reverses the effect of education -- so actually, people rate their approval of the stories more highly when they have higher education, but being older leads to lower overall approval ratings.
+
+### 12H8
+
+If gender influences both education and trolley problem response we might get the following DAG.
+
+```{r}
+m12h8_dag <- dagitty::dagitty(
+	"dag {
+		E <- A -> R <- E
+		E <- G -> R
+	}"
+)
+
+dagitty::coordinates(m12h8_dag) <- list(
+	x = c(A = 1, E = 2, R = 2, G = 1),
+	y = c(A = 1, E = 1, R = 2, G = 2)
+)
+
+plot(m12h8_dag)
+```
+
+Under this DAG, both age and gender are confounders of the effect of education on trolley problem story responses, but fortunately we can control for both age and gender to close all backdoor paths without opening any colliding paths, and we can estimate the causal effect of education on response under this model. 
+
+Let's go ahead and fit this model and see what happens.
+
+```{r}
+dt2$G <- Trolley$male
+m_12h8 <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, kappa),
+		phi <- bE * sum(delta_j[1:E]) + bA * A + b_ac * action + b_co * contact +
+			BI * intention + bG * G,
+		BI <- bI + bIAc * action + bIC * contact,
+		kappa ~ dnorm(0, 1.5),
+		c(bE, bA, b_ac, b_co, bI, bIAc, bIC, bG) ~ dnorm(0, 0.5),
+		vector[8]: delta_j <<- append_row(0, delta),
+		simplex[7]: delta ~ dirichlet(alpha)
+	),
+	data = dt2,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	# we don't need this here but I didn't want to have to rerun
+	# if I ended up needing it
+	log_lik = TRUE
+)
+
+rethinking::precis(m_12h8, depth = 2)
+```
+
+This model also took forever to sample, over an hour (4229.7 seconds). But now that it finally finished, we can see that the effect of age is similar to wahat it was before, but the effect of education appears to be completely gone. The new effect of gender is definitely positive. So controlling for gender appears to remove the effect of education. If gender is related to education, that can mean that men (the gender coded as 1 in the model) are always more likely to approve of a situation in the trolley problem, and have a different level of educational attainment than women in the study.

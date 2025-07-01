@@ -1,6 +1,9 @@
 ---
 title: "Chapter 12: Monsters and Mixtures"
 format: html
+execute:
+  message: false
+  warning: false
 ---
 
 ```{r}

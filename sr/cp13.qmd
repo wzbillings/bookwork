@@ -1,0 +1,201 @@
+---
+title: "Chapter 13: Models with Memory"
+format: html
+---
+
+```{r}
+library(rethinking)
+```
+
+This chapter is an introduction to multilevel models, which can partially pool data from different clusters to balance between overfitting and underfitting. The trick to these models is using an adaptive prior, a prior whose parameters have their own priors, which allows the model to learn the prior from the data.
+
+## Exercises
+
+### 13E1
+
+The prior $a_{\text{TANK}} \sim \text{Normal}(0, 1)$ will induce more shrinkage in the etimates than the prior $a_{\text{TANK}} \sim \text{Normal}(0, 2)$. The smaller the variance of the prior is, the more shrinkage the prior will induce towards the prior mean.
+
+### 13E2
+
+We could rewrite this as a multilevel model in multiple ways, but we'll do the easy way by converting the no-pooling structure for $\alpha$ into a multilevel adaptive prior.
+
+$$
+\begin{aligned}
+y_i &\sim \text{Binomial}(1, p_i) \\
+\text{logit}(p_i) &= \alpha_{\text{GROUP}[i]} + \beta x_i \\
+\alpha_{\text{GROUP}} &\sim \text{Normal}(\bar{\alpha}, \sigma_\alpha) \\
+\bar{\alpha} &\sim \text{Normal}(0, 1.5) \\
+\sigma_\alpha &\sim \text{Exponential}(1) \\
+\beta &\sim \text{Normal}(0, 0.5)
+\end{aligned}
+$$
+
+### 13E3
+
+This is exactly the same as the last question, the likleihood doesn't actually change anything about the multilevel part.
+
+$$
+\begin{aligned}
+y_i &\sim \text{Normal}(\mu_i, \sigma) \\
+\mu_i &= \alpha_{\text{GROUP}[i]} + \beta x_i \\
+\alpha_{\text{GROUP}} &\sim \text{Normal}(\bar{\alpha}, \sigma_\alpha) \\
+\bar{\alpha} &\sim \text{Normal}(0, 5) \\
+\sigma_\alpha &\sim \text{Exponential}(1) \\
+\beta &\sim \text{Normal}(0, 0.5) \\
+\sigma &\sim \text{Exponential}(1)
+\end{aligned}
+$$
+
+### 13E4
+
+We'll also write a mathematical model formula for a Poisson regression with varying intercepts. Again, nothing about the likelihood changes the way the multilevel part works.
+
+$$
+\begin{aligned}
+y_i &\sim \text{Poisson}(\lambda_i) \\
+\log \lambda_i &= \alpha_{\text{GROUP}[i]} + \beta x_i \\
+\alpha_{\text{GROUP}} &\sim \text{Normal}(\bar{\alpha}, \sigma_\alpha) \\
+\bar{\alpha} &\sim \text{Normal}(0, 5) \\
+\sigma_\alpha &\sim \text{Exponential}(1) \\
+\beta &\sim \text{Normal}(0, 0.5)
+\end{aligned}
+$$
+
+### 13E5
+
+Now we'll modify that model to have two different kinds of varying intercepts. Recall that we can only identify the mean of a single varying intercept, so the new one needs to have a mean of zero. We'll call the new group the "block" since it's an example we used earlier in the chapter.
+
+$$
+\begin{aligned}
+y_i &\sim \text{Poisson}(\lambda_i) \\
+\log \lambda_i &= \alpha_{\text{GROUP}[i]} + \gamma_{\text{BLOCK}[j]} + \beta x_i \\
+\alpha_{\text{GROUP}} &\sim \text{Normal}(\bar{\alpha}, \sigma_\alpha) \\
+\bar{\alpha} &\sim \text{Normal}(0, 5) \\
+\sigma_\alpha &\sim \text{Exponential}(1) \\
+\gamma_{\text{BLOCK}} &\sim \text{Normal}(0, \sigma_\gamma) \\
+\sigma_\gamma &\sim \text{Exponential}(1) \\
+\beta &\sim \text{Normal}(0, 0.5)
+\end{aligned}
+$$
+
+### 13M1
+
+Now we want to fit a model to the Reed frog survival data, and include the effects of `predation` and `size` in the varying intercept model. We need to build five total models: one with just varying intercepts, one with predation only, one with size only, one with both predation and size, and one with predation, size, and their interaction. First we'll format the data.
+
+```{r}
+data("reedfrogs", package = "rethinking")
+dat_frogs <- list(
+	tank = 1:nrow(reedfrogs),
+	S = reedfrogs$surv,
+	N = reedfrogs$density,
+	P = ifelse(reedfrogs$pred == "no", 0, 1),
+	B = ifelse(reedfrogs$size == "small", 0, 1)
+)
+```
+
+Now let's fit those five models.
+
+```{r}
+m_13m1_1 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a[tank],
+		a[tank] ~ dnorm(a_bar, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE
+)
+
+m_13m1_2 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a[tank] + bP * P,
+		a[tank] ~ dnorm(a_bar, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		bP ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE
+)
+
+m_13m1_3 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a[tank] + bS * S,
+		a[tank] ~ dnorm(a_bar, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		bS ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE
+)
+
+m_13m1_4 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a[tank] + bP * P + bS * S,
+		a[tank] ~ dnorm(a_bar, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		bP ~ dnorm(0, 0.5),
+		bS ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE
+)
+
+m_13m1_5 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a_bar + a[tank] + bP * P + bS * S + bSP * S * P,
+		a[tank] ~ dnorm(0, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		bP ~ dnorm(0, 0.5),
+		bS ~ dnorm(0, 0.5),
+		bSP ~ dnorm(0, 0.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE,
+	control = list(adapt_delta = 0.99, max_treedepth = 15),
+	warmup = 1000, iter = 2500
+)
+```
+
+I got a lot of divergences on the interaction model specifically, so I removed the `a_bar` parameter from the multilevel model and made it a global intercept, along with turning up the control parameters and iterations. I tried either change by itself, but it seemed that both were necessary to fix the divergence transitions.
+
+Now that we've fit the models let's take a quick glance at the coefficients across all of them.  We won't look at the individual tank intercepts, only the population-level parameters.
+
+```{r}
+rethinking::coeftab(m_13m1_5, m_13m1_4, m_13m1_3, m_13m1_2, m_13m1_1) |>
+	rethinking::coeftab_plot(pars = c("a_bar", "bP", "bS", "bSP"))
+```
+
+Here's some observations I notice from this plot: the intercept `a_bar` matters a lot, but them seems to matter less (be closer to zero) once we introduce size into the model. For all three models that have an effect of big tank, the intercept CI is much closer to zero. Predation has an impact wiht a wide CI in every model its in, and size has a small but consistent effect in all three models its in. THe effect of the interaction is very small and probably negligible. Let's compare the models with PSIS to see how the different predictors affect the estimated out-of-sample error.
+
+```{r}
+rethinking::compare(
+	m_13m1_5, m_13m1_4, m_13m1_3, m_13m1_2, m_13m1_1,
+	func = PSIS, sort = "PSIS"
+)
+```
+
+We see that some pareto $k$ values are very high for all of the models, which I guess means there are probably some tanks with unusually high or low survival rates that affect the amount of pooling we need a lot.
+
+But now we aren't supposed to focus on the predictors we're supposed to focus on the inferred variation across tanks. So let's look at how the $\bar{\alpha}$ and $\sigma$ parameters change across models.
+
+```{r}
+rethinking::coeftab(m_13m1_5, m_13m1_4, m_13m1_3, m_13m1_2, m_13m1_1) |>
+	rethinking::coeftab_plot(pars = c("a_bar", "sigma"))
+```
+
+We discussed the $\bar{\alpha}$ parameter earlier, but we can also see that the expected variance, $\sigma$ decreases as we add predictors to the model, with models 4 and 5 having similar levels of variance, much lower than the variance for the model with no predictors. This is because the predictors help to explain why some of the tanks are so different -- the $\alpha_i$ effects are the effects of each individual tank after we account for the effects of the predictors we include, so we expect the variance across $\alpha_i$'s to be smaller as we include influential predictors that help to explain our observations, particularly if they help to explain extreme observations.

@@ -199,3 +199,562 @@ rethinking::coeftab(m_13m1_5, m_13m1_4, m_13m1_3, m_13m1_2, m_13m1_1) |>
 ```
 
 We discussed the $\bar{\alpha}$ parameter earlier, but we can also see that the expected variance, $\sigma$ decreases as we add predictors to the model, with models 4 and 5 having similar levels of variance, much lower than the variance for the model with no predictors. This is because the predictors help to explain why some of the tanks are so different -- the $\alpha_i$ effects are the effects of each individual tank after we account for the effects of the predictors we include, so we expect the variance across $\alpha_i$'s to be smaller as we include influential predictors that help to explain our observations, particularly if they help to explain extreme observations.
+
+### 13M2
+
+OK, now we need to compare the models using WAIC. I Already did this with PSIS because I thought the first answer wouldn't be finished without a comparison. But I guess I'll do it again with WAIC.
+
+```{r}
+rethinking::compare(
+	m_13m1_5, m_13m1_4, m_13m1_3, m_13m1_2, m_13m1_1
+)
+```
+
+Just like the PSIS values, the WAIC's pretty much indicate that the models are all basically the same in terms of predictive accuracy. Model 2, which has varying intercepts for tanks and an effect of predation was still overall the best, but the WAIC values are so similar that this comparison doesn't really mean anything.
+
+### 13M3
+
+In this question, we'll use my least favorite prior, the Cauchy prior. I don't like the Cauchy distribution. Nothing in science ever follows the Cauchy distribution, because everything in real life has a finite variance and a mean that exists. But I guess we better do this problem and hopefully it will show us that the Cauchy distribution is a bad choice.
+
+```{r}
+m_13m3 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a[tank],
+		a[tank] ~ dcauchy(a_bar, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE,
+	seed = 12312039
+)
+```
+
+Despite Richard's warning, I did not get any divergences from this model, although I expected them because of how much Cauchy priors suck. Let's compare the coefficients in this model to the same model with normal priors.
+
+```{r}
+coeftab_cauchy_whatever <- rethinking::coeftab(m_13m1_1, m_13m3)
+coeftab_cauchy_whatever |>
+	rethinking::coeftab_plot(pars = c("a_bar", "sigma"))
+```
+
+The Cauchy scale parameter is lower than the normal distribution SD (which makes sense, because it has fatter tails than a Normal at the same scale) but the means are pretty much the same, despite what Richard implies should happen in the question. I guess the cauchy location parameter has a slightly higher value. Let's plot the individual tank estimate correlation.
+
+```{r}
+alphas <- coeftab_cauchy_whatever@coefs[1:48, ] |> as.data.frame()
+plot(
+	x = alphas$m_13m1_1, y = alphas$m_13m3,
+	xlab = "Normal prior", ylab = "Cauchy prior"
+)
+abline(a = 0, b = 1, lty = 2)
+```
+
+The estimates with extreme values under the normal prior get made more extreme by the Cauchy prior. We lose some of the regularizing effect of the adaptive normal prior, because the Cauchy prior allows for extreme values to be extreme very easily.
+
+### 13M4
+
+Now we do the same thing but with a Student's $t$ prior with 2 degrees of freedom. I still don't like this, because a Student's $t$ prior with 2 degrees of freedom still has an infinite variance, which doesn't make sense in real life. My prior beliefs about real-world parameters never have infinite variance. I think a Student's $t$ prior with 3 degrees of freedom is sensible, but whatever, I'll do what the problem says.
+
+```{r}
+m_13m4 <- rethinking::ulam(
+	alist(
+		S ~ dbinom(N, p),
+		logit(p) <- a[tank],
+		a[tank] ~ dstudent(2, a_bar, sigma),
+		a_bar ~ dnorm(0, 1.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_frogs,
+	chains = 4, cores = 4,
+	log_lik = TRUE,
+	seed = 8754632
+)
+
+coeftab_nct <- rethinking::coeftab(m_13m1_1, m_13m3, m_13m4)
+coeftab_nct |>
+	rethinking::coeftab_plot(pars = c("a_bar", "sigma"))
+```
+
+We can see that the new $t$ distribution has a scale and location parameter in-between the values for the Cauchy and Normal priors. Let's look at the correlations again.
+
+
+```{r}
+alphas2 <- coeftab_nct@coefs[1:48, ] |> as.data.frame()
+plot(
+	x = alphas$m_13m1_1, y = alphas$m_13m3,
+	xlab = "Normal prior", ylab = "Cauchy or Student's t_2 prior",
+	pch = 16, cex = 0.9
+)
+points(
+	x = alphas2$m_13m1_1, y = alphas2$m_13m4, col = rethinking::rangi2
+)
+abline(a = 0, b = 1, lty = 2)
+```
+
+The filled, black points show the Cauchy prior estimate on the $Y$ axis and the empty, blue points show the Student's $t$ (df = 2) prior estimate on the $Y$ axis. The Student's $t$ prior etimates are smaller than the Cauchy estimates, but still not the same as the Normal estimates for the extreme values. This is because a Student's $t$ prior with 1 degree of freedom is the same as a Cauchy prior, and increasing the degrees of freedom makes the prior more similar to a Normal prior with the same location and scale parameters.
+
+### 13M5
+
+In this problem, we'll add a parameter for the mean of the adaptive prior for the $\gamma$ effects in the chimps problem.
+
+First we need to set up the data.
+
+```{r}
+data("chimpanzees", package = "rethinking")
+dat_chimp <- list(
+	pulled_left = chimpanzees$pulled_left,
+	actor = chimpanzees$actor,
+	block_id = chimpanzees$block,
+	treatment = as.integer(1 + chimpanzees$prosoc_left + 2*chimpanzees$condition)
+)
+```
+
+We also need to refit `m13.4` for comparison.
+
+```{r}
+m13.4 <- rethinking::ulam(
+	alist(
+		pulled_left ~ dbinom(1, p),
+		logit(p) <- a[actor] + g[block_id] + b[treatment],
+		b[treatment] ~ dnorm(0, 0.5),
+		## Adapative priors
+		a[actor] ~ dnorm(a_bar, sigma_a),
+		g[block_id] ~ dnorm(0, sigma_g),
+		## Hyperior priors
+		a_bar ~ dnorm(0, 1.5),
+		sigma_a ~ dexp(1),
+		sigma_g ~ dexp(1)
+	),
+	data = dat_chimp,
+	chains = 4, cores = 4,
+	log_lik = TRUE,
+	seed = 0987653
+)
+```
+
+Then we'll fit the model we're actually interested in.
+
+```{r}
+m_13m5 <- rethinking::ulam(
+	alist(
+		pulled_left ~ dbinom(1, p),
+		logit(p) <- a[actor] + g[block_id] + b[treatment],
+		b[treatment] ~ dnorm(0, 0.5),
+		## Adapative priors
+		a[actor] ~ dnorm(a_bar, sigma_a),
+		g[block_id] ~ dnorm(g_bar, sigma_g),
+		## Hyperior priors
+		a_bar ~ dnorm(0, 1.5),
+		g_bar ~ dnorm(0, 1.5),
+		sigma_a ~ dexp(1),
+		sigma_g ~ dexp(1)
+	),
+	data = dat_chimp,
+	chains = 4, cores = 4,
+	log_lik = TRUE,
+	seed = 0987653
+)
+```
+
+Now we can compare the coefficients. We only need to look at the hyperprior coefficients here, but we should also note that this model sampled more slowly and had more divergent transitions.
+
+```{r}
+rethinking::coeftab(m13.4, m_13m5) |>
+	rethinking::coeftab_plot(pars = c("a_bar", "g_bar", "sigma_a", "sigma_g"))
+```
+
+The estimates are not as bad as I thought they would be, but there is more uncertainty in `a_bar` in the model with a `g_bar` parameter, and the uncertainty is also very large in `g_bar`. The sigma parameters don't change.
+
+We can look at the correlation between samples of `a_bar` and `g_bar` in the model of both to better understand what's happening.
+
+```{r}
+samples <- rethinking::extract.samples(m_13m5, pars = c("a_bar", "g_bar"))
+# The pars argument doesn't seem to actually do anything, so we need to
+# get only the things we want in a data frame.
+samples_df <- data.frame(
+	a_bar = samples$a_bar[ , 1],
+	g_bar = samples$g_bar[ , 1]
+)
+
+plot(samples_df$a_bar, samples_df$g_bar, xlab = "a_bar", ylab = "g_bar")
+```
+
+The samples for the two parameters have a very strong negative correlation. Whenever one increases, the other has to decrease -- this is the same as the two feet example we saw before, basically these parameters cannot be reliably distinguished by the model.
+
+### 13M6
+
+Fitting a model to one data point is nearly always an exercise in futility, but let us fit four models to the same one data point.
+
+```{r}
+m_13m6_nn <- rethinking::ulam(
+	alist(
+		y ~ dnorm(mu, 1),
+		mu ~ dnorm(10, 1)
+	),
+	data = list(y = 0),
+	chains = 4, cores = 4
+)
+m_13m6_tn <- rethinking::ulam(
+	alist(
+		y ~ dstudent(2, mu, 1),
+		mu ~ dnorm(10, 1)
+	),
+	data = list(y = 0),
+	chains = 4, cores = 4
+)
+m_13m6_nt <- rethinking::ulam(
+	alist(
+		y ~ dnorm(mu, 1),
+		mu ~ dstudent(2, 10, 1)
+	),
+	data = list(y = 0),
+	chains = 4, cores = 4
+)
+m_13m6_tt <- rethinking::ulam(
+	alist(
+		y ~ dstudent(2, mu, 1),
+		mu ~ dstudent(2, 10, 1)
+	),
+	data = list(y = 0),
+	chains = 4, cores = 4
+)
+```
+
+OK, now that we fitted all of these models let's look at the posterior distributions I guess. Unfortunately `coeftab()` doesn't seem to work on these models for whatever reason.
+
+```{r}
+list_13m6 <- list(m_13m6_nn, m_13m6_nt, m_13m6_tn, m_13m6_tt)
+summary_13m6 <- lapply(list_13m6, rethinking::extract.samples)
+post_13m6 <- lapply(summary_13m6, \(x) x$mu) |>
+	do.call(what = cbind) |>
+	`colnames<-`(c("nn", "nt", "tn", "tt"))
+
+my_colors <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442")
+
+dens_13m6 <- apply(post_13m6, 2, density)
+
+plot(
+	NULL, NULL,
+	xlim = c(-5, 15), ylim = c(0, 0.6),
+	xlab = "mu", ylab = "density"
+)
+
+for (i in 1:4) {
+	this_col <- my_colors[[i]]
+	this_dens <- dens_13m6[[i]]
+	
+	lines(this_dens$x, this_dens$y, col = this_col, lwd = 2)
+}
+legend(
+	x = "top",
+	legend = colnames(post_13m6),
+	lwd = 2,
+	col = my_colors,
+	ncol = 4
+)
+```
+
+I stared at this for a while and had no idea what was going on. But I think what is happening here is a consequence of the fact that the normal distribution prior is "stronger" than the $t$ prior. We don't "know" what should be true here, but based on our one data point we would guess that the mean of $y$ should be zero instead of 10, which we know *a priori* is the mean of $\mu$.
+
+So if we set a $t$ prior on $\mu$, but not on $y$ (treating the likelihood as the prior on the data; this is the `nt` model), all of the posterior mass for $\mu$ is at zero, because the prior for $\mu$ "loses" to the prior for $y$ -- the $t$ prior has very thick tails so it accomodotes the stronger normal prior's desire to be centered at $0$. Similarly but opposite, in the `tn` model where the likelihood is the `t` distribution but the prior on $\mu$ is normal, the posterior distribution is pulled to a mean of $10$, the mean that we specified in the prior that was Normal.
+
+For the `tt` model and the `nn` model, neither model "wins" because they're equally strong, but they "tie" in different ways. For the `nn` model, both normal priors try to pull the mean towards what we observed, but they are both forceful so we get a compromise at $5$ -- we get a compromise that makes neither prior happy, but they're both "halfway right" in a specific sense. For the `tt` model, neither prior is forceful so we get a posterior that says the mean could be $0$ or the mean could be $10$ but we can't be sure because neither prior is "aggressive", so instead of a bad compromise we get no agreement at all.
+
+### 13H1
+
+For this problem, we want to used a fixed-effects and a varying-effects model to estiamte use of contraception by province from the 1988 Bangladesh Fertility Survey. First we need to set up the data.
+
+```{r}
+data("bangladesh", package = "rethinking")
+district_counts <- dplyr::summarize(
+	bangladesh,
+	c = sum(use.contraception),
+	n = dplyr::n(),
+	.by = district
+) |>
+	dplyr::mutate(district = as.integer(as.factor(district)))
+overall_prev <- sum(district_counts$c) / sum(district_counts$n)
+prev_across_dist <- mean(district_counts$c / district_counts$n)
+dat_bng <- list(
+	d = as.integer(as.factor(bangladesh$district)),
+	c = as.integer(bangladesh$use.contraception)
+)
+```
+
+It might be better to fit this particular model using the aggregated binomial form, but since we have each observation and they arise from a natural process, I think it makes more sense to treat each row as an independent Bernoulli trial for each woman, instead of as a set of Binomial trials with varying $n$ and fixed success probabilities.
+
+So we'll fit bernoulli models with fixed effects per district, and with varying (adaptively clustered) effects.
+
+```{r}
+m_13h1_fe <- rethinking::ulam(
+	alist(
+		c ~ dbinom(1, p),
+		logit(p) <- alpha[d],
+		alpha[d] ~ dnorm(0, 1.5)
+	),
+	data = dat_bng,
+	cores = 4, chains = 4
+)
+m_13h1_ve <- rethinking::ulam(
+	alist(
+		c ~ dbinom(1, p),
+		logit(p) <- alpha[d],
+		alpha[d] ~ dnorm(d_bar, sigma),
+		d_bar ~ dnorm(0, 1.5),
+		sigma ~ dexp(1)
+	),
+	data = dat_bng,
+	cores = 4, chains = 4
+)
+```
+
+We fit both of the models, let's get the predicted probabilities from both models.
+
+```{r}
+all_districts <- data.frame(d = unique(dat_bng$d))
+post_fe <- rethinking::link(m_13h1_fe, all_districts)
+post_ve <- rethinking::link(m_13h1_ve, all_districts)
+
+mean_pi <- function(x, na.rm = FALSE, trim = 0, prob = 0.89) {
+	m <- mean(x, trim = trim, na.rm = na.rm)
+	pi <- rethinking::PI(x, prob = prob)
+	return(c("est" = m, "lwr" = pi[[1]], "upr" = pi[[2]]))
+}
+
+post_fe_summary <- apply(post_fe, 2, mean_pi)
+post_ve_summary <- apply(post_ve, 2, mean_pi)
+
+fe <-
+	post_fe_summary |>
+	t() |>
+	as.data.frame() |>
+	dplyr::mutate(district = dplyr::row_number(), model = "Fixed")
+ve <-
+	post_ve_summary |>
+	t() |>
+	as.data.frame() |>
+	dplyr::mutate(district = dplyr::row_number(), model = "Varying")
+both <- dplyr::bind_rows(fe, ve) |>
+	dplyr::left_join(district_counts, by = "district")
+
+library(ggplot2)
+ggplot2::ggplot(both) +
+	ggplot2::aes(
+		x = district, y = est, ymin = lwr, ymax = upr,
+		col = model, fill = model, shape = model
+	) +
+	ggplot2::geom_hline(yintercept = overall_prev, lty = 2, col = "darkgray") +
+	ggplot2::geom_pointrange(
+		#position = ggplot2::position_dodge(width = 0.9),
+		alpha = 0.7
+	) +
+	ggplot2::scale_x_continuous(
+		limits = c(0, 61),
+		breaks = c(1, seq(5, 60, 5)),
+		expand = c(0, 0)
+	) +
+	ggplot2::labs(x = "district", y = "probability of contraception") +
+	ggplot2::theme_minimal(base_size = 24) +
+	ggplot2::theme(legend.position = "bottom")
+```
+
+In this plot, the dashed gray line shows the overall proportion of contraception usage in the dataset. The more extreme observations get pulled towards the mean more strongly in the varying effects model.
+
+```{r}
+vs_df <-
+	both |>
+	dplyr::select(-c) |>
+	tidyr::pivot_wider(names_from = model, values_from = c(est, lwr, upr)) |>
+	dplyr::mutate(
+		d = abs(est_Fixed - est_Varying),
+		t = factor(ifelse(d > 0.1, 1, 0))
+	)
+
+ggplot2::ggplot(vs_df) +
+	ggplot2::aes(
+		x = est_Fixed, xmin = lwr_Fixed, xmax = upr_Fixed,
+		y = est_Varying, ymin = lwr_Varying, ymax = upr_Varying,
+		size = n, color = t
+	) +
+	ggplot2::geom_abline(
+		slope = 1, intercept = 0,
+		lty = 2, lwd = 1.3, color = "darkgray"
+	) +
+	ggplot2::geom_errorbar(size = 0.1) +
+	ggplot2::geom_errorbarh(size = 0.1) +
+	ggplot2::geom_point() +
+	ggplot2::scale_color_manual(
+		values = c("black", "red"),
+		guide = ggplot2::guide_none()
+	) +
+	ggplot2::labs(x = "Fixed effects estimate", y = "Varying effects estimate") +
+	ggplot2::coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
+	ggplot2::theme_minimal(base_size = 24) +
+	ggplot2::theme(legend.position = "bottom")
+```
+
+From this plot, we can see that the estimates with the most extreme differences between models (the red points, which are those furthest from the dashed gray line of equality) are points with relatively small sample sizes that also have extreme estimates. The error bars are a bit noisy, but we can still see that for most points, the line of equality falls within the error bars in at least one direction. The only exception are the most extreme points.
+
+So there's nothing unusual going on here, just the normal effect that we expect to see from applying regularization to our estimates. Districts with fewer estimates are also more likely to have extreme probability estimates, so there is a compounding effect in the shrinkage.
+
+### 13H2
+
+Now we'll go back to the Trolley data, so we need to clean up the data again.
+
+```{r}
+data("Trolley", package = "rethinking")
+Trolley_clean <- Trolley |>
+	dplyr::mutate(
+		R = response,
+		id_orig = id,
+		id = as.integer(as.factor(Trolley$id)),
+		story_orig = story,
+		story = as.integer(as.factor(Trolley$story))
+	)
+dat_trolley <- Trolley_clean |>
+	dplyr::select(id, story, A = action, I = intention, C = contact, R) |>
+	as.list()
+```
+
+For this problem we want to fit a model that ignores individuals and a model that has varying intercepts for each individual, so let's do that now. First the model that ignores id.
+
+```{r}
+m_13h2_1 <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- bA * A + bC * C + bI * I,
+		c(bA, bI, bC) ~ dnorm(0, 0.5),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dat_trolley,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+rethinking::precis(m_13h2_1)
+```
+
+And now the model with random intercepts per person.
+
+```{r}
+m_13h2_2 <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- a[id] + bA * A + bC * C + bI * I,
+		c(bA, bI, bC) ~ dnorm(0, 0.5),
+		# We already have intercepts by default in this type of model
+		# so we can't identify a random intercept mean
+		a[id] ~ dnorm(0, sigma),
+		sigma ~ dexp(1),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dat_trolley,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+rethinking::precis(m_13h2_2)
+```
+
+We can see that not only do we get higher ESS for our main parameters in the varying intercepts model, we can actually see that the effects of interest are more negative than they were before. We have to look at the WAIC and posterior predictions, even though I think I can explain this already, so we'll look at the WAIC first.
+
+```{r}
+rethinking::compare(m_13h2_1, m_13h2_2)
+```
+
+Despite having many more parameters, the varying intercepts model is clearly better than the model that ignores individual variations. Let's look at some posterior predictions. I don't know that we really talked about a great way to visualize these predictions, so I'll try to do something like the histograms of the posterior predictive distribution in Chapter 12.
+
+```{r}
+# Get the ppd simulations
+m_13h2_1_ppd <- rethinking::sim(m_13h2_1)
+m_13h2_2_ppd <- rethinking::sim(m_13h2_2)
+
+# Get the data that shows which columns are which individuals and stories
+# Cause we're going to summarize over those
+trolley_preds <-
+	Trolley_clean |>
+	dplyr::mutate(
+		fe_pred = colMeans(m_13h2_1_ppd),
+		ve_pred = colMeans(m_13h2_2_ppd)
+	)
+
+tidy_mean_pi <- function(x, ...) tibble::enframe(mean_pi(x, ...))
+
+trolley_preds_by_person <-
+	trolley_preds |>
+	tidyr::pivot_longer(
+		c(fe_pred, ve_pred),
+		names_to = "model", values_to = "preds"
+	) |>
+	dplyr::reframe(
+		tidy_mean_pi(preds),
+		.by = c(id, model)
+	) |>
+	tidyr::pivot_wider(names_from = name, values_from = value) |>
+	dplyr::mutate(
+		model = factor(
+			model,
+			levels = c("fe_pred", "ve_pred"),
+			labels = c("No individual effects", "Individual varying intercepts")
+		)
+	)
+
+library(ggplot2)
+ggplot(trolley_preds_by_person) +
+	aes(x = est, xmin = lwr, xmax = upr, y = id, color = model, shape = model) +
+	geom_pointrange(alpha = 0.7) +
+	theme_minimal(base_size = 24) +
+	theme(legend.position = "bottom") +
+	labs(x = "Average response", y = "Individual id", color = NULL, shape = NULL)
+```
+
+This plot kind of looks bad but you can see the major difference here that makes the varying effects model work so much better. Each individual has a different average across all studies -- some individuals tend to rate all strories highly, or all stories lowly, and very few individuals are actually close to the study sample average response that is enforced by the model that ignores individual effects. So by allowing individuals to have different baseline ratings (usually called their "anchor point"), we can actually get better estimates of how the different features of stories change ratings on average, not only how they change the average rating.
+
+## 13H3
+
+Now we'll fit a model that also has varying intercepts for the story variable.
+
+```{r}
+m_13h3 <- rethinking::ulam(
+	alist(
+		R ~ dordlogit(phi, cutpoints),
+		phi <- a_id[id] + a_st[story] + bA * A + bC * C + bI * I,
+		c(bA, bI, bC) ~ dnorm(0, 0.5),
+		# We already have intercepts by default in this type of model
+		# so we can't identify a random intercept mean
+		a_id[id] ~ dnorm(0, sigma_id),
+		a_st[story] ~ dnorm(0, sigma_st),
+		sigma_id ~ dexp(1),
+		sigma_st ~ dexp(1),
+		cutpoints ~ dnorm(0, 1.5)
+	),
+	data = dat_trolley,
+	chains = 4, cores = 4,
+	iter = 2500, warmup = 500,
+	log_lik = TRUE
+)
+rethinking::precis(m_13h3)
+```
+
+Let's compare the coefficients for the effects of interest across all three of our models. Even running this coeftab takes a long time makes the models have so many parameters. But I think it's as fast as we can do with rethinking and I was too lazy to write any code that would access the underlying stan model to avoid dealing with any parameters I don't care about right now.
+
+```{r}
+rethinking::coeftab(m_13h2_1, m_13h2_2, m_13h3) |>
+	rethinking::coeftab_plot(pars = c("bC", "bI", "bA"))
+```
+
+The effects of contact (C) and action (A) are much stronger after we control for differences between stories and between individuals -- adding the effect of stories on top of the effect of individuals makes the effects of C and A even stronger. However, the effect of intention (I) gets stronger as we add individual effects, but doesn't change as much after we add effects for individual stories. These changes in coefficients from the model that accounts for individuals imply that, in addition to individuals having different baseline rating levels, different stories also have different baseline approval ratings. After we account for differences in individuals and differences in stories, we can see that stories that involved contact and action (and intention to a lesser extent) had much lower ratings.
+
+Let's check if this model fits better with WAIC, but I bet that it does.
+
+```{r}
+rethinking::compare(m_13h3, m_13h2_1, m_13h2_2)
+```
+
+Yes, the model that controls for individuals and stories is the best, and the differences in WAIC are noticeable beyond the estimated error. However, the difference between the model that controls for individuals and stories is not as stark as the difference between the model that controls for individuals and the model with fixed effects only. I think the last thing that's worth noting is that the variance parameter for the story effects is much smaller than the variance parameter for the individual effects, and samples much more poorly.
+
+### 13H4
+
+For this problem, we'll go back to the reedfrogs data. We've already cleaned that dataset once in this one. So we want to fit a model with varying intercepts and effects of size and predation, and both models and...wait, I already did this for the previous problem on `reedfrogs.` See solution to 13M1.
